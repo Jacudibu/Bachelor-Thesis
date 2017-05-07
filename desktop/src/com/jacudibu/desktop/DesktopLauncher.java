@@ -1,8 +1,8 @@
-package com.jacudibu.bachelor.desktop;
+package com.jacudibu.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.jacudibu.bachelor.Game;
+import com.jacudibu.Game;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
