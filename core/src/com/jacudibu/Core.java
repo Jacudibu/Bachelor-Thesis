@@ -27,16 +27,10 @@ public class Core extends com.badlogic.gdx.Game {
 				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-
-	//	addMarker(new Vector3(), new Quaternion());
-	//	addMarker(new Vector3(10f, 0f, 0f), new Quaternion());
-	//	addMarker(new Vector3(-10f, 0f, 0f), new Quaternion());
-
 		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
 
 		PerspectiveCamera mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		mainCamera.position.set(10f,10f,10f);
-		mainCamera.lookAt(0,0,0);
+		mainCamera.position.set(0f,0f,10f);
 		mainCamera.near = 1f;
 		mainCamera.far = 300f;
 
