@@ -25,12 +25,8 @@ public class RenderSystem extends EntitySystem {
     private Environment environment;
     private PerspectiveCamera camera;
 
-    public RenderSystem() {
-        camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(10f,10f,10f);
-        camera.lookAt(0,0,0);
-        camera.near = 1f;
-        camera.far = 300f;
+    public RenderSystem(PerspectiveCamera cam) {
+        camera = cam;
         camera.update();
 
         modelBatch = new ModelBatch();

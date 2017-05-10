@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.components.ClickableComponent;
 import com.jacudibu.components.ModelComponent;
+import com.jacudibu.entitySystem.InteractionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
 public class Game extends com.badlogic.gdx.Game {
@@ -26,9 +28,18 @@ public class Game extends com.badlogic.gdx.Game {
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
 
-		AddMarker(new Vector3(), new Quaternion());
-		engine.addSystem(new RenderSystem());
+		addMarker(new Vector3(), new Quaternion());
+		addMarker(new Vector3(10f, 0f, 0f), new Quaternion());
+		addMarker(new Vector3(-10f, 0f, 0f), new Quaternion());
 
+		PerspectiveCamera mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		mainCamera.position.set(10f,10f,10f);
+		mainCamera.lookAt(0,0,0);
+		mainCamera.near = 1f;
+		mainCamera.far = 300f;
+
+		engine.addSystem(new RenderSystem(mainCamera));
+		engine.addSystem(new InteractionSystem(mainCamera));
 	}
 
 	@Override
@@ -52,10 +63,11 @@ public class Game extends com.badlogic.gdx.Game {
 		engine.addEntity(user);
 	}
 
-	public void AddMarker(Vector3 position, Quaternion rotation)	{
+	public void addMarker(Vector3 position, Quaternion rotation)	{
 		Entity marker = new Entity();
 
 		marker.add(new ModelComponent(model, position, rotation));
+		marker.add(new ClickableComponent());
 
 		engine.addEntity(marker);
 	}
