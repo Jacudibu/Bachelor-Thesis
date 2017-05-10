@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.entitySystem.InteractionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
@@ -19,10 +21,15 @@ public class Core extends com.badlogic.gdx.Game {
 	public void create () {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		testModel = modelBuilder.createBox(5f, 5f, 5f,
-				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
 		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
+
+		// Some more markers, for fun.
+		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
+		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
+		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
 
 		PerspectiveCamera mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		mainCamera.position.set(0f,0f,10f);
