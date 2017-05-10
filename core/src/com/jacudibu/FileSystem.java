@@ -55,7 +55,7 @@ public class FileSystem {
         Vector3 position = getVector3(dataPieces);
         Quaternion rotation = getQuaternion(dataPieces);
 
-        Core.addMarker(position, rotation);
+        Entities.createMarker(position, rotation);
     }
 
     private static Vector3 getVector3(String[] dataPieces) {

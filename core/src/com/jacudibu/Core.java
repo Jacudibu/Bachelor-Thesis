@@ -1,29 +1,24 @@
 package com.jacudibu;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.components.InteractableComponent;
-import com.jacudibu.components.ModelComponent;
 import com.jacudibu.entitySystem.InteractionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
 public class Core extends com.badlogic.gdx.Game {
 
-	public static Model model;
+	public static Model testModel;
 
 	public static Engine engine = new Engine();
 
 	@Override
 	public void create () {
 		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createBox(5f, 5f, 5f,
+		testModel = modelBuilder.createBox(5f, 5f, 5f,
 				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
@@ -48,23 +43,8 @@ public class Core extends com.badlogic.gdx.Game {
 	
 	@Override
 	public void dispose () {
-		model.dispose();
+		testModel.dispose();
 	}
 
-	public static void addUser(Vector3 position, Quaternion rotation) {
-		Entity user = new Entity();
 
-		user.add(new ModelComponent(model, position, rotation));
-
-		engine.addEntity(user);
-	}
-
-	public static void addMarker(Vector3 position, Quaternion rotation)	{
-		Entity marker = new Entity();
-
-		marker.add(new ModelComponent(model, position, rotation));
-		marker.add(new InteractableComponent());
-
-		engine.addEntity(marker);
-	}
 }
