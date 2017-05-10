@@ -27,6 +27,10 @@ public class FileSystem {
         CLASSPATH,
     }
 
+    public static void parseFile(String path) {
+        parseFile(path, PathType.ABSOLUTE);
+    }
+
     public static void parseFile(String path, PathType pathType) {
         FileHandle file = null;
         switch (pathType) {
@@ -45,7 +49,7 @@ public class FileSystem {
         }
 
         if (!file.exists()) {
-            Gdx.app.error("ERROR", "Unable to pare file from " + path);
+            Gdx.app.error("ERROR", "Unable to parse file from " + path);
             return;
         }
 
