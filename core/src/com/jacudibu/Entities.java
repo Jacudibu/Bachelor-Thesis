@@ -12,20 +12,22 @@ import com.jacudibu.components.ModelComponent;
 public final class Entities {
     private Entities() {}
 
-    public static void createMarker(Vector3 position, Quaternion rotation)	{
+    public static Entity createMarker(Vector3 position, Quaternion rotation)	{
         Entity marker = new Entity();
 
         marker.add(new ModelComponent(Core.testModel, position, rotation));
         marker.add(new InteractableComponent());
 
         Core.engine.addEntity(marker);
+        return marker;
     }
 
-    public static void createUser(Vector3 position, Quaternion rotation) {
+    public static Entity createUser(Vector3 position, Quaternion rotation) {
         Entity user = new Entity();
 
         user.add(new ModelComponent(Core.testModel, position, rotation));
 
         Core.engine.addEntity(user);
+        return user;
     }
 }
