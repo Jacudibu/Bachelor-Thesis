@@ -7,7 +7,7 @@ import com.badlogic.ashley.core.ComponentMapper;
  */
 public class Mappers {
     public static final ComponentMapper<ModelComponent> model = ComponentMapper.getFor(ModelComponent.class);
-    public static final ComponentMapper<ClickableComponent> clickable = ComponentMapper.getFor(ClickableComponent.class);
+    public static final ComponentMapper<InteractableComponent> clickable = ComponentMapper.getFor(InteractableComponent.class);
 
 
 }

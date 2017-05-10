@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.jacudibu.components.ClickableComponent;
+import com.jacudibu.components.InteractableComponent;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
@@ -38,7 +38,7 @@ public class InteractionSystem extends EntitySystem {
         for (int i = 0; i < entities.size(); i++) {
             Entity currentlyCheckedEntity = entities.get(i);
 
-            ClickableComponent clickable = Mappers.clickable.get(currentlyCheckedEntity);
+            InteractableComponent clickable = Mappers.clickable.get(currentlyCheckedEntity);
             ModelComponent model = Mappers.model.get(currentlyCheckedEntity);
 
             Vector3 position = model.instance.transform.getTranslation(Vector3.Zero);
@@ -59,6 +59,6 @@ public class InteractionSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor((Family.all(ModelComponent.class, ClickableComponent.class).get()));
+        entities = engine.getEntitiesFor((Family.all(ModelComponent.class, InteractableComponent.class).get()));
     }
 }

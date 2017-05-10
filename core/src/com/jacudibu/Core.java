@@ -9,16 +9,16 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.components.ClickableComponent;
+import com.jacudibu.components.InteractableComponent;
 import com.jacudibu.components.ModelComponent;
 import com.jacudibu.entitySystem.InteractionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
-public class Game extends com.badlogic.gdx.Game {
+public class Core extends com.badlogic.gdx.Game {
 
-	public Model model;
+	public static Model model;
 
-	public Engine engine = new Engine();
+	public static Engine engine = new Engine();
 
 	@Override
 	public void create () {
@@ -28,9 +28,11 @@ public class Game extends com.badlogic.gdx.Game {
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
 
-		addMarker(new Vector3(), new Quaternion());
-		addMarker(new Vector3(10f, 0f, 0f), new Quaternion());
-		addMarker(new Vector3(-10f, 0f, 0f), new Quaternion());
+	//	addMarker(new Vector3(), new Quaternion());
+	//	addMarker(new Vector3(10f, 0f, 0f), new Quaternion());
+	//	addMarker(new Vector3(-10f, 0f, 0f), new Quaternion());
+
+		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
 
 		PerspectiveCamera mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		mainCamera.position.set(10f,10f,10f);
@@ -55,7 +57,7 @@ public class Game extends com.badlogic.gdx.Game {
 		model.dispose();
 	}
 
-	public void AddUser(Vector3 position, Quaternion rotation) {
+	public static void addUser(Vector3 position, Quaternion rotation) {
 		Entity user = new Entity();
 
 		user.add(new ModelComponent(model, position, rotation));
@@ -63,11 +65,11 @@ public class Game extends com.badlogic.gdx.Game {
 		engine.addEntity(user);
 	}
 
-	public void addMarker(Vector3 position, Quaternion rotation)	{
+	public static void addMarker(Vector3 position, Quaternion rotation)	{
 		Entity marker = new Entity();
 
 		marker.add(new ModelComponent(model, position, rotation));
-		marker.add(new ClickableComponent());
+		marker.add(new InteractableComponent());
 
 		engine.addEntity(marker);
 	}
