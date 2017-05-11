@@ -21,13 +21,14 @@ public class InputManager implements InputProcessor {
         enable();
     }
 
-    public static void initalize() {
+    public static InputManager initalize() {
         if (instance != null) {
             Gdx.app.log("WARNING", "InputManager is already initialized!");
-            return;
+            return instance;
         }
 
         instance = new InputManager();
+        return instance;
     }
 
     public void enable() {
