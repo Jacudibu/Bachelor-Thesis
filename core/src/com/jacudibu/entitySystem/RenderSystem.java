@@ -77,7 +77,17 @@ public class RenderSystem extends EntitySystem {
             movement.z += moveSpeed * deltaTime;
         }
 
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+            movement.x *= 10f;
+            movement.y *= 10f;
+            movement.z *= 10f;
+        }
+
+        // TODO: Rotate movement vector by camera rotation
+
+
         // Rotate
+
 
         // Update
         camera.translate(movement);
