@@ -14,7 +14,6 @@ import com.jacudibu.entitySystem.RenderSystem;
 public class Core extends com.badlogic.gdx.Game {
 
 	public static Model testModel;
-	public static PerspectiveCamera mainCamera;
 	public static Engine engine = new Engine();
 
 	public static int windowHeight;
@@ -25,13 +24,9 @@ public class Core extends com.badlogic.gdx.Game {
 		windowWidth = Gdx.graphics.getWidth();
 		windowHeight = Gdx.graphics.getHeight();
 
-		mainCamera = new PerspectiveCamera(67, windowWidth, windowHeight);
-		mainCamera.position.set(0f,0f,10f);
-		mainCamera.near = 1f;
-		mainCamera.far = 300f;
-
-		engine.addSystem(new RenderSystem(mainCamera));
-		engine.addSystem(new SelectionSystem(mainCamera));
+		MainCamera.initialize();
+		engine.addSystem(new RenderSystem());
+		engine.addSystem(new SelectionSystem());
 
 		InputManager.initalize();
 
@@ -57,6 +52,7 @@ public class Core extends com.badlogic.gdx.Game {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		engine.update(Gdx.graphics.getDeltaTime());
 	}
 	
@@ -70,9 +66,9 @@ public class Core extends com.badlogic.gdx.Game {
 		if (screen != null) {
 			screen.resize(width, height);
 		}
-		if (mainCamera != null) {
-			mainCamera.viewportWidth = width;
-			mainCamera.viewportHeight = height;
+		if (MainCamera.getCamera() != null) {
+			MainCamera.getCamera().viewportWidth = width;
+			MainCamera.getCamera().viewportHeight = height;
 		}
 
 		windowHeight = width;

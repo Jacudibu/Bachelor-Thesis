@@ -3,9 +3,6 @@ package com.jacudibu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.entitySystem.SelectionSystem;
 
 /**
@@ -14,13 +11,13 @@ import com.jacudibu.entitySystem.SelectionSystem;
 public class InputManager implements InputProcessor {
     public static InputManager instance;
 
-    public boolean invertY = true;
-    public boolean invertX = true;
+    public static boolean invertY = true;
+    public static boolean invertX = true;
 
     private int lastDragX;
     private int lastDragY;
 
-    public InputManager() {
+    private InputManager() {
         enable();
     }
 
@@ -44,11 +41,14 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
+        return false;
     }
+
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -75,10 +75,7 @@ public class InputManager implements InputProcessor {
         lastDragX = screenX;
         lastDragY = screenY;
 
-        Vector3 camRightVector = new Vector3().set(Core.mainCamera.direction).crs(Core.mainCamera.up).nor();
-        Core.mainCamera.rotate(camRightVector, invertY ? -distanceY : distanceY);
-        Core.mainCamera.rotate(Vector3.Y, invertX ? -distanceX : distanceX);
-        Core.mainCamera.update();
+        MainCamera.instance.dragRotation(distanceX, distanceY);
         return true;
     }
 
@@ -89,6 +86,7 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
-        return false;
+        MainCamera.instance.zoom(-amount);
+        return true;
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.Core;
+import com.jacudibu.MainCamera;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
@@ -24,13 +26,13 @@ public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ModelBatch modelBatch;
     private Environment environment;
-    private PerspectiveCamera camera;
+    private Camera camera;
 
     public RenderSystem() {
-        this(Core.mainCamera);
+        this(MainCamera.getCamera());
     }
 
-    public RenderSystem(PerspectiveCamera cam) {
+    public RenderSystem(Camera cam) {
         camera = cam;
         camera.update();
 
@@ -60,35 +62,7 @@ public class RenderSystem extends EntitySystem {
     }
 
     private void updateCamera(float deltaTime) {
-        float moveSpeed = 10f;
 
-        // Move
-        float zoom = 0f;
-        float right = 0f;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            zoom += moveSpeed * deltaTime;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            zoom -= moveSpeed * deltaTime;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            right += moveSpeed * deltaTime;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            right -= moveSpeed * deltaTime;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            zoom *= 10f;
-            right *= 10f;
-        }
-
-        camera.position.add(camera.direction.x * zoom, camera.direction.y * zoom, camera.direction.z * zoom);
-
-        Vector3 camRightVector = new Vector3().set(Core.mainCamera.direction).crs(Core.mainCamera.up).nor();
-        camera.position.add(camRightVector.x * right, camRightVector.y * right, camRightVector.z * right);
-
-        camera.update();
     }
 
 
