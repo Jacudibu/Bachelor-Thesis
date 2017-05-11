@@ -17,8 +17,28 @@ public class Core extends com.badlogic.gdx.Game {
 	public static PerspectiveCamera mainCamera;
 	public static Engine engine = new Engine();
 
+	public static int windowHeight;
+	public static int windowWidth;
+
 	@Override
 	public void create () {
+		windowWidth = Gdx.graphics.getWidth();
+		windowHeight = Gdx.graphics.getHeight();
+
+		mainCamera = new PerspectiveCamera(67, windowWidth, windowHeight);
+		mainCamera.position.set(0f,0f,10f);
+		mainCamera.near = 1f;
+		mainCamera.far = 300f;
+
+		engine.addSystem(new RenderSystem(mainCamera));
+		engine.addSystem(new SelectionSystem(mainCamera));
+
+		InputManager.initalize();
+
+		initDebugStuff();
+	}
+
+	private void initDebugStuff() {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		testModel = modelBuilder.createBox(5f, 5f, 5f,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
@@ -30,14 +50,6 @@ public class Core extends com.badlogic.gdx.Game {
 		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
 		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
 		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
-
-		mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		mainCamera.position.set(0f,0f,10f);
-		mainCamera.near = 1f;
-		mainCamera.far = 300f;
-
-		engine.addSystem(new RenderSystem(mainCamera));
-		engine.addSystem(new SelectionSystem(mainCamera));
 	}
 
 	@Override
@@ -62,5 +74,8 @@ public class Core extends com.badlogic.gdx.Game {
 			mainCamera.viewportWidth = width;
 			mainCamera.viewportHeight = height;
 		}
+
+		windowHeight = width;
+		windowHeight = height;
 	}
 }

@@ -34,14 +34,6 @@ public class SelectionSystem extends EntitySystem {
 
     public SelectionSystem(PerspectiveCamera camera) {
         this.camera = camera;
-
-        // TODO: Extract into InputManager
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            @Override public boolean touchDown (int x, int y, int pointer, int button) {
-                select();
-                return true;
-            }
-        });
     }
 
     @Override
@@ -107,7 +99,7 @@ public class SelectionSystem extends EntitySystem {
         }
     }
 
-    private void select () {
+    public void select () {
         if (currentlyHovered == currentlySelected) {
             return;
         }

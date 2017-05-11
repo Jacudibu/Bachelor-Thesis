@@ -63,37 +63,32 @@ public class RenderSystem extends EntitySystem {
         float moveSpeed = 10f;
 
         // Move
-        Vector3 movement = new Vector3();
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            movement.x -= moveSpeed * deltaTime;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            movement.x += moveSpeed * deltaTime;
-        }
+        float zoom = 0f;
+        float right = 0f;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            movement.z -= moveSpeed * deltaTime;
+            zoom += moveSpeed * deltaTime;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            movement.z += moveSpeed * deltaTime;
+            zoom -= moveSpeed * deltaTime;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            right += moveSpeed * deltaTime;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            right -= moveSpeed * deltaTime;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            movement.x *= 10f;
-            movement.y *= 10f;
-            movement.z *= 10f;
+            zoom *= 10f;
+            right *= 10f;
         }
 
-        // TODO: Rotate movement vector by camera rotation
+        camera.position.add(camera.direction.x * zoom, camera.direction.y * zoom, camera.direction.z * zoom);
 
-
-        // Rotate
-
-
-        // Update
-        camera.translate(movement);
+        Vector3 camRightVector = new Vector3().set(Core.mainCamera.direction).crs(Core.mainCamera.up).nor();
+        camera.position.add(camRightVector.x * right, camRightVector.y * right, camRightVector.z * right);
 
         camera.update();
-
     }
 
 
