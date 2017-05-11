@@ -6,12 +6,12 @@ import com.badlogic.ashley.core.Component;
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.05.2017.
  */
-public class InteractableComponent implements Component {
+public class SelectableComponent implements Component {
 
-    public float radius = 3f;
+    public float radius = 1f;
 
-    public InteractableComponent() {}
-    public InteractableComponent(float radius) {
+    public SelectableComponent() {}
+    public SelectableComponent(float radius) {
         this.radius = radius;
     }
 }

@@ -27,7 +27,7 @@ public class RenderSystem extends EntitySystem {
     private PerspectiveCamera camera;
 
     public RenderSystem() {
-        RenderSystem(Core.mainCamera);
+        this(Core.mainCamera);
     }
 
     public RenderSystem(PerspectiveCamera cam) {

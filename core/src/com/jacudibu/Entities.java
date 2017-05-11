@@ -3,7 +3,7 @@ package com.jacudibu;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.components.InteractableComponent;
+import com.jacudibu.components.SelectableComponent;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -16,7 +16,7 @@ public final class Entities {
         Entity marker = new Entity();
 
         marker.add(new ModelComponent(Core.testModel, position, rotation));
-        marker.add(new InteractableComponent());
+        marker.add(new SelectableComponent(3f));
 
         Core.engine.addEntity(marker);
         return marker;

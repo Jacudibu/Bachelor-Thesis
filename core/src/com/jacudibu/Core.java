@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.entitySystem.InteractionSystem;
+import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
 public class Core extends com.badlogic.gdx.Game {
@@ -37,7 +37,7 @@ public class Core extends com.badlogic.gdx.Game {
 		mainCamera.far = 300f;
 
 		engine.addSystem(new RenderSystem(mainCamera));
-		engine.addSystem(new InteractionSystem(mainCamera));
+		engine.addSystem(new SelectionSystem(mainCamera));
 	}
 
 	@Override

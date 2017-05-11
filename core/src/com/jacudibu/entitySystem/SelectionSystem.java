@@ -14,25 +14,25 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.jacudibu.Core;
-import com.jacudibu.components.InteractableComponent;
+import com.jacudibu.components.SelectableComponent;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.05.2017.
  */
-public class InteractionSystem extends EntitySystem {
+public class SelectionSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private PerspectiveCamera camera;
 
     private Entity currentlyHovered = null;
     private Entity currentlySelected = null;
 
-    public InteractionSystem() {
-        InteractionSystem(Core.mainCamera);
+    public SelectionSystem() {
+        this(Core.mainCamera);
     }
 
-    public InteractionSystem(PerspectiveCamera camera) {
+    public SelectionSystem(PerspectiveCamera camera) {
         this.camera = camera;
 
         // TODO: Extract into InputManager
@@ -54,7 +54,7 @@ public class InteractionSystem extends EntitySystem {
         for (int i = 0; i < entities.size(); i++) {
             Entity currentlyCheckedEntity = entities.get(i);
 
-            InteractableComponent clickable = Mappers.interactable.get(currentlyCheckedEntity);
+            SelectableComponent clickable = Mappers.selectable.get(currentlyCheckedEntity);
             ModelComponent model = Mappers.model.get(currentlyCheckedEntity);
 
             Vector3 position = model.instance.transform.getTranslation(Vector3.Zero);
@@ -75,12 +75,12 @@ public class InteractionSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor((Family.all(ModelComponent.class, InteractableComponent.class).get()));
+        entities = engine.getEntitiesFor((Family.all(ModelComponent.class, SelectableComponent.class).get()));
     }
 
 
     // Interaction Stuff
-    // TODO: Refactor, create SelectableComponent and query there
+    // TODO: Refactor
     private void hover (Entity entity) {
         if (currentlyHovered == entity) {
             return;
