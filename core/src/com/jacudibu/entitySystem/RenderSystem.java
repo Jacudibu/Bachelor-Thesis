@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.Core;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
@@ -24,6 +25,10 @@ public class RenderSystem extends EntitySystem {
     private ModelBatch modelBatch;
     private Environment environment;
     private PerspectiveCamera camera;
+
+    public RenderSystem() {
+        RenderSystem(Core.mainCamera);
+    }
 
     public RenderSystem(PerspectiveCamera cam) {
         camera = cam;

@@ -14,7 +14,7 @@ import com.jacudibu.entitySystem.RenderSystem;
 public class Core extends com.badlogic.gdx.Game {
 
 	public static Model testModel;
-
+	public static PerspectiveCamera mainCamera;
 	public static Engine engine = new Engine();
 
 	@Override
@@ -31,7 +31,7 @@ public class Core extends com.badlogic.gdx.Game {
 		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
 		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
 
-		PerspectiveCamera mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		mainCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		mainCamera.position.set(0f,0f,10f);
 		mainCamera.near = 1f;
 		mainCamera.far = 300f;
@@ -53,5 +53,14 @@ public class Core extends com.badlogic.gdx.Game {
 		testModel.dispose();
 	}
 
-
+	@Override
+	public void resize (int width, int height) {
+		if (screen != null) {
+			screen.resize(width, height);
+		}
+		if (mainCamera != null) {
+			mainCamera.viewportWidth = width;
+			mainCamera.viewportHeight = height;
+		}
+	}
 }

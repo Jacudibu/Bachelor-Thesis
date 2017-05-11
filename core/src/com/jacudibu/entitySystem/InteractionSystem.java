@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.jacudibu.Core;
 import com.jacudibu.components.InteractableComponent;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
@@ -26,6 +27,10 @@ public class InteractionSystem extends EntitySystem {
 
     private Entity currentlyHovered = null;
     private Entity currentlySelected = null;
+
+    public InteractionSystem() {
+        InteractionSystem(Core.mainCamera);
+    }
 
     public InteractionSystem(PerspectiveCamera camera) {
         this.camera = camera;
