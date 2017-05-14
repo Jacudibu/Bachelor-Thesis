@@ -41,34 +41,53 @@ public class MainCamera {
     }
 
     public void update(float deltaTime) {
+
+        Vector3 movement = processMovementInput(deltaTime);
+
+        Vector3 camRightVector = new Vector3().set(cam.direction).crs(cam.up).nor();
+        cam.position.add(camRightVector.x * movement.x, camRightVector.y * movement.x, camRightVector.z * movement.x);
+        cam.position.add(cam.up.x * movement.y, cam.up.y * movement.y, cam.up.z * movement.y);
+        zoom(movement.z);
+
+        cam.update();
+    }
+
+    private Vector3 processMovementInput(float deltaTime) {
         float moveSpeed = 10f;
 
-        // Move
-        float forward = 0f;
-        float right = 0f;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            forward += moveSpeed * deltaTime;
+        Vector3 movement = new Vector3();
+
+        // Forward
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            movement.z += moveSpeed * deltaTime;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            forward -= moveSpeed * deltaTime;
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            movement.z -= moveSpeed * deltaTime;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            right += moveSpeed * deltaTime;
+
+        // Right
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            movement.x += moveSpeed * deltaTime;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            right -= moveSpeed * deltaTime;
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            movement.x -= moveSpeed * deltaTime;
+        }
+
+        // Up
+        if (Gdx.input.isKeyPressed(Input.Keys.Q) || Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)) {
+            movement.y += moveSpeed * deltaTime;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.E) || Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)) {
+            movement.y -= moveSpeed * deltaTime;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            forward *= 10f;
-            right *= 10f;
+            movement.x *= 10f;
+            movement.y *= 10f;
+            movement.z *= 10f;
         }
 
-        zoom(forward);
-
-        Vector3 camRightVector = new Vector3().set(cam.direction).crs(cam.up).nor();
-        cam.position.add(camRightVector.x * right, camRightVector.y * right, camRightVector.z * right);
-        cam.update();
+        return movement;
     }
 
     public void dragRotation(float xRot, float yRot) {
