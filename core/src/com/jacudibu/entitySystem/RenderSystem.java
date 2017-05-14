@@ -40,7 +40,6 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
-        updateCamera(deltaTime);
         modelBatch.begin(MainCamera.getCamera());
 
         for (int i = 0; i < modelEntities.size(); i++) {
@@ -59,10 +58,5 @@ public class RenderSystem extends EntitySystem {
 
         modelBatch.end();
     }
-
-    private void updateCamera(float deltaTime) {
-
-    }
-
 
 }
