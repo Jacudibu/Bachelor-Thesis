@@ -63,12 +63,6 @@ public class FileSystem {
         createPair(position, rotation);
     }
 
-    private static void createPair(Vector3 position, Quaternion rotation) {
-        Entity newMarker = Entities.createMarker(position, rotation);
-        Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
-        Entity newArrow = Entities.createArrow(new Vector3(), position);
-    }
-
     private static Vector3 getVector3(String[] dataPieces) {
         Vector3 position = new Vector3();
         position.x = Float.parseFloat(dataPieces[POSITION_X]);
@@ -84,6 +78,13 @@ public class FileSystem {
         rotation.y = Float.parseFloat(dataPieces[QUATERNION_Y]);
         rotation.z = Float.parseFloat(dataPieces[QUATERNION_Z]);
         return rotation;
+    }
+
+
+    private static void createPair(Vector3 position, Quaternion rotation) {
+        Entity newMarker = Entities.createMarker(position, rotation);
+        Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
+        Entity newArrow = Entities.createArrow(new Vector3(), position);
     }
 
 

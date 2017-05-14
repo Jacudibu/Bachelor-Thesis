@@ -57,6 +57,8 @@ public class RenderSystem extends EntitySystem {
             modelBatch.render(model.instance, environment);
         }
 
+        // Ashley doesn't seem to take inheritance into account,
+        // therefore modelEntitites won't contain entities with arrowComponents.
         for (int i = 0; i < arrowEntities.size(); i++) {
             Entity entity = arrowEntities.get(i);
             ArrowComponent arrow = Mappers.arrow.get(entity);
