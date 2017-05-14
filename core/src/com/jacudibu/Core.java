@@ -2,6 +2,7 @@ package com.jacudibu;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -12,8 +13,8 @@ import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
 public class Core extends com.badlogic.gdx.Game {
-
 	public static ModelBuilder modelBuilder;
+	public static InputMultiplexer inputMultiplexer;
 	public static Model testCube;
 	public static Model testSphere;
 	public static Engine engine = new Engine();
@@ -25,11 +26,14 @@ public class Core extends com.badlogic.gdx.Game {
 	public void create () {
 		windowWidth = Gdx.graphics.getWidth();
 		windowHeight = Gdx.graphics.getHeight();
+		inputMultiplexer = new InputMultiplexer();
+		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		MainCamera.initialize();
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new SelectionSystem());
 
+		setScreen(new UI());
 		InputManager.initalize();
 
 		initDebugStuff();
@@ -42,6 +46,7 @@ public class Core extends com.badlogic.gdx.Game {
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		engine.update(Gdx.graphics.getDeltaTime());
+		screen.render(Gdx.graphics.getDeltaTime());
 	}
 
 	@Override
@@ -73,7 +78,7 @@ public class Core extends com.badlogic.gdx.Game {
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
+		// FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
 
 		// spawnDebugEntities();
 	}

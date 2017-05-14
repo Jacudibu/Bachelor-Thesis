@@ -32,7 +32,7 @@ public class InputManager implements InputProcessor {
     }
 
     public void enable() {
-        Gdx.input.setInputProcessor(this);
+        Core.inputMultiplexer.addProcessor(this);
     }
 
     @Override
