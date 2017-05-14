@@ -13,7 +13,8 @@ import com.jacudibu.entitySystem.RenderSystem;
 
 public class Core extends com.badlogic.gdx.Game {
 
-	public static Model testModel;
+	public static Model testCube;
+	public static Model testSphere;
 	public static Engine engine = new Engine();
 
 	public static int windowHeight;
@@ -35,11 +36,18 @@ public class Core extends com.badlogic.gdx.Game {
 
 	private void initDebugStuff() {
 		ModelBuilder modelBuilder = new ModelBuilder();
-		testModel = modelBuilder.createBox(5f, 5f, 5f,
+		testCube = modelBuilder.createBox(1f, 1f, 1f,
+				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+
+		testSphere = modelBuilder.createSphere(1f, 1f, 1f,50, 50,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
 		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
+
+		Entities.createTracker(new Vector3(0f, 0f, 0f), new Quaternion());
+		Entities.createTracker(new Vector3(-20f, 20f, 0f), new Quaternion());
 
 		// Some more markers, for fun.
 		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
@@ -58,7 +66,7 @@ public class Core extends com.badlogic.gdx.Game {
 	
 	@Override
 	public void dispose () {
-		testModel.dispose();
+		testCube.dispose();
 	}
 
 	@Override
