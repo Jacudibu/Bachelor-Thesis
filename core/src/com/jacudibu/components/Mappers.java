@@ -10,6 +10,7 @@ public class Mappers {
     public static final ComponentMapper<SelectableComponent> selectable = ComponentMapper.getFor(SelectableComponent.class);
     public static final ComponentMapper<MarkerComponent> marker = ComponentMapper.getFor(MarkerComponent.class);
     public static final ComponentMapper<TrackerComponent> tracker = ComponentMapper.getFor(TrackerComponent.class);
+    public static final ComponentMapper<ArrowComponent> arrow = ComponentMapper.getFor(ArrowComponent.class);
 
 
 }

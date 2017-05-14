@@ -13,6 +13,7 @@ import com.jacudibu.entitySystem.RenderSystem;
 
 public class Core extends com.badlogic.gdx.Game {
 
+	public static ModelBuilder modelBuilder;
 	public static Model testCube;
 	public static Model testSphere;
 	public static Engine engine = new Engine();
@@ -34,27 +35,6 @@ public class Core extends com.badlogic.gdx.Game {
 		initDebugStuff();
 	}
 
-	private void initDebugStuff() {
-		ModelBuilder modelBuilder = new ModelBuilder();
-		testCube = modelBuilder.createBox(1f, 1f, 1f,
-				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-
-		testSphere = modelBuilder.createSphere(1f, 1f, 1f,50, 50,
-				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-
-		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
-
-		Entities.createTracker(new Vector3(0f, 0f, 0f), new Quaternion());
-		Entities.createTracker(new Vector3(-20f, 20f, 0f), new Quaternion());
-
-		// Some more markers, for fun.
-		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
-		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
-		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
-	}
-
 	@Override
 	public void render () {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -63,7 +43,7 @@ public class Core extends com.badlogic.gdx.Game {
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		engine.update(Gdx.graphics.getDeltaTime());
 	}
-	
+
 	@Override
 	public void dispose () {
 		testCube.dispose();
@@ -82,4 +62,34 @@ public class Core extends com.badlogic.gdx.Game {
 		windowHeight = width;
 		windowHeight = height;
 	}
+
+	private void initDebugStuff() {
+		modelBuilder = new ModelBuilder();
+		testCube = modelBuilder.createBox(0.2f, 0.2f, 0.2f,
+				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+
+		testSphere = modelBuilder.createSphere(0.2f, 0.2f, 0.2f,50, 50,
+				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+
+		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
+
+		// spawnDebugEntities();
+	}
+
+	private void spawnDebugEntities() {
+		//// Some random trackers
+		Entities.createTracker(new Vector3(0f, 0f, 0f), new Quaternion());
+		Entities.createTracker(new Vector3(-20f, 20f, 0f), new Quaternion());
+
+		// Some more markers, for fun.
+		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
+		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
+		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
+
+		// Aaaand a random arrow.
+		Entities.createArrow(new Vector3(-20f, 20f, 0f), new Vector3(-20f, 0f, -10f));
+	}
+
 }

@@ -17,9 +17,7 @@ public class ModelComponent implements Component {
     public Model model;
     public ModelInstance instance;
 
-    public Material idle;
-    public Material hover;
-    public Material selected;
+    protected ModelComponent() {}
 
     public ModelComponent(Model model) {
         this(model, new Vector3(), new Quaternion());
@@ -31,5 +29,12 @@ public class ModelComponent implements Component {
 
         this.instance.transform.translate(position);
         this.instance.transform.rotate(rotation);
+    }
+
+    public void UpdateModel(Model model) {
+        if (this.model != null)
+            this.model.dispose();
+
+        this.model = model;
     }
 }

@@ -1,5 +1,6 @@
 package com.jacudibu;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
@@ -59,7 +60,13 @@ public class FileSystem {
         Vector3 position = getVector3(dataPieces);
         Quaternion rotation = getQuaternion(dataPieces);
 
-        Entities.createMarker(position, rotation);
+        createPair(position, rotation);
+    }
+
+    private static void createPair(Vector3 position, Quaternion rotation) {
+        Entity newMarker = Entities.createMarker(position, rotation);
+        Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
+        Entity newArrow = Entities.createArrow(new Vector3(), position);
     }
 
     private static Vector3 getVector3(String[] dataPieces) {

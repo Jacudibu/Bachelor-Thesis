@@ -5,17 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.Core;
 import com.jacudibu.MainCamera;
+import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
@@ -23,7 +19,9 @@ import com.jacudibu.components.ModelComponent;
  * Created by Stefan Wolf (Jacudibu) on 07.05.2017.
  */
 public class RenderSystem extends EntitySystem {
-    private ImmutableArray<Entity> entities;
+    private ImmutableArray<Entity> modelEntities;
+    private ImmutableArray<Entity> arrowEntities;
+
     private ModelBatch modelBatch;
     private Environment environment;
     private Camera camera;
@@ -44,7 +42,8 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor((Family.all(ModelComponent.class).get()));
+        modelEntities = engine.getEntitiesFor((Family.all(ModelComponent.class).get()));
+        arrowEntities = engine.getEntitiesFor((Family.all(ArrowComponent.class).get()));
     }
 
     @Override
@@ -52,10 +51,16 @@ public class RenderSystem extends EntitySystem {
         updateCamera(deltaTime);
         modelBatch.begin(camera);
 
-        for (int i = 0; i < entities.size(); i++) {
-            Entity entity = entities.get(i);
+        for (int i = 0; i < modelEntities.size(); i++) {
+            Entity entity = modelEntities.get(i);
             ModelComponent model = Mappers.model.get(entity);
             modelBatch.render(model.instance, environment);
+        }
+
+        for (int i = 0; i < arrowEntities.size(); i++) {
+            Entity entity = arrowEntities.get(i);
+            ArrowComponent arrow = Mappers.arrow.get(entity);
+            modelBatch.render(arrow.instance, environment);
         }
 
         modelBatch.end();
