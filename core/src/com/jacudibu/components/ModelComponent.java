@@ -31,10 +31,15 @@ public class ModelComponent implements Component {
         this.instance.transform.rotate(rotation);
     }
 
-    public void UpdateModel(Model model) {
+    public void updateModel(Model model) {
         if (this.model != null)
             this.model.dispose();
 
         this.model = model;
+    }
+
+    public void updatePosition(Vector3 position, Quaternion rotation) {
+        // TODO: Animate the hell out of that!
+        instance.transform.set(position, rotation);
     }
 }

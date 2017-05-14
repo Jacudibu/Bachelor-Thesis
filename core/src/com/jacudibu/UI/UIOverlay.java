@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.jacudibu.Core;
 
@@ -17,6 +15,7 @@ public class UIOverlay extends ScreenAdapter {
     private Skin skin;
 
     private ButtonRow buttonRow;
+    private InformationDrawer informationDrawer;
 
     public UIOverlay() {
         stage = new Stage(new ScreenViewport());
@@ -24,10 +23,7 @@ public class UIOverlay extends ScreenAdapter {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 
         buttonRow = new ButtonRow(stage, skin);
-
-        TextField test = new TextField("", skin);
-        test.setPosition(Core.windowWidth - 10, Core.windowHeight - 10, Align.topRight);
-        stage.addActor(test);
+        informationDrawer = new InformationDrawer(stage, skin);
     }
 
     @Override
@@ -40,11 +36,13 @@ public class UIOverlay extends ScreenAdapter {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         buttonRow.updateUIPositions();
+        informationDrawer.updateUIPositions();
     }
 
     @Override
     public void dispose() {
         buttonRow.dispose();
+        informationDrawer.dispose();
         stage.dispose();
     }
 }

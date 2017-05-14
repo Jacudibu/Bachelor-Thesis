@@ -10,6 +10,7 @@ import com.jacudibu.entitySystem.SelectionSystem;
  */
 public class InputManager implements InputProcessor {
     public static InputManager instance;
+    public static int keysPressed = 0;
 
     public static boolean invertY = true;
     public static boolean invertX = true;
@@ -37,11 +38,13 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        keysPressed++;
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        keysPressed--;
         return false;
     }
 

@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.jacudibu.Core;
 import com.jacudibu.MainCamera;
+import com.jacudibu.UI.InformationDrawer;
 import com.jacudibu.components.SelectableComponent;
 import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
@@ -29,6 +30,8 @@ public class SelectionSystem extends EntitySystem {
 
     private Entity currentlyHovered = null;
     private Entity currentlySelected = null;
+
+    private Vector3 currentlySelectedPosition;
 
     public SelectionSystem() {
         this(MainCamera.getCamera());
@@ -61,6 +64,7 @@ public class SelectionSystem extends EntitySystem {
             if (Intersector.intersectRaySphere(ray, position, clickable.radius, null)) {
                 closestEntity = currentlyCheckedEntity;
                 distance = currentDistance;
+                currentlySelectedPosition = position;
             }
         }
 
@@ -116,11 +120,14 @@ public class SelectionSystem extends EntitySystem {
 
         currentlySelected = currentlyHovered;
         setEntityColor(currentlySelected, Color.BLUE);
+
+        InformationDrawer.setCurrentlySelectedObject(Mappers.model.get(currentlySelected));
     }
 
     private void unselect() {
         setEntityColor(currentlySelected, Color.WHITE);
         currentlySelected = null;
+        InformationDrawer.setCurrentlySelectedObject(null);
     }
 
     private void setEntityColor(Entity entity, Color color) {

@@ -13,12 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.Entities;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
  */
-public class ButtonRow {
+public class ButtonRow implements Disposable {
     private Stage stage;
     private Skin skin;
     private Texture addTrackerTexture;
@@ -79,7 +80,7 @@ public class ButtonRow {
         buttonGroup.setPosition(10, Gdx.graphics.getHeight() - 10);
     }
 
-
+    @Override
     public void dispose() {
         addTrackerTexture.dispose();
         addTrackerPressedTexture.dispose();
