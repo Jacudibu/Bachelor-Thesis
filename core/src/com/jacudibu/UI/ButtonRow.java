@@ -1,98 +1,51 @@
-package com.jacudibu;
+package com.jacudibu.UI;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.jacudibu.Entities;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
  */
-public class UI implements Screen {
+public class ButtonRow {
     private Stage stage;
     private Skin skin;
-
     private Texture addTrackerTexture;
     private Texture addTrackerPressedTexture;
     private Texture addMarkerTexture;
     private Texture addMarkerPressedTexture;
 
-    ImageButton createMarker;
-    ImageButton createTracker;
+    Group buttonParent;
 
-    public UI() {
-        stage = new Stage(new ScreenViewport());
-        Core.inputMultiplexer.addProcessor(stage);
-        setupSkin();
+    public ButtonRow(Stage stage, Skin skin) {
+        buttonParent = new Group();
+        stage.addActor(buttonParent);
 
+        this.stage = stage;
+        this.skin = skin;
 
-        createUpperButtonRow();
+        createMarkerButton();
+        createTrackerButton();
 
-        TextField test = new TextField("", skin);
-        test.setPosition(Core.windowWidth - 10, Core.windowHeight - 10, Align.topRight);
-        stage.addActor(test);
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void render(float delta) {
-        stage.act(delta);
-        stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
         updateUIPositions();
     }
 
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        addTrackerTexture.dispose();
-        addTrackerPressedTexture.dispose();
-        addMarkerTexture.dispose();
-        addMarkerPressedTexture.dispose();
-        stage.dispose();
-    }
-
-    private void setupSkin() {
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
-    }
-
-    private void createUpperButtonRow() {
+    private void createMarkerButton() {
         addMarkerTexture = new Texture(Gdx.files.internal("addMarker.png"));
         addMarkerPressedTexture = new Texture(Gdx.files.internal("addMarkerPressed.png"));
 
-        createMarker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addMarkerTexture)),
+        ImageButton createMarker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addMarkerTexture)),
                 new TextureRegionDrawable(new TextureRegion(addMarkerPressedTexture)));
 
         createMarker.addListener(new ActorGestureListener() {
@@ -101,12 +54,15 @@ public class UI implements Screen {
                 Entities.createMarker(new Vector3(), new Quaternion());
             }
         });
-        stage.addActor(createMarker);
+        createMarker.setPosition(0, 0, Align.topLeft);
+        buttonParent.addActor(createMarker);
+    }
 
+    private void createTrackerButton() {
         addTrackerTexture = new Texture(Gdx.files.internal("addTracker.png"));
         addTrackerPressedTexture = new Texture(Gdx.files.internal("addTrackerPressed.png"));
 
-        createTracker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addTrackerTexture)),
+        ImageButton createTracker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addTrackerTexture)),
                 new TextureRegionDrawable(new TextureRegion(addTrackerPressedTexture)));
 
         createTracker.addListener(new ActorGestureListener() {
@@ -115,17 +71,19 @@ public class UI implements Screen {
                 Entities.createTracker(new Vector3(), new Quaternion());
             }
         });
-
-        stage.addActor(createTracker);
-
-        updateUIPositions();
+        createTracker.setPosition(64 + 10,0, Align.topLeft);
+        buttonParent.addActor(createTracker);
     }
 
-    private void updateUIPositions() {
-        int upperRowHeight = Gdx.graphics.getHeight() - 10;
+    public void updateUIPositions() {
+        buttonParent.setPosition(10, Gdx.graphics.getHeight() - 10);
+    }
 
-        // Button Row
-        createMarker.setPosition(10, upperRowHeight, Align.topLeft);
-        createTracker.setPosition(20 + 64,upperRowHeight, Align.topLeft);
+
+    public void dispose() {
+        addTrackerTexture.dispose();
+        addTrackerPressedTexture.dispose();
+        addMarkerTexture.dispose();
+        addMarkerPressedTexture.dispose();
     }
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
@@ -33,7 +34,7 @@ public class Core extends com.badlogic.gdx.Game {
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new SelectionSystem());
 
-		setScreen(new UI());
+		setScreen(new UIOverlay());
 		InputManager.initalize();
 
 		initDebugStuff();
