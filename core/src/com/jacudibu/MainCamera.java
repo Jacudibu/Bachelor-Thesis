@@ -16,9 +16,9 @@ public class MainCamera {
     public Vector3 camRightVector = new Vector3();
 
     private MainCamera() {
-        cam = new PerspectiveCamera(67, Core.windowWidth, Core.windowHeight);
+        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
         cam.position.set(0f,0f,10f);
-        cam.near = 1f;
+        cam.near = 0.1f;
         cam.far = 300f;
     }
 
@@ -85,6 +85,12 @@ public class MainCamera {
             movement.x *= 10f;
             movement.y *= 10f;
             movement.z *= 10f;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+            movement.x *= 0.1f;
+            movement.y *= 0.1f;
+            movement.z *= 0.1f;
         }
 
         return movement;

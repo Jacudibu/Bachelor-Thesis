@@ -24,16 +24,8 @@ public class RenderSystem extends EntitySystem {
 
     private ModelBatch modelBatch;
     private Environment environment;
-    private Camera camera;
 
     public RenderSystem() {
-        this(MainCamera.getCamera());
-    }
-
-    public RenderSystem(Camera cam) {
-        camera = cam;
-        camera.update();
-
         modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1f));
@@ -49,7 +41,7 @@ public class RenderSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
         updateCamera(deltaTime);
-        modelBatch.begin(camera);
+        modelBatch.begin(MainCamera.getCamera());
 
         for (int i = 0; i < modelEntities.size(); i++) {
             Entity entity = modelEntities.get(i);

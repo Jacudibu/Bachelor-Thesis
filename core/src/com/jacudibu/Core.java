@@ -52,6 +52,8 @@ public class Core extends com.badlogic.gdx.Game {
 	@Override
 	public void dispose () {
 		testCube.dispose();
+		testSphere.dispose();
+		screen.dispose();
 	}
 
 	@Override
