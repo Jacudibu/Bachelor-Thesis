@@ -26,11 +26,11 @@ public class ButtonRow {
     private Texture addMarkerTexture;
     private Texture addMarkerPressedTexture;
 
-    Group buttonParent;
+    Group buttonGroup;
 
     public ButtonRow(Stage stage, Skin skin) {
-        buttonParent = new Group();
-        stage.addActor(buttonParent);
+        buttonGroup = new Group();
+        stage.addActor(buttonGroup);
 
         this.stage = stage;
         this.skin = skin;
@@ -55,7 +55,7 @@ public class ButtonRow {
             }
         });
         createMarker.setPosition(0, 0, Align.topLeft);
-        buttonParent.addActor(createMarker);
+        buttonGroup.addActor(createMarker);
     }
 
     private void createTrackerButton() {
@@ -72,11 +72,11 @@ public class ButtonRow {
             }
         });
         createTracker.setPosition(64 + 10,0, Align.topLeft);
-        buttonParent.addActor(createTracker);
+        buttonGroup.addActor(createTracker);
     }
 
     public void updateUIPositions() {
-        buttonParent.setPosition(10, Gdx.graphics.getHeight() - 10);
+        buttonGroup.setPosition(10, Gdx.graphics.getHeight() - 10);
     }
 
 
