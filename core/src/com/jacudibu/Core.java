@@ -87,9 +87,6 @@ public class Core extends com.badlogic.gdx.Game {
 		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
 		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
 		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
-
-		// Aaaand a random arrow.
-		Entities.createArrow(new Vector3(-20f, 20f, 0f), new Vector3(-20f, 0f, -10f));
 	}
 
 }

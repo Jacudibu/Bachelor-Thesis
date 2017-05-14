@@ -34,13 +34,13 @@ public final class Entities {
 
         tracker.add(new ModelComponent(Core.testSphere, position, rotation));
         tracker.add(new SelectableComponent(0.2f));
-        tracker.add(new TrackerComponent());
+        tracker.add(new TrackerComponent(tracker));
 
         Core.engine.addEntity(tracker);
         return tracker;
     }
 
-    public static Entity createArrow(Vector3 from, Vector3 to) {
+    public static Entity createArrow(Entity from, Entity to) {
         Entity arrow = new Entity();
 
         arrow.add(new ArrowComponent(from, to));
