@@ -35,10 +35,8 @@ public class InformationDrawer implements Disposable {
         this.skin = skin;
         setupTextFieldListener();
 
-        positionGroup = new Group();
-        stage.addActor(positionGroup);
-
         generatePositionDrawer();
+        generateRotationDrawer();
 
         updateUIPositions();
     }
@@ -76,12 +74,9 @@ public class InformationDrawer implements Disposable {
     }
 
     private void setupTextFieldListener() {
-        textFieldListener = new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if (c == '\r' || c == '\n') {
-                    applyValues();
-                }
+        textFieldListener = (textField, c) -> {
+            if (c == '\r' || c == '\n') {
+                applyValues();
             }
         };
 
@@ -113,33 +108,29 @@ public class InformationDrawer implements Disposable {
     }
 
     private void generatePositionDrawer() {
-        // X
-        xPos = setupTextField(0, 0, Align.topLeft);
-        positionGroup.addActor(xPos);
+        positionGroup = new Group();
+        stage.addActor(positionGroup);
 
-        Label xText = new Label("x ", skin);
-        xText.setPosition(0,0,Align.topRight);
-        positionGroup.addActor(xText);
+        setupLabel("Position", 100, 0, Align.top, positionGroup);
+
+        // X
+        xPos = setupTextField(20, -20, Align.topLeft, positionGroup);
+        setupLabel("x ", 20, -20, Align.topRight, positionGroup);
 
         // Y
-        yPos = setupTextField(65, 0, Align.topLeft);
-        positionGroup.addActor(yPos);
-
-
-        Label yText = new Label("y ", skin);
-        yText.setPosition(65,0,Align.topRight);
-        positionGroup.addActor(yText);
+        yPos = setupTextField(85, -20, Align.topLeft, positionGroup);
+        setupLabel("y ", 85, -20, Align.topRight, positionGroup);
 
         // Z
-        zPos = setupTextField(130, 0,  Align.topLeft);
-        positionGroup.addActor(zPos);
-
-        Label zText = new Label("z ", skin);
-        zText.setPosition(130,0,Align.topRight);
-        positionGroup.addActor(zText);
+        zPos = setupTextField(150, -20,  Align.topLeft, positionGroup);
+        setupLabel("z ", 150,-20, Align.topRight, positionGroup);
     }
 
-    private TextField setupTextField(float x, float y, int align) {
+    private void generateRotationDrawer() {
+
+    }
+
+    private TextField setupTextField(float x, float y, int align, Group group) {
         TextField textField = new TextField("", skin);
 
         textField.setPosition(x, y, align);
@@ -147,17 +138,26 @@ public class InformationDrawer implements Disposable {
         textField.setTextFieldListener(textFieldListener);
         textField.setTextFieldFilter(new FloatFilter());
         textField.setDisabled(true);
+        group.addActor(textField);
 
         return textField;
     }
 
+    private Label setupLabel(String text, float x, float y, int align, Group group) {
+        Label label = new Label(text, skin);
+
+        label.setPosition(x, y, align);
+        group.addActor(label);
+
+        return label;
+    }
+
     protected void updateUIPositions() {
-        positionGroup.setPosition(Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 10);
+        positionGroup.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 10);
     }
 
     @Override
     public void dispose() {
-
     }
 
 }
