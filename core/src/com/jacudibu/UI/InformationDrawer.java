@@ -116,7 +116,7 @@ public class InformationDrawer implements Disposable {
 
         Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
 
-        currentlySelected.instance.transform.set(pos, rot);
+        currentlySelected.updateTransform(pos, rot);
     }
 
     private float parseFloat(String string) {
@@ -205,6 +205,7 @@ public class InformationDrawer implements Disposable {
 
     @Override
     public void dispose() {
+
     }
 
 }

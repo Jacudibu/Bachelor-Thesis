@@ -38,7 +38,7 @@ public class ModelComponent implements Component {
         this.model = model;
     }
 
-    public void updatePosition(Vector3 position, Quaternion rotation) {
+    public void updateTransform(Vector3 position, Quaternion rotation) {
         // TODO: Animate the hell out of that!
         instance.transform.set(position, rotation);
     }
