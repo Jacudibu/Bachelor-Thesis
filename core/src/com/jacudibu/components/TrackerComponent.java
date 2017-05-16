@@ -30,4 +30,14 @@ public class TrackerComponent implements Component {
 
         // TODO: Remove arrow from existence.
     }
+
+    public void handlePositionUpdate() {
+        updateArrows();
+    }
+
+    public void updateArrows() {
+        for (int i = 0; i < outgoingArrows.size; i++) {
+            Mappers.arrow.get(outgoingArrows.get(i)).updateModel();
+        }
+    }
 }

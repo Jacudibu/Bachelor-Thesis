@@ -22,4 +22,10 @@ public class MarkerComponent implements Component {
     public void removeTracker(Entity tracker) {
         assignedTrackers.removeValue(tracker, false);
     }
+
+    public void handlePositionUpdate() {
+        for (int i = 0; i < assignedTrackers.size; i++) {
+            Mappers.tracker.get(assignedTrackers.get(i)).handlePositionUpdate();
+        }
+    }
 }

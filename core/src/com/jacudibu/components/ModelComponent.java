@@ -1,6 +1,7 @@
 package com.jacudibu.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -17,14 +18,16 @@ import com.badlogic.gdx.math.Vector3;
 public class ModelComponent implements Component {
     public Model model;
     public ModelInstance instance;
+    private Entity entity;
 
     protected ModelComponent() {}
 
-    public ModelComponent(Model model) {
-        this(model, new Vector3(), new Quaternion());
+    public ModelComponent(Entity entity, Model model) {
+        this(entity, model, new Vector3(), new Quaternion());
     }
 
-    public ModelComponent(Model model, Vector3 position, Quaternion rotation) {
+    public ModelComponent(Entity entity, Model model, Vector3 position, Quaternion rotation) {
+        this.entity = entity;
         this.model = model;
         this.instance = new ModelInstance(model);
 
@@ -42,5 +45,15 @@ public class ModelComponent implements Component {
     public void updateTransform(Vector3 position, Quaternion rotation) {
         // TODO: Animate the hell out of that!
         instance.transform.set(position, rotation);
+
+        MarkerComponent marker = Mappers.marker.get(entity);
+        if (marker != null) {
+            marker.handlePositionUpdate();
+        }
+
+        TrackerComponent tracker = Mappers.tracker.get(entity);
+        if (tracker != null) {
+            tracker.handlePositionUpdate();
+        }
     }
 }

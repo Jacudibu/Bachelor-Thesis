@@ -21,7 +21,7 @@ public final class Entities {
     public static Entity createMarker(Vector3 position, Quaternion rotation)	{
         Entity marker = new Entity();
 
-        marker.add(new ModelComponent(Core.testCube, position, rotation));
+        marker.add(new ModelComponent(marker, Core.testCube, position, rotation));
         marker.add(new SelectableComponent(0.2f));
         marker.add(new MarkerComponent());
 
@@ -32,7 +32,7 @@ public final class Entities {
     public static Entity createTracker(Vector3 position, Quaternion rotation) {
         Entity tracker = new Entity();
 
-        tracker.add(new ModelComponent(Core.testSphere, position, rotation));
+        tracker.add(new ModelComponent(tracker, Core.testSphere, position, rotation));
         tracker.add(new SelectableComponent(0.2f));
         tracker.add(new TrackerComponent(tracker));
 
