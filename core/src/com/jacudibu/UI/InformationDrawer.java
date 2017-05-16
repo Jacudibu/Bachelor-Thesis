@@ -14,6 +14,7 @@ import com.jacudibu.components.ModelComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
+ * Draws various information to the currently selected Object.
  */
 public class InformationDrawer implements Disposable {
     private Stage stage;
@@ -27,7 +28,7 @@ public class InformationDrawer implements Disposable {
     private static InformationDrawer instance;
     private ModelComponent currentlySelected;
 
-    public InformationDrawer (Stage stage, Skin skin) {
+    protected InformationDrawer (Stage stage, Skin skin) {
         instance = this;
 
         this.stage = stage;
@@ -113,8 +114,7 @@ public class InformationDrawer implements Disposable {
 
     private void generatePositionDrawer() {
         // X
-        xPos = new TextField("", skin);
-        setupTextField(xPos, 0, 0, Align.topLeft);
+        xPos = setupTextField(0, 0, Align.topLeft);
         positionGroup.addActor(xPos);
 
         Label xText = new Label("x ", skin);
@@ -122,8 +122,7 @@ public class InformationDrawer implements Disposable {
         positionGroup.addActor(xText);
 
         // Y
-        yPos = new TextField("", skin);
-        setupTextField(yPos, 65, 0, Align.topLeft);
+        yPos = setupTextField(65, 0, Align.topLeft);
         positionGroup.addActor(yPos);
 
 
@@ -132,8 +131,7 @@ public class InformationDrawer implements Disposable {
         positionGroup.addActor(yText);
 
         // Z
-        zPos = new TextField("", skin);
-        setupTextField(zPos, 130, 0,  Align.topLeft);
+        zPos = setupTextField(130, 0,  Align.topLeft);
         positionGroup.addActor(zPos);
 
         Label zText = new Label("z ", skin);
@@ -141,15 +139,19 @@ public class InformationDrawer implements Disposable {
         positionGroup.addActor(zText);
     }
 
-    private void setupTextField(TextField textField, float x, float y, int align) {
+    private TextField setupTextField(float x, float y, int align) {
+        TextField textField = new TextField("", skin);
+
         textField.setPosition(x, y, align);
         textField.setWidth(50f);
         textField.setTextFieldListener(textFieldListener);
         textField.setTextFieldFilter(new FloatFilter());
         textField.setDisabled(true);
+
+        return textField;
     }
 
-    public void updateUIPositions() {
+    protected void updateUIPositions() {
         positionGroup.setPosition(Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 10);
     }
 
