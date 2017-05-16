@@ -18,6 +18,7 @@ import com.jacudibu.Entities;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
+ * The Upper UI Row on screen.
  */
 public class ButtonRow implements Disposable {
     private Stage stage;

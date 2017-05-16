@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 11.05.2017.
+ * Our Camera used for rendering the 3D Scene.
  */
 public class MainCamera {
     public static MainCamera instance;

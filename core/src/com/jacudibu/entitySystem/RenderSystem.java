@@ -17,6 +17,7 @@ import com.jacudibu.components.ModelComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 07.05.2017.
+ * System used for Rendering of every Entity having a ModelComponent.
  */
 public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> modelEntities;

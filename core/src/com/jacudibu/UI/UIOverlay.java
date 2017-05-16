@@ -9,6 +9,7 @@ import com.jacudibu.Core;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
+ * Manages Drawing of the 2D User Interface on the Screen.
  */
 public class UIOverlay extends ScreenAdapter {
     private Stage stage;

@@ -23,6 +23,7 @@ import com.jacudibu.components.ModelComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.05.2017.
+ * System managing interaction with SelectableComponents.
  */
 public class SelectionSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;

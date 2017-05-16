@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Stefan on 11.05.2017.
+ * Data Container for Marker Relevant Stuff.
  */
 public class MarkerComponent implements Component {
     private Array<Entity> assignedTrackers;

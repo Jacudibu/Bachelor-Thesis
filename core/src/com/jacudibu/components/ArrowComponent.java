@@ -13,6 +13,7 @@ import com.jacudibu.Core;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
+ * Data Container used to visualized relations between Trackers and Markers.
  */
 public class ArrowComponent extends ModelComponent {
     private Entity from;

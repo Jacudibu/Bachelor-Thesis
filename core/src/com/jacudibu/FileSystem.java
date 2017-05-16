@@ -9,6 +9,7 @@ import com.jacudibu.components.Mappers;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
+ * Reads Files and creates Entites depending on their contents.
  */
 public class FileSystem {
     public static final int TIMESTAMP = 5;

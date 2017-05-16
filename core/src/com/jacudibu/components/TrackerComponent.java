@@ -7,6 +7,7 @@ import com.jacudibu.Entities;
 
 /**
  * Created by Stefan on 11.05.2017.
+ * Data Container for a Tracker (most likely some sort of camera)
  */
 public class TrackerComponent implements Component {
     private Entity entity;

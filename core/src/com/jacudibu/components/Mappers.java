@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 07.05.2017.
+ * Stores ComponentMappers used for quick [O(1)] Component Access.
  */
 public class Mappers {
     public static final ComponentMapper<ModelComponent> model = ComponentMapper.getFor(ModelComponent.class);

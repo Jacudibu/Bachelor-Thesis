@@ -81,7 +81,7 @@ public class Core extends com.badlogic.gdx.Game {
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-		// FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
+		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
 
 		// spawnDebugEntities();
 	}

@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 07.05.2017.
+ * Data Container for everything that needs to be rendered.
  */
 public class ModelComponent implements Component {
     public Model model;

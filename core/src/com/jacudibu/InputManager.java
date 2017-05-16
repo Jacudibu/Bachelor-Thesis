@@ -7,6 +7,7 @@ import com.jacudibu.entitySystem.SelectionSystem;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 11.05.2017.
+ * Manages all types of User Input.
  */
 public class InputManager implements InputProcessor {
     public static InputManager instance;

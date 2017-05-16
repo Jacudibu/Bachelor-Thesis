@@ -14,7 +14,7 @@ import com.jacudibu.components.ModelComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
- * Draws various information to the currently selected Object.
+ * Draws various information to the currently selected Object, can also be manipulated by the user.
  */
 public class InformationDrawer implements Disposable {
     private Stage stage;
