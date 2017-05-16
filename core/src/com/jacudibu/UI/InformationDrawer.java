@@ -21,9 +21,11 @@ public class InformationDrawer implements Disposable {
     private Skin skin;
 
     private Group positionGroup;
+    private Group rotationGroup;
     private TextField.TextFieldListener textFieldListener;
 
     private TextField xPos, yPos, zPos;
+    private TextField xRot, yRot, zRot;
 
     private static InformationDrawer instance;
     private ModelComponent currentlySelected;
@@ -46,6 +48,7 @@ public class InformationDrawer implements Disposable {
 
         if (selectedObject != null) {
             instance.setPositionValues(selectedObject.instance.transform.getTranslation(new Vector3()));
+            instance.setRotationValues(selectedObject.instance.transform.getRotation(new Quaternion()));
         }
         else {
             instance.disableInput();
@@ -63,6 +66,16 @@ public class InformationDrawer implements Disposable {
         zPos.setText(Float.toString(pos.z));
     }
 
+    private void setRotationValues(Quaternion rot) {
+        xRot.setDisabled(false);
+        yRot.setDisabled(false);
+        zRot.setDisabled(false);
+
+        xRot.setText(Float.toString(rot.getYaw()));
+        yRot.setText(Float.toString(rot.getPitch()));
+        zRot.setText(Float.toString(rot.getRoll()));
+    }
+
     private void disableInput() {
         xPos.setText("");
         yPos.setText("");
@@ -71,6 +84,14 @@ public class InformationDrawer implements Disposable {
         xPos.setDisabled(true);
         yPos.setDisabled(true);
         zPos.setDisabled(true);
+
+        xRot.setText("");
+        yRot.setText("");
+        zRot.setText("");
+
+        xRot.setDisabled(true);
+        yRot.setDisabled(true);
+        zRot.setDisabled(true);
     }
 
     private void setupTextFieldListener() {
@@ -88,7 +109,14 @@ public class InformationDrawer implements Disposable {
         pos.y = parseFloat(yPos.getText());
         pos.z = parseFloat(zPos.getText());
 
-        currentlySelected.instance.transform.set(pos, new Quaternion());
+        float pitch, roll, yaw;
+        pitch = parseFloat(yRot.getText());
+        roll  = parseFloat(zRot.getText());
+        yaw   = parseFloat(xRot.getText());
+
+        Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
+
+        currentlySelected.instance.transform.set(pos, rot);
     }
 
     private float parseFloat(String string) {
@@ -127,6 +155,22 @@ public class InformationDrawer implements Disposable {
     }
 
     private void generateRotationDrawer() {
+        rotationGroup = new Group();
+        stage.addActor(rotationGroup);
+
+        setupLabel("Rotation", 100, 0, Align.top, rotationGroup);
+
+        // X
+        xRot = setupTextField(20, -20, Align.topLeft, rotationGroup);
+        setupLabel("x ", 20, -20, Align.topRight, rotationGroup);
+
+        // Y
+        yRot = setupTextField(85, -20, Align.topLeft, rotationGroup);
+        setupLabel("y ", 85, -20, Align.topRight, rotationGroup);
+
+        // Z
+        zRot = setupTextField(150, -20,  Align.topLeft, rotationGroup);
+        setupLabel("z ", 150,-20, Align.topRight, rotationGroup);
 
     }
 
@@ -153,7 +197,10 @@ public class InformationDrawer implements Disposable {
     }
 
     protected void updateUIPositions() {
-        positionGroup.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 10);
+        float x = Gdx.graphics.getWidth() - 225;
+        float y = Gdx.graphics.getHeight() - 10;
+        positionGroup.setPosition(x, y);
+        rotationGroup.setPosition(x, y - 50);
     }
 
     @Override
