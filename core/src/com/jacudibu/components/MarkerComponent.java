@@ -11,10 +11,16 @@ import com.badlogic.gdx.utils.Array;
 public class MarkerComponent implements Component {
     private Array<TrackerComponent> assignedTrackers;
     private Entity entity;
+    private int ID = -42;
 
     public MarkerComponent(Entity entity) {
+        this(entity, -42);
+    }
+
+    public MarkerComponent(Entity entity, int ID) {
         this.entity = entity;
         assignedTrackers = new Array<TrackerComponent>();
+        setID(ID);
     }
 
     public void addTracker(TrackerComponent tracker) {
@@ -40,5 +46,15 @@ public class MarkerComponent implements Component {
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+
+        // TODO: Update Texture to show QR Code with ID
+    }
+
+    public int getID() {
+        return ID;
     }
 }
