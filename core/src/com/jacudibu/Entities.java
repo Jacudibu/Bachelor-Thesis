@@ -23,7 +23,7 @@ public final class Entities {
 
         marker.add(new ModelComponent(marker, Core.testCube, position, rotation));
         marker.add(new SelectableComponent(0.2f));
-        marker.add(new MarkerComponent());
+        marker.add(new MarkerComponent(marker));
 
         Core.engine.addEntity(marker);
         return marker;

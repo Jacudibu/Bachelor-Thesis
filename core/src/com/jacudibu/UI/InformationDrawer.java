@@ -199,6 +199,7 @@ public class InformationDrawer implements Disposable {
     protected void updateUIPositions() {
         float x = Gdx.graphics.getWidth() - 225;
         float y = Gdx.graphics.getHeight() - 10;
+
         positionGroup.setPosition(x, y);
         rotationGroup.setPosition(x, y - 50);
     }

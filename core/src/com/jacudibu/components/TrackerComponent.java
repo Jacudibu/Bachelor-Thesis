@@ -11,24 +11,34 @@ import com.jacudibu.Entities;
  */
 public class TrackerComponent implements Component {
     private Entity entity;
-    private Array<Entity> observerdMarkers;
-    private Array<Entity> outgoingArrows;
+    private Array<MarkerComponent> observedMarkers;
+    private Array<ArrowComponent> outgoingArrows;
 
     public TrackerComponent(Entity entity) {
         this.entity = entity;
-        observerdMarkers = new Array<Entity>();
-        outgoingArrows = new Array<Entity>();
+        observedMarkers = new Array<MarkerComponent>();
+        outgoingArrows = new Array<ArrowComponent>();
     }
 
     public void addMarker(Entity entity) {
-        observerdMarkers.add(entity);
-        outgoingArrows.add(Entities.createArrow(this.entity, entity));
+        addMarker(Mappers.marker.get(entity));
+    }
+
+    public void addMarker(MarkerComponent marker) {
+        observedMarkers.add(marker);
+
+        Entity arrow = Entities.createArrow(marker.getEntity(), entity);
+        outgoingArrows.add(Mappers.arrow.get(arrow));
     }
 
     public void removeMarker(Entity entity) {
-        observerdMarkers.removeValue(entity, false);
+        removeMarker(Mappers.marker.get(entity));
+    }
 
+    public void removeMarker(MarkerComponent marker) {
+        observedMarkers.removeValue(marker, false);
         // TODO: Remove arrow from existence.
+
     }
 
     public void handlePositionUpdate() {
@@ -37,7 +47,11 @@ public class TrackerComponent implements Component {
 
     public void updateArrows() {
         for (int i = 0; i < outgoingArrows.size; i++) {
-            Mappers.arrow.get(outgoingArrows.get(i)).updateModel();
+            outgoingArrows.get(i).updateModel();
         }
+    }
+
+    public Entity getEntity() {
+        return entity;
     }
 }

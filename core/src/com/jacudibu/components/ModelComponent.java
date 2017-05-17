@@ -56,4 +56,8 @@ public class ModelComponent implements Component {
             tracker.handlePositionUpdate();
         }
     }
+
+    public Entity getEntity() {
+        return entity;
+    }
 }
