@@ -201,7 +201,14 @@ public class InformationDrawer implements Disposable {
         float y = Gdx.graphics.getHeight() - 10;
 
         positionGroup.setPosition(x, y);
-        rotationGroup.setPosition(x, y - 50);
+        y -= 50;
+        rotationGroup.setPosition(x, y);
+        y -= 50;
+
+        if (currentlySelected.isMarker()) {
+            // TODO: Show Marker ID in a Text field
+        }
+
     }
 
     @Override

@@ -64,8 +64,16 @@ public class ModelComponent implements Component {
     public boolean isMarker() {
         return (Mappers.marker.get(entity)) != null;
     }
+    public MarkerComponent getMarker() {
+        return Mappers.marker.get(entity);
+    }
 
     public boolean isTracker() {
         return (Mappers.tracker.get(entity)) != null;
     }
+    public TrackerComponent getTracker() {
+        return Mappers.tracker.get(entity);
+    }
+
+
 }
