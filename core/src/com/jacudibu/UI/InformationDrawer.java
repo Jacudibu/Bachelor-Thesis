@@ -20,6 +20,7 @@ public class InformationDrawer implements Disposable {
     private Stage stage;
     private Skin skin;
 
+    private Group informationParent;
     private Group positionGroup;
     private Group rotationGroup;
     private TextField.TextFieldListener textFieldListener;
@@ -36,6 +37,9 @@ public class InformationDrawer implements Disposable {
         this.stage = stage;
         this.skin = skin;
         setupTextFieldListener();
+
+        informationParent = new Group();
+        stage.addActor(informationParent);
 
         generatePositionDrawer();
         generateRotationDrawer();
@@ -54,6 +58,7 @@ public class InformationDrawer implements Disposable {
             instance.disableInput();
         }
 
+        instance.updateUIPositions();
     }
 
     private void setPositionValues(Vector3 pos) {
@@ -137,7 +142,7 @@ public class InformationDrawer implements Disposable {
 
     private void generatePositionDrawer() {
         positionGroup = new Group();
-        stage.addActor(positionGroup);
+        informationParent.addActor(positionGroup);
 
         setupLabel("Position", 100, 0, Align.top, positionGroup);
 
@@ -156,7 +161,7 @@ public class InformationDrawer implements Disposable {
 
     private void generateRotationDrawer() {
         rotationGroup = new Group();
-        stage.addActor(rotationGroup);
+        informationParent.addActor(rotationGroup);
 
         setupLabel("Rotation", 100, 0, Align.top, rotationGroup);
 
@@ -197,12 +202,20 @@ public class InformationDrawer implements Disposable {
     }
 
     protected void updateUIPositions() {
-        float x = Gdx.graphics.getWidth() - 225;
-        float y = Gdx.graphics.getHeight() - 10;
+        Gdx.app.log("", currentlySelected + "");
+        if (currentlySelected == null) {
+            informationParent.setPosition(-1000, - 1000);
+            return;
+        } else {
+            informationParent.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 10);
+        }
 
-        positionGroup.setPosition(x, y);
+        float x = 0;
+        float y = 0;
+
+        positionGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
-        rotationGroup.setPosition(x, y);
+        rotationGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
 
         if (currentlySelected.isMarker()) {
