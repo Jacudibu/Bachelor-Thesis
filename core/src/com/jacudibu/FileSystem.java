@@ -5,7 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.components.Mappers;
+import com.jacudibu.components.MarkerComponent;
+import com.jacudibu.components.TrackerComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
@@ -87,8 +88,8 @@ public class FileSystem {
         Entity newMarker = Entities.createMarker(position, rotation);
         Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
 
-        Mappers.tracker.get(newTracker).addMarker(newMarker);
-        Mappers.marker.get(newMarker).addTracker(newTracker);
+        TrackerComponent.mapper.get(newTracker).addMarker(newMarker);
+        MarkerComponent.mapper.get(newMarker).addTracker(newTracker);
     }
 
 

@@ -1,5 +1,6 @@
 package com.jacudibu.components;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -16,6 +17,8 @@ import com.jacudibu.Core;
  * Data Container used to visualized relations between Trackers and Markers.
  */
 public class ArrowComponent extends ModelComponent {
+    public static final ComponentMapper<ArrowComponent> mapper = ComponentMapper.getFor(ArrowComponent.class);
+
     private Entity from;
     private Entity to;
 
@@ -31,8 +34,8 @@ public class ArrowComponent extends ModelComponent {
             model.dispose();
         }
 
-        Vector3 fromPos = Mappers.model.get(from).instance.transform.getTranslation(new Vector3());
-        Vector3 toPos = Mappers.model.get(to).instance.transform.getTranslation(new Vector3());
+        Vector3 fromPos = ModelComponent.mapper.get(from).instance.transform.getTranslation(new Vector3());
+        Vector3 toPos = ModelComponent.mapper.get(to).instance.transform.getTranslation(new Vector3());
         Gdx.app.log("", fromPos + " -> " + toPos);
         // TODO: Create model by yourself and just update its vertices.
         model = Core.modelBuilder.createArrow(fromPos.x, fromPos.y, fromPos.z, toPos.x, toPos.y, toPos.z,

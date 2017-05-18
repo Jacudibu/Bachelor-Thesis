@@ -6,19 +6,15 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.jacudibu.Core;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
 import com.jacudibu.components.SelectableComponent;
-import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -52,8 +48,8 @@ public class SelectionSystem extends EntitySystem {
         for (int i = 0; i < entities.size(); i++) {
             Entity currentlyCheckedEntity = entities.get(i);
 
-            SelectableComponent clickable = Mappers.selectable.get(currentlyCheckedEntity);
-            ModelComponent model = Mappers.model.get(currentlyCheckedEntity);
+            SelectableComponent clickable = SelectableComponent.mapper.get(currentlyCheckedEntity);
+            ModelComponent model = ModelComponent.mapper.get(currentlyCheckedEntity);
 
             Vector3 position = model.instance.transform.getTranslation(Vector3.Zero);
             float currentDistance = ray.origin.dst2(position);
@@ -122,7 +118,7 @@ public class SelectionSystem extends EntitySystem {
         currentlySelected = currentlyHovered;
         setEntityColor(currentlySelected, Color.BLUE);
 
-        InformationDrawer.setCurrentlySelectedObject(Mappers.model.get(currentlySelected));
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.mapper.get(currentlySelected));
     }
 
     private void unselect() {
@@ -132,6 +128,6 @@ public class SelectionSystem extends EntitySystem {
     }
 
     private void setEntityColor(Entity entity, Color color) {
-        Mappers.model.get(entity).instance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+        ModelComponent.mapper.get(entity).instance.materials.get(0).set(ColorAttribute.createDiffuse(color));
     }
 }

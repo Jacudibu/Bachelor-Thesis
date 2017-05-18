@@ -1,6 +1,7 @@
 package com.jacudibu.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Entities;
@@ -10,6 +11,8 @@ import com.jacudibu.Entities;
  * Data Container for a Tracker (most likely some sort of camera)
  */
 public class TrackerComponent implements Component {
+    public static final ComponentMapper<TrackerComponent> mapper = ComponentMapper.getFor(TrackerComponent.class);
+
     private Entity entity;
     private Array<MarkerComponent> observedMarkers;
     private Array<ArrowComponent> outgoingArrows;
@@ -21,18 +24,18 @@ public class TrackerComponent implements Component {
     }
 
     public void addMarker(Entity entity) {
-        addMarker(Mappers.marker.get(entity));
+        addMarker(MarkerComponent.mapper.get(entity));
     }
 
     public void addMarker(MarkerComponent marker) {
         observedMarkers.add(marker);
 
         Entity arrow = Entities.createArrow(marker.getEntity(), entity);
-        outgoingArrows.add(Mappers.arrow.get(arrow));
+        outgoingArrows.add(ArrowComponent.mapper.get(arrow));
     }
 
     public void removeMarker(Entity entity) {
-        removeMarker(Mappers.marker.get(entity));
+        removeMarker(MarkerComponent.mapper.get(entity));
     }
 
     public void removeMarker(MarkerComponent marker) {

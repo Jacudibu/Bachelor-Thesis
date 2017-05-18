@@ -5,14 +5,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.jacudibu.MainCamera;
 import com.jacudibu.components.ArrowComponent;
-import com.jacudibu.components.Mappers;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -45,7 +43,7 @@ public class RenderSystem extends EntitySystem {
 
         for (int i = 0; i < modelEntities.size(); i++) {
             Entity entity = modelEntities.get(i);
-            ModelComponent model = Mappers.model.get(entity);
+            ModelComponent model = ModelComponent.mapper.get(entity);
             modelBatch.render(model.instance, environment);
         }
 
@@ -53,7 +51,7 @@ public class RenderSystem extends EntitySystem {
         // therefore modelEntitites won't contain entities with arrowComponents.
         for (int i = 0; i < arrowEntities.size(); i++) {
             Entity entity = arrowEntities.get(i);
-            ArrowComponent arrow = Mappers.arrow.get(entity);
+            ArrowComponent arrow = ArrowComponent.mapper.get(entity);
             modelBatch.render(arrow.instance, environment);
         }
 

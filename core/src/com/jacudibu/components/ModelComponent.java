@@ -1,13 +1,10 @@
 package com.jacudibu.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -16,6 +13,8 @@ import com.badlogic.gdx.math.Vector3;
  * Data Container for everything that needs to be rendered.
  */
 public class ModelComponent implements Component {
+    public static final ComponentMapper<ModelComponent> mapper = ComponentMapper.getFor(ModelComponent.class);
+
     public Model model;
     public ModelInstance instance;
     private Entity entity;
@@ -46,12 +45,12 @@ public class ModelComponent implements Component {
         // TODO: Animate the hell out of that!
         instance.transform.set(position, rotation);
 
-        MarkerComponent marker = Mappers.marker.get(entity);
+        MarkerComponent marker = MarkerComponent.mapper.get(entity);
         if (marker != null) {
             marker.handlePositionUpdate();
         }
 
-        TrackerComponent tracker = Mappers.tracker.get(entity);
+        TrackerComponent tracker = TrackerComponent.mapper.get(entity);
         if (tracker != null) {
             tracker.handlePositionUpdate();
         }
@@ -62,17 +61,17 @@ public class ModelComponent implements Component {
     }
 
     public boolean isMarker() {
-        return (Mappers.marker.get(entity)) != null;
+        return (MarkerComponent.mapper.get(entity)) != null;
     }
     public MarkerComponent getMarker() {
-        return Mappers.marker.get(entity);
+        return MarkerComponent.mapper.get(entity);
     }
 
     public boolean isTracker() {
-        return (Mappers.tracker.get(entity)) != null;
+        return (TrackerComponent.mapper.get(entity)) != null;
     }
     public TrackerComponent getTracker() {
-        return Mappers.tracker.get(entity);
+        return TrackerComponent.mapper.get(entity);
     }
 
 

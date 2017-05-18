@@ -1,6 +1,7 @@
 package com.jacudibu.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 
 
 /**
@@ -8,6 +9,7 @@ import com.badlogic.ashley.core.Component;
  * Data Container for everything that needs interaction via mouse clicks.
  */
 public class SelectableComponent implements Component {
+    public static final ComponentMapper<SelectableComponent> mapper = ComponentMapper.getFor(SelectableComponent.class);
 
     public float radius = 1f;
 
