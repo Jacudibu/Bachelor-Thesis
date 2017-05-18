@@ -32,10 +32,18 @@ public class ArrowComponent extends ModelComponent {
     public void updateModel() {
         if (model != null) {
             model.dispose();
+            model = null;
+            modelInstance = null;
         }
 
-        Vector3 fromPos = ModelComponent.mapper.get(from).instance.transform.getTranslation(new Vector3());
-        Vector3 toPos = ModelComponent.mapper.get(to).instance.transform.getTranslation(new Vector3());
+        Vector3 fromPos = ModelComponent.mapper.get(from).modelInstance.transform.getTranslation(new Vector3());
+        Vector3 toPos = ModelComponent.mapper.get(to).modelInstance.transform.getTranslation(new Vector3());
+
+        if (fromPos.equals(toPos)) {
+            Gdx.app.log("Warning", "Can't draw Arrow, fromPos == toPos!");
+            return;
+        }
+
         Gdx.app.log("", fromPos + " -> " + toPos);
         // TODO: Create model by yourself and just update its vertices.
         model = Core.modelBuilder.createArrow(fromPos.x, fromPos.y, fromPos.z, toPos.x, toPos.y, toPos.z,
@@ -43,6 +51,6 @@ public class ArrowComponent extends ModelComponent {
                 new Material(ColorAttribute.createDiffuse(Color.CYAN)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-        instance = new ModelInstance(model);
+        modelInstance = new ModelInstance(model);
     }
 }

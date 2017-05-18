@@ -51,7 +51,7 @@ public class SelectionSystem extends EntitySystem {
             SelectableComponent clickable = SelectableComponent.mapper.get(currentlyCheckedEntity);
             ModelComponent model = ModelComponent.mapper.get(currentlyCheckedEntity);
 
-            Vector3 position = model.instance.transform.getTranslation(Vector3.Zero);
+            Vector3 position = model.modelInstance.transform.getTranslation(Vector3.Zero);
             float currentDistance = ray.origin.dst2(position);
 
             if (currentDistance > distance) {
@@ -128,6 +128,6 @@ public class SelectionSystem extends EntitySystem {
     }
 
     private void setEntityColor(Entity entity, Color color) {
-        ModelComponent.mapper.get(entity).instance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+        ModelComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
     }
 }

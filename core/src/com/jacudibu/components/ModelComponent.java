@@ -16,7 +16,7 @@ public class ModelComponent implements Component {
     public static final ComponentMapper<ModelComponent> mapper = ComponentMapper.getFor(ModelComponent.class);
 
     public Model model;
-    public ModelInstance instance;
+    public ModelInstance modelInstance;
     private Entity entity;
 
     protected ModelComponent() {}
@@ -28,10 +28,10 @@ public class ModelComponent implements Component {
     public ModelComponent(Entity entity, Model model, Vector3 position, Quaternion rotation) {
         this.entity = entity;
         this.model = model;
-        this.instance = new ModelInstance(model);
+        this.modelInstance = new ModelInstance(model);
 
-        this.instance.transform.translate(position);
-        this.instance.transform.rotate(rotation);
+        this.modelInstance.transform.translate(position);
+        this.modelInstance.transform.rotate(rotation);
     }
 
     public void updateModel(Model model) {
@@ -43,7 +43,7 @@ public class ModelComponent implements Component {
 
     public void updateTransform(Vector3 position, Quaternion rotation) {
         // TODO: Animate the hell out of that!
-        instance.transform.set(position, rotation);
+        modelInstance.transform.set(position, rotation);
 
         MarkerComponent marker = MarkerComponent.mapper.get(entity);
         if (marker != null) {

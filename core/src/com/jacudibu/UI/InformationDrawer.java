@@ -51,8 +51,8 @@ public class InformationDrawer implements Disposable {
         instance.currentlySelected = selectedObject;
 
         if (selectedObject != null) {
-            instance.setPositionValues(selectedObject.instance.transform.getTranslation(new Vector3()));
-            instance.setRotationValues(selectedObject.instance.transform.getRotation(new Quaternion()));
+            instance.setPositionValues(selectedObject.modelInstance.transform.getTranslation(new Vector3()));
+            instance.setRotationValues(selectedObject.modelInstance.transform.getRotation(new Quaternion()));
         }
         else {
             instance.disableInput();
@@ -202,7 +202,6 @@ public class InformationDrawer implements Disposable {
     }
 
     protected void updateUIPositions() {
-        Gdx.app.log("", currentlySelected + "");
         if (currentlySelected == null) {
             informationParent.setPosition(-1000, - 1000);
             return;
@@ -226,7 +225,6 @@ public class InformationDrawer implements Disposable {
 
     @Override
     public void dispose() {
-
     }
 
 }

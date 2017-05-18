@@ -44,7 +44,7 @@ public class RenderSystem extends EntitySystem {
         for (int i = 0; i < modelEntities.size(); i++) {
             Entity entity = modelEntities.get(i);
             ModelComponent model = ModelComponent.mapper.get(entity);
-            modelBatch.render(model.instance, environment);
+            modelBatch.render(model.modelInstance, environment);
         }
 
         // Ashley doesn't seem to take inheritance into account,
@@ -52,7 +52,9 @@ public class RenderSystem extends EntitySystem {
         for (int i = 0; i < arrowEntities.size(); i++) {
             Entity entity = arrowEntities.get(i);
             ArrowComponent arrow = ArrowComponent.mapper.get(entity);
-            modelBatch.render(arrow.instance, environment);
+            if (arrow.modelInstance != null) {
+                modelBatch.render(arrow.modelInstance, environment);
+            }
         }
 
         modelBatch.end();
