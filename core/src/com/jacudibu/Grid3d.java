@@ -44,12 +44,13 @@ public class Grid3d implements Disposable{
         modelBuilder.begin();
         Material material = new Material();
         material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, Usage.Position | Usage.ColorUnpacked, material);
         builder.setColor(new Color(1f,1f,1f,0.1f));
 
-        for (float t = -size; t <= size; t++) {
-            builder.line(t, 0, -size, t, 0, size);
-            builder.line(-size, 0, t, size, 0, t);
+        for (float i = -size; i <= size; i++) {
+            builder.line(i, 0, -size, i, 0, size);
+            builder.line(-size, 0, i, size, 0, i);
         }
 
         axesModel = modelBuilder.end();
