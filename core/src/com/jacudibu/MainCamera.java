@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 public class MainCamera {
     public static MainCamera instance;
 
-    private PerspectiveCamera cam;
+    public PerspectiveCamera cam;
     public Vector3 camRightVector = new Vector3();
 
     private MainCamera() {

@@ -59,5 +59,4 @@ public class RenderSystem extends EntitySystem {
 
         modelBatch.end();
     }
-
 }

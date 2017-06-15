@@ -22,6 +22,7 @@ public class Core extends com.badlogic.gdx.Game {
 
 	public static int windowHeight;
 	public static int windowWidth;
+	private Grid3d grid;
 
 	@Override
 	public void create () {
@@ -35,6 +36,7 @@ public class Core extends com.badlogic.gdx.Game {
 		engine.addSystem(new SelectionSystem());
 
 		setScreen(new UIOverlay());
+		grid = new Grid3d(20);
 		InputManager.initalize();
 
 		initDebugStuff();
@@ -46,6 +48,8 @@ public class Core extends com.badlogic.gdx.Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
+		grid.render();
+
 		engine.update(Gdx.graphics.getDeltaTime());
 		screen.render(Gdx.graphics.getDeltaTime());
 	}
@@ -55,6 +59,7 @@ public class Core extends com.badlogic.gdx.Game {
 		testCube.dispose();
 		testSphere.dispose();
 		screen.dispose();
+		grid.dispose();
 	}
 
 	@Override
