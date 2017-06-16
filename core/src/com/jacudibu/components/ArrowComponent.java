@@ -51,8 +51,8 @@ public class ArrowComponent extends ModelComponent {
         float distance = fromPos.dst(toPos);
         float sizeFactor = 1f / distance; // Needed since libGDX makes arrow thickness depending on it's length, which just looks ugly
 
-        Gdx.app.log("Arrow Info", fromPos + " -> " + toPos + "\nDistance: " + distance + ", Factor: " + sizeFactor);
-        // TODO: Create model by yourself and just update its vertices.
+        // Gdx.app.log("Arrow Info", fromPos + " -> " + toPos + "\nDistance: " + distance + ", Factor: " + sizeFactor);
+
         model = Core.modelBuilder.createArrow(fromPos.x, fromPos.y, fromPos.z, toPos.x, toPos.y, toPos.z,
                 0.1f  * sizeFactor, 0.2f, 10, GL20.GL_TRIANGLES,
                 new Material(ColorAttribute.createDiffuse(Color.CYAN)),

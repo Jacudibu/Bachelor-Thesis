@@ -75,7 +75,7 @@ public class AnimationComponent implements Component {
             currentRot = modelComponent.modelInstance.transform.getRotation(new Quaternion());
         }
 
-        modelComponent.modelInstance.transform.set(currentPos, currentRot, currentScale);
+        modelComponent.updateTransform(currentPos, currentRot, currentScale);
 
         if (currentAnimationProgress == 1) {
             entity.remove(AnimationComponent.class);

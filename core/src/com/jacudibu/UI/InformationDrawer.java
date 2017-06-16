@@ -121,7 +121,7 @@ public class InformationDrawer implements Disposable {
 
         Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
 
-        currentlySelected.updateTransform(pos, rot);
+        currentlySelected.animateTo(pos, rot);
     }
 
     private float parseFloat(String string) {
