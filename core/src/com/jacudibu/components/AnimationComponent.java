@@ -27,6 +27,8 @@ public class AnimationComponent implements Component {
     public Quaternion fromRot;
     public Quaternion toRot;
 
+    public float speed = 1f;
+
     private float currentAnimationProgress = 0f;
     private Entity entity;
     private ModelComponent modelComponent;
@@ -47,8 +49,7 @@ public class AnimationComponent implements Component {
     }
 
     public void update(float deltaTime) {
-        currentAnimationProgress = MathUtils.clamp(currentAnimationProgress += deltaTime, 0, 1);
-
+        currentAnimationProgress = MathUtils.clamp(currentAnimationProgress + deltaTime * speed, 0, 1);
 
         Vector3 currentPos;
         Vector3 currentScale;

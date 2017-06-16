@@ -52,6 +52,8 @@ public class ModelComponent implements Component {
         anim.toRot = rotation;
         anim.rotation = true;
 
+        anim.speed = 4f;
+
         entity.add(anim);
     }
 
