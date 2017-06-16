@@ -18,9 +18,10 @@ public class MainCamera {
 
     private MainCamera() {
         cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
-        cam.position.set(0f,0f,10f);
+        cam.position.set(0f,2f,5f);
         cam.near = 0.1f;
         cam.far = 300f;
+        cam.lookAt(new Vector3(0f, 0f, 0f));
     }
 
     public static MainCamera initialize() {
