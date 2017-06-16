@@ -25,6 +25,9 @@ public final class Entities {
         marker.add(new SelectableComponent(0.2f));
         marker.add(new MarkerComponent(marker));
 
+        marker.add(AnimationComponent.scale01(marker));
+
+
         Core.engine.addEntity(marker);
         return marker;
     }
@@ -35,6 +38,8 @@ public final class Entities {
         tracker.add(new ModelComponent(tracker, Core.testSphere, position, rotation));
         tracker.add(new SelectableComponent(0.2f));
         tracker.add(new TrackerComponent(tracker));
+
+        tracker.add(AnimationComponent.scale01(tracker));
 
         Core.engine.addEntity(tracker);
         return tracker;

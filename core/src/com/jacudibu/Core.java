@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.UI.UIOverlay;
+import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 
@@ -32,8 +33,9 @@ public class Core extends com.badlogic.gdx.Game {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		MainCamera.initialize();
-		engine.addSystem(new RenderSystem());
+		engine.addSystem(new AnimationSystem());
 		engine.addSystem(new SelectionSystem());
+		engine.addSystem(new RenderSystem());
 
 		setScreen(new UIOverlay());
 		grid = new Grid3d(20);
