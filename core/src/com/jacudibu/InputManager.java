@@ -1,8 +1,11 @@
 package com.jacudibu;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.jacudibu.components.MarkerComponent;
+import com.jacudibu.components.TrackerComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
 
 /**
@@ -15,6 +18,14 @@ public class InputManager implements InputProcessor {
 
     public static boolean invertY = true;
     public static boolean invertX = true;
+
+    private enum SelectionAction {
+        NONE,
+        MERGE,
+        CONNECT,
+    }
+
+    private static SelectionAction currentAction = SelectionAction.NONE;
 
     private int lastDragX;
     private int lastDragY;
@@ -37,6 +48,29 @@ public class InputManager implements InputProcessor {
         Core.inputMultiplexer.addProcessor(this);
     }
 
+    /* Called by Selection System whenever a second entity is selected.
+       Depending on pending acitons it will return the Entity that should be chosen as selected.
+     */
+    public static Entity TwoEntitesSelected(Entity first, Entity second) {
+        Gdx.app.log("TWICE", first + " <----> " + second);
+
+        switch (currentAction) {
+            case MERGE:
+                // TODO: MERGE!
+                currentAction = SelectionAction.NONE;
+                return first;
+
+            case CONNECT:
+                TrackerComponent.mapper.get(first).addMarker(second);
+                currentAction = SelectionAction.NONE;
+                return second;
+
+            default:
+                currentAction = SelectionAction.NONE;
+                return second;
+        }
+    }
+
     @Override
     public boolean keyDown(int keycode) {
         keysPressed++;
@@ -45,11 +79,15 @@ public class InputManager implements InputProcessor {
             case Input.Keys.G:
                 Core.grid.toggle();
                 return true;
+
             case Input.Keys.R:
                 MainCamera.instance.reset();
+                return true;
+
+            default:
+                return HandleSelectionActions(keycode);
         }
 
-        return false;
     }
 
     @Override
@@ -102,5 +140,31 @@ public class InputManager implements InputProcessor {
     public boolean scrolled(int amount) {
         MainCamera.instance.zoom(-amount);
         return true;
+    }
+
+    private boolean HandleSelectionActions(int keycode) {
+        SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+
+        if (selectionSystem.currentlySelected == null) {
+            currentAction = SelectionAction.NONE;
+            return false;
+        }
+
+        switch (keycode) {
+            case Input.Keys.M:
+                Gdx.app.log("Input", "MERGE!");
+                currentAction = SelectionAction.MERGE;
+                return true;
+
+            case Input.Keys.C:
+                if (TrackerComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+                    currentAction = SelectionAction.CONNECT;
+                    return true;
+                }
+                break;
+        }
+
+        currentAction = SelectionAction.NONE;
+        return false;
     }
 }
