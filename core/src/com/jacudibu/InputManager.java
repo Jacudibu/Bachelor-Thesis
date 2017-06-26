@@ -45,6 +45,8 @@ public class InputManager implements InputProcessor {
             case Input.Keys.G:
                 Core.grid.toggle();
                 return true;
+            case Input.Keys.R:
+                MainCamera.instance.reset();
         }
 
         return false;

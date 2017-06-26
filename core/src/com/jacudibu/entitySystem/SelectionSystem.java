@@ -23,24 +23,17 @@ import com.jacudibu.components.ModelComponent;
  */
 public class SelectionSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
-    private Camera camera;
 
     private Entity currentlyHovered = null;
     private Entity currentlySelected = null;
 
     private Vector3 currentlySelectedPosition;
 
-    public SelectionSystem() {
-        this(MainCamera.getCamera());
-    }
-
-    public SelectionSystem(Camera camera) {
-        this.camera = camera;
-    }
+    public SelectionSystem() {}
 
     @Override
     public void update(float deltaTime) {
-        Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+        Ray ray = MainCamera.getCamera().getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
         float distance = Float.MAX_VALUE;
         Entity closestEntity = null;
