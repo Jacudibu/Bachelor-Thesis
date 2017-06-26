@@ -25,11 +25,13 @@ public class ArrowComponent extends ModelComponent {
 
     private Entity from;
     private Entity to;
+    private Material material;
 
     public ArrowComponent(Entity from, Entity to) {
         this.from = from;
         this.to = to;
 
+        material = new Material(ColorAttribute.createDiffuse(Color.CYAN));
         updateModel();
     }
 
@@ -43,6 +45,11 @@ public class ArrowComponent extends ModelComponent {
         Vector3 fromPos = ModelComponent.mapper.get(from).modelInstance.transform.getTranslation(new Vector3());
         Vector3 toPos = ModelComponent.mapper.get(to).modelInstance.transform.getTranslation(new Vector3());
 
+        // Adjust start & end positions so that we won't poke into objects.
+        Vector3 cutoff = toPos.cpy().sub(fromPos).nor().scl(0.1f); // That was the point i've realized that libGDX can be ugly.
+        toPos.sub(cutoff);
+        fromPos.add(cutoff);
+
         if (fromPos.equals(toPos)) {
             Gdx.app.log("Warning", "Can't draw Arrow, fromPos == toPos!");
             return;
@@ -53,10 +60,9 @@ public class ArrowComponent extends ModelComponent {
 
         // Gdx.app.log("Arrow Info", fromPos + " -> " + toPos + "\nDistance: " + distance + ", Factor: " + sizeFactor);
 
-        model = Core.modelBuilder.createArrow(fromPos.x, fromPos.y, fromPos.z, toPos.x, toPos.y, toPos.z,
+        model = Core.modelBuilder.createArrow(toPos.x, toPos.y, toPos.z, fromPos.x, fromPos.y, fromPos.z,
                 0.1f  * sizeFactor, 0.2f, 10, GL20.GL_TRIANGLES,
-                new Material(ColorAttribute.createDiffuse(Color.CYAN)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+                material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
         modelInstance = new ModelInstance(model);
     }
