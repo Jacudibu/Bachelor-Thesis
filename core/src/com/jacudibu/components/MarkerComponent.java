@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
+import com.jacudibu.Core;
 
 /**
  * Created by Stefan on 11.05.2017.
@@ -59,5 +60,19 @@ public class MarkerComponent implements Component {
 
     public int getID() {
         return ID;
+    }
+
+    public void Merge(MarkerComponent marker) {
+        for (TrackerComponent tracker : marker.assignedTrackers) {
+            tracker.removeMarker(marker);
+            tracker.addMarker(this);
+        }
+
+        Core.engine.removeEntity(marker.entity);
+    }
+
+    public void Merge(TrackerComponent tracker) {
+        Core.engine.removeEntity(tracker.getEntity());
+        entity.add(tracker);
     }
 }
