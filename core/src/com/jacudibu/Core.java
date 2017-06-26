@@ -38,7 +38,7 @@ public class Core extends com.badlogic.gdx.Game {
 		engine.addSystem(new RenderSystem());
 
 		setScreen(new UIOverlay());
-		grid = new Grid3d(20);
+		grid = new Grid3d(20, true);
 		InputManager.initalize();
 
 		initDebugStuff();

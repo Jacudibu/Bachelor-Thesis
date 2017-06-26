@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.EllipseShapeBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -24,11 +26,11 @@ public class Grid3d implements Disposable{
 
     private boolean drawing = true;
 
-    public Grid3d(int size) {
+    public Grid3d(int size, boolean circular) {
         this.size = size;
         modelBatch = new ModelBatch();
 
-        createAxes();
+        createAxes(circular);
     }
 
     public void enable() {
@@ -39,7 +41,15 @@ public class Grid3d implements Disposable{
         drawing = false;
     }
 
-    private void createAxes () {
+    private void createCircles() {
+        ModelBuilder modelBuilder = new ModelBuilder();
+        modelBuilder.begin();
+        Material material = new Material();
+        material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+
+}
+
+    private void createAxes (boolean useCircles) {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
         Material material = new Material();
@@ -48,9 +58,15 @@ public class Grid3d implements Disposable{
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, Usage.Position | Usage.ColorUnpacked, material);
         builder.setColor(new Color(1f,1f,1f,0.1f));
 
-        for (float i = -size; i <= size; i++) {
-            builder.line(i, 0, -size, i, 0, size);
-            builder.line(-size, 0, i, size, 0, i);
+        if (useCircles) {
+            for (float i = -size; i <= size; i++) {
+                EllipseShapeBuilder.build(builder, i, 100, Vector3.Zero, Vector3.Z);
+            }
+        } else {
+            for (float i = -size; i <= size; i++) {
+                builder.line(i, 0, -size, i, 0, size);
+                builder.line(-size, 0, i, size, 0, i);
+            }
         }
 
         axesModel = modelBuilder.end();
