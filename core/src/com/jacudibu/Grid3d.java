@@ -70,4 +70,8 @@ public class Grid3d implements Disposable{
         axesModel.dispose();
         modelBatch.dispose();
     }
+
+    public void toggle() {
+        drawing = !drawing;
+    }
 }

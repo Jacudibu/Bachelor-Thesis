@@ -40,6 +40,13 @@ public class InputManager implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         keysPressed++;
+
+        switch (keycode) {
+            case Input.Keys.G:
+                Core.grid.toggle();
+                return true;
+        }
+
         return false;
     }
 

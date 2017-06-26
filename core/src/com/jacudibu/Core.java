@@ -23,7 +23,7 @@ public class Core extends com.badlogic.gdx.Game {
 
 	public static int windowHeight;
 	public static int windowWidth;
-	private Grid3d grid;
+	public static Grid3d grid;
 
 	@Override
 	public void create () {
