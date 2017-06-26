@@ -56,7 +56,13 @@ public class InputManager implements InputProcessor {
 
         switch (currentAction) {
             case MERGE:
-                // TODO: MERGE!
+                if (TrackerComponent.mapper.get(first) != null) {
+                    TrackerComponent.mapper.get(first).merge(second);
+                }
+                else {
+                    MarkerComponent.mapper.get(first).merge(second);
+                }
+
                 currentAction = SelectionAction.NONE;
                 return first;
 

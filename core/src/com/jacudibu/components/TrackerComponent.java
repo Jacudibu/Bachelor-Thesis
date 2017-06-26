@@ -62,12 +62,21 @@ public class TrackerComponent implements Component {
         return entity;
     }
 
-    public void Merge(MarkerComponent marker) {
+    public void merge(Entity e) {
+        if (MarkerComponent.mapper.get(e) != null) {
+            merge(MarkerComponent.mapper.get(e));
+        }
+        else if (TrackerComponent.mapper.get(e) != null) {
+            merge(TrackerComponent.mapper.get(e));
+        }
+    }
+
+    public void merge(MarkerComponent marker) {
         Core.engine.removeEntity(marker.getEntity());
         entity.add(marker);
     }
 
-    public void Merge(TrackerComponent tracker) {
+    public void merge(TrackerComponent tracker) {
         for (MarkerComponent marker : tracker.observedMarkers) {
             tracker.removeMarker(marker);
             this.addMarker(marker);
