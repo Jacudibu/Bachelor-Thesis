@@ -23,7 +23,7 @@ public final class Entities {
 
         marker.add(new ModelComponent(marker, Core.testCube, position, rotation));
         marker.add(new SelectableComponent(0.2f));
-        marker.add(new MarkerComponent(marker));
+        marker.add(new NodeComponent(marker, true, false));
 
         marker.add(AnimationComponent.scale01(marker));
 
@@ -37,7 +37,7 @@ public final class Entities {
 
         tracker.add(new ModelComponent(tracker, Core.testSphere, position, rotation));
         tracker.add(new SelectableComponent(0.2f));
-        tracker.add(new TrackerComponent(tracker));
+        tracker.add(new NodeComponent(tracker, false, true));
 
         tracker.add(AnimationComponent.scale01(tracker));
 

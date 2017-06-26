@@ -64,14 +64,8 @@ public class ModelComponent implements Component {
     public void updateTransform(Vector3 position, Quaternion rotation, Vector3 scale) {
         modelInstance.transform.set(position, rotation);
 
-        MarkerComponent marker = MarkerComponent.mapper.get(entity);
-        if (marker != null) {
-            marker.handlePositionUpdate();
-        }
-
-        TrackerComponent tracker = TrackerComponent.mapper.get(entity);
-        if (tracker != null) {
-            tracker.handlePositionUpdate();
+        if (NodeComponent.mapper.get(entity) != null) {
+            NodeComponent.mapper.get(entity).handlePositionUpdate();
         }
     }
 
@@ -80,18 +74,20 @@ public class ModelComponent implements Component {
     }
 
     public boolean isMarker() {
-        return (MarkerComponent.mapper.get(entity)) != null;
+        if  (NodeComponent.mapper.get(entity) != null) {
+            return NodeComponent.mapper.get(entity).isMarker;
+        }
+        return false;
     }
-    public MarkerComponent getMarker() {
-        return MarkerComponent.mapper.get(entity);
-    }
-
     public boolean isTracker() {
-        return (TrackerComponent.mapper.get(entity)) != null;
-    }
-    public TrackerComponent getTracker() {
-        return TrackerComponent.mapper.get(entity);
+        if  (NodeComponent.mapper.get(entity) != null) {
+            return NodeComponent.mapper.get(entity).isTracker;
+        }
+        return false;
     }
 
+    public NodeComponent getNode() {
+        return NodeComponent.mapper.get(entity);
+    }
 
 }

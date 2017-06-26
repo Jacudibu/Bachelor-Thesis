@@ -4,8 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.jacudibu.components.MarkerComponent;
-import com.jacudibu.components.TrackerComponent;
+import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
 
 /**
@@ -56,18 +55,13 @@ public class InputManager implements InputProcessor {
 
         switch (currentAction) {
             case MERGE:
-                if (TrackerComponent.mapper.get(first) != null) {
-                    TrackerComponent.mapper.get(first).merge(second);
-                }
-                else {
-                    MarkerComponent.mapper.get(first).merge(second);
-                }
+                NodeComponent.mapper.get(first).merge(second);
 
                 currentAction = SelectionAction.NONE;
                 return first;
 
             case CONNECT:
-                TrackerComponent.mapper.get(first).addMarker(second);
+                NodeComponent.mapper.get(first).addOutgoing(second);
                 currentAction = SelectionAction.NONE;
                 return second;
 
@@ -163,7 +157,7 @@ public class InputManager implements InputProcessor {
                 return true;
 
             case Input.Keys.C:
-                if (TrackerComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+                if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
                     currentAction = SelectionAction.CONNECT;
                     return true;
                 }
