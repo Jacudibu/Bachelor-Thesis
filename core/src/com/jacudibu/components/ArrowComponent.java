@@ -23,8 +23,8 @@ public class ArrowComponent extends ModelComponent {
     private static Model head;
     public ModelInstance headInstance;
 
-    private Entity from;
-    private Entity to;
+    public Entity from;
+    public Entity to;
     private Material material;
 
     public ArrowComponent(Entity from, Entity to) {

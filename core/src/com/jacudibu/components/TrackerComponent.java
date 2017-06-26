@@ -41,8 +41,11 @@ public class TrackerComponent implements Component {
 
     public void removeMarker(MarkerComponent marker) {
         observedMarkers.removeValue(marker, false);
-        // TODO: Remove arrow from existence.
 
+        for (ArrowComponent arrow : outgoingArrows) {
+            if (arrow.to == marker.getEntity())
+                Core.engine.removeEntity(arrow.getEntity());
+        }
     }
 
     public void handlePositionUpdate() {
