@@ -17,7 +17,7 @@ public class ModelComponent implements Component {
 
     public Model model;
     public ModelInstance modelInstance;
-    private Entity entity;
+    protected Entity entity;
 
     protected ModelComponent() {}
 

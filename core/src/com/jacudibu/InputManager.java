@@ -51,7 +51,7 @@ public class InputManager implements InputProcessor {
        Depending on pending acitons it will return the Entity that should be chosen as selected.
      */
     public static Entity TwoEntitesSelected(Entity first, Entity second) {
-        Gdx.app.log("TWICE", first + " <----> " + second);
+        // Gdx.app.log("Double Selection", first + " <----> " + second);
 
         switch (currentAction) {
             case MERGE:
@@ -152,7 +152,6 @@ public class InputManager implements InputProcessor {
 
         switch (keycode) {
             case Input.Keys.M:
-                Gdx.app.log("Input", "MERGE!");
                 currentAction = SelectionAction.MERGE;
                 return true;
 

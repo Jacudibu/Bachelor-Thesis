@@ -48,7 +48,7 @@ public final class Entities {
     public static Entity createArrow(Entity from, Entity to) {
         Entity arrow = new Entity();
 
-        arrow.add(new ArrowComponent(from, to));
+        arrow.add(new ArrowComponent(arrow, from, to));
 
         Core.engine.addEntity(arrow);
         return arrow;

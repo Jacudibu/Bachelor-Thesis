@@ -27,9 +27,10 @@ public class ArrowComponent extends ModelComponent {
     public Entity to;
     private Material material;
 
-    public ArrowComponent(Entity from, Entity to) {
+    public ArrowComponent(Entity arrowEntity, Entity from, Entity to) {
         this.from = from;
         this.to = to;
+        this.entity = arrowEntity;
 
         material = new Material(ColorAttribute.createDiffuse(Color.CYAN));
         updateModel();

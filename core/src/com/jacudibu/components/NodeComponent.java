@@ -72,6 +72,7 @@ public class NodeComponent implements Component {
         for (int i = 0; i < outgoingConnections.size; i++) {
             if (outgoingConnections.get(i).node == node) {
                 connection = outgoingConnections.get(i);
+                break;
             }
         }
 
@@ -98,18 +99,20 @@ public class NodeComponent implements Component {
         return entity;
     }
 
-    public void merge(Entity e) {
-        if (mapper.get(e) != null) {
-            merge(mapper.get(e));
+    public void merge(Entity entity) {
+        if (mapper.get(entity) != null) {
+            merge(mapper.get(entity));
         }
     }
 
     public void merge(NodeComponent node) {
+        // Incoming
         for (int i = 0; i < node.incomingConnections.size; i++) {
-            addIncoming(node.incomingConnections.get(i).node, node.incomingConnections.get(i).arrow);
+            node.incomingConnections.get(i).node.addOutgoing(this);
             node.incomingConnections.get(i).node.removeConnectionTo(node);
         }
 
+        // Outgoing
         for (int i = 0; i < node.outgoingConnections.size; i++) {
             addOutgoing(node.outgoingConnections.get(i).node);
             node.removeConnectionTo(node.outgoingConnections.get(i).node);
