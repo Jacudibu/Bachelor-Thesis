@@ -51,13 +51,6 @@ public class MainCamera {
     }
 
     private Vector3 processMovementInput(float deltaTime) {
-        if (InputManager.keysPressed == 0) {
-            // HACK: Stupid workaround to stop camera movement whilst being in an input field.
-            // TODO: Block Input while the stage focuses something, instead of doing this sh...stuff.
-            // FIXME: Bugs out when button is pressed when entering a TextField. Still better than nothing though.
-            return new Vector3();
-        }
-
         float moveSpeed = 10f;
 
         Vector3 movement = new Vector3();
