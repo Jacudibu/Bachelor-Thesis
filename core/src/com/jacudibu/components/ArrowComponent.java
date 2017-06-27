@@ -48,8 +48,8 @@ public class ArrowComponent extends ModelComponent {
 
         // Adjust start & end positions so that we won't poke into objects.
         Vector3 cutoff = toPos.cpy().sub(fromPos).nor().scl(0.1f); // That was the point i've realized that libGDX can be ugly.
-        toPos.sub(cutoff);
         fromPos.add(cutoff);
+        toPos.sub(cutoff.scl(1.1f));
 
         if (fromPos.equals(toPos)) {
             Gdx.app.log("Warning", "Can't draw Arrow, fromPos == toPos!");

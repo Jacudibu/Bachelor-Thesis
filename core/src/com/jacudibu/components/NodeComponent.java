@@ -105,7 +105,17 @@ public class NodeComponent implements Component {
         }
     }
 
+    /* Merges this node with another node.
+       It will copy all its connections and afterwards remove the other node.
+     */
     public void merge(NodeComponent node) {
+        if (node.isTracker) {
+            isTracker = true;
+        }
+        if (node.isMarker) {
+            isMarker = true;
+        }
+
         // Incoming
         for (int i = 0; i < node.incomingConnections.size; i++) {
             node.incomingConnections.get(i).node.addOutgoing(this);
