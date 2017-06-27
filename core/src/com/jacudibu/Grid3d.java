@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.EllipseShapeBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -41,14 +42,6 @@ public class Grid3d implements Disposable{
         drawing = false;
     }
 
-    private void createCircles() {
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
-        Material material = new Material();
-        material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
-
-}
-
     private void createAxes (boolean useCircles) {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
@@ -59,8 +52,8 @@ public class Grid3d implements Disposable{
         builder.setColor(new Color(1f,1f,1f,0.1f));
 
         if (useCircles) {
-            for (float i = -size; i <= size; i++) {
-                EllipseShapeBuilder.build(builder, i, 100, Vector3.Zero, Vector3.Z);
+            for (float i = 1; i <= size; i++) {
+                createCircle(i, 100, builder);
             }
         } else {
             for (float i = -size; i <= size; i++) {
@@ -71,6 +64,21 @@ public class Grid3d implements Disposable{
 
         axesModel = modelBuilder.end();
         axesInstance = new ModelInstance(axesModel);
+    }
+
+    private void createCircle(float radius, int divisions, MeshPartBuilder builder) {
+        float step = (MathUtils.degreesToRadians * 360) / divisions;
+        float angle = step;
+        Vector3 currentPos = new Vector3();
+        Vector3 lastPos = new Vector3(MathUtils.cos(0) * radius, 0, MathUtils.sin(0) * radius);
+        for (int i = 0; i < divisions; i++) {
+            currentPos.x = MathUtils.cos(angle) * radius;
+            currentPos.z = MathUtils.sin(angle) * radius;
+
+            builder.line(lastPos, currentPos);
+            lastPos = currentPos.cpy();
+            angle += step;
+        }
     }
 
     public void render() {
