@@ -13,14 +13,11 @@ import com.badlogic.gdx.math.Vector3;
 public class MainCamera {
     public static MainCamera instance;
 
-    private PerspectiveCamera cam;
+    public PerspectiveCamera cam;
     public Vector3 camRightVector = new Vector3();
 
     private MainCamera() {
-        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
-        cam.position.set(0f,0f,10f);
-        cam.near = 0.1f;
-        cam.far = 300f;
+        reset();
     }
 
     public static MainCamera initialize() {
@@ -54,13 +51,6 @@ public class MainCamera {
     }
 
     private Vector3 processMovementInput(float deltaTime) {
-        if (InputManager.keysPressed == 0) {
-            // HACK: Stupid workaround to stop camera movement whilst being in an input field.
-            // TODO: Block Input while the stage focuses something, instead of doing this sh...stuff.
-            // FIXME: Bugs out when button is pressed when entering a TextField. Still better than nothing though.
-            return new Vector3();
-        }
-
         float moveSpeed = 10f;
 
         Vector3 movement = new Vector3();
@@ -114,5 +104,14 @@ public class MainCamera {
 
     public void zoom(float distance) {
         cam.position.add(cam.direction.x * distance, cam.direction.y * distance, cam.direction.z * distance);
+    }
+
+    public void reset() {
+        // We need to reinitialize the camera as it's impossible to reset it's rotation.....
+        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
+        cam.position.set(0f,2f,5f);
+        cam.near = 0.1f;
+        cam.far = 300f;
+        cam.lookAt(new Vector3(0f, 0f, 0f));
     }
 }

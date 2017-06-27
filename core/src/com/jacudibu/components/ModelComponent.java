@@ -17,7 +17,7 @@ public class ModelComponent implements Component {
 
     public Model model;
     public ModelInstance modelInstance;
-    private Entity entity;
+    protected Entity entity;
 
     protected ModelComponent() {}
 
@@ -41,18 +41,31 @@ public class ModelComponent implements Component {
         this.model = model;
     }
 
+    public void animateTo(Vector3 position, Quaternion rotation) {
+        AnimationComponent anim = new AnimationComponent(entity);
+
+        anim.fromPos = modelInstance.transform.getTranslation(new Vector3());
+        anim.toPos = position;
+        anim.position = true;
+
+        anim.fromRot = modelInstance.transform.getRotation(new Quaternion());
+        anim.toRot = rotation;
+        anim.rotation = true;
+
+        anim.speed = 4f;
+
+        entity.add(anim);
+    }
+
     public void updateTransform(Vector3 position, Quaternion rotation) {
-        // TODO: Animate the hell out of that!
+        updateTransform(position, rotation, modelInstance.transform.getScale(new Vector3()));
+    }
+
+    public void updateTransform(Vector3 position, Quaternion rotation, Vector3 scale) {
         modelInstance.transform.set(position, rotation);
 
-        MarkerComponent marker = MarkerComponent.mapper.get(entity);
-        if (marker != null) {
-            marker.handlePositionUpdate();
-        }
-
-        TrackerComponent tracker = TrackerComponent.mapper.get(entity);
-        if (tracker != null) {
-            tracker.handlePositionUpdate();
+        if (NodeComponent.mapper.get(entity) != null) {
+            NodeComponent.mapper.get(entity).handlePositionUpdate();
         }
     }
 
@@ -61,18 +74,24 @@ public class ModelComponent implements Component {
     }
 
     public boolean isMarker() {
-        return (MarkerComponent.mapper.get(entity)) != null;
+        if  (NodeComponent.mapper.get(entity) != null) {
+            return NodeComponent.mapper.get(entity).isMarker;
+        }
+        return false;
     }
-    public MarkerComponent getMarker() {
-        return MarkerComponent.mapper.get(entity);
-    }
-
     public boolean isTracker() {
-        return (TrackerComponent.mapper.get(entity)) != null;
-    }
-    public TrackerComponent getTracker() {
-        return TrackerComponent.mapper.get(entity);
+        if  (NodeComponent.mapper.get(entity) != null) {
+            return NodeComponent.mapper.get(entity).isTracker;
+        }
+        return false;
     }
 
+    public Vector3 getPosition() {
+        return modelInstance.transform.getTranslation(new Vector3());
+    }
+
+    public NodeComponent getNode() {
+        return NodeComponent.mapper.get(entity);
+    }
 
 }
