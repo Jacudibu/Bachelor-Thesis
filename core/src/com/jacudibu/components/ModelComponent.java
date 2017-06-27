@@ -86,6 +86,10 @@ public class ModelComponent implements Component {
         return false;
     }
 
+    public Vector3 getPosition() {
+        return modelInstance.transform.getTranslation(new Vector3());
+    }
+
     public NodeComponent getNode() {
         return NodeComponent.mapper.get(entity);
     }

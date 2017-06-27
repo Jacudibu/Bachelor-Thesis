@@ -3,9 +3,13 @@ package com.jacudibu.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Core;
 import com.jacudibu.Entities;
+
+import javax.xml.soap.Node;
+import java.util.Stack;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 26.06.2017.
@@ -99,6 +103,38 @@ public class NodeComponent implements Component {
         return entity;
     }
 
+    public Array<NodeComponent> getAllConnectedNodes() {
+        Stack<NodeComponent> frontier = new Stack<NodeComponent>();
+        Stack<NodeComponent> visited = new Stack<NodeComponent>();
+        frontier.push(this);
+
+        while (!frontier.empty()) {
+            NodeComponent current = frontier.pop();
+            visited.push(current);
+
+            for (int i = 0; i < current.incomingConnections.size; i++) {
+                NodeComponent next = current.incomingConnections.get(i).node;
+                if (!visited.contains(next) && !frontier.contains(next)) {
+                    frontier.push(next);
+                }
+            }
+
+            for (int i = 0; i < current.outgoingConnections.size; i++) {
+                NodeComponent next = current.outgoingConnections.get(i).node;
+                if (!visited.contains(next) && !frontier.contains(next)) {
+                    frontier.push(next);
+                }
+            }
+        }
+
+        Array<NodeComponent> result = new Array<NodeComponent>();
+        while (!visited.isEmpty()) {
+            result.add(visited.pop());
+        }
+
+        return result;
+    }
+
     public void merge(Entity entity) {
         if (mapper.get(entity) != null) {
             merge(mapper.get(entity));
@@ -109,6 +145,24 @@ public class NodeComponent implements Component {
        It will copy all its connections and afterwards remove the other node.
      */
     public void merge(NodeComponent node) {
+        Array<NodeComponent> subtree = node.getAllConnectedNodes();
+        for (int i = 0; i < subtree.size; i++) {
+            if (subtree.get(i) == this) {
+                // Nodes within the same subtree can't be merged!
+                // TODO: ERROR HANDLING
+                return;
+            }
+        }
+
+        // Move Subtree
+        Vector3 start = ModelComponent.mapper.get(this.entity).getPosition();
+        Vector3 end = ModelComponent.mapper.get(node.entity).getPosition();
+        Vector3 movement = start.cpy().sub(end);
+        for (int i = 0; i < subtree.size; i++) {
+            subtree.get(i).entity.add(AnimationComponent.lerpMovement(subtree.get(i).entity, movement));
+        }
+
+        // Apply Data
         if (node.isTracker) {
             isTracker = true;
         }
