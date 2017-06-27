@@ -17,11 +17,7 @@ public class MainCamera {
     public Vector3 camRightVector = new Vector3();
 
     private MainCamera() {
-        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
-        cam.position.set(0f,2f,5f);
-        cam.near = 0.1f;
-        cam.far = 300f;
-        cam.lookAt(new Vector3(0f, 0f, 0f));
+        reset();
     }
 
     public static MainCamera initialize() {
@@ -115,5 +111,14 @@ public class MainCamera {
 
     public void zoom(float distance) {
         cam.position.add(cam.direction.x * distance, cam.direction.y * distance, cam.direction.z * distance);
+    }
+
+    public void reset() {
+        // We need to reinitialize the camera as it's impossible to reset it's rotation.....
+        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
+        cam.position.set(0f,2f,5f);
+        cam.near = 0.1f;
+        cam.far = 300f;
+        cam.lookAt(new Vector3(0f, 0f, 0f));
     }
 }

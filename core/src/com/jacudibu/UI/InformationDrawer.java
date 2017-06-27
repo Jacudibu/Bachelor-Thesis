@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.jacudibu.InputManager;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -27,6 +28,7 @@ public class InformationDrawer implements Disposable {
 
     private TextField xPos, yPos, zPos;
     private TextField xRot, yRot, zRot;
+    private FloatFilter floatFilter = new FloatFilter();
 
     private static InformationDrawer instance;
     private ModelComponent currentlySelected;
@@ -97,6 +99,8 @@ public class InformationDrawer implements Disposable {
         xRot.setDisabled(true);
         yRot.setDisabled(true);
         zRot.setDisabled(true);
+
+        stage.setKeyboardFocus(null);
     }
 
     private void setupTextFieldListener() {
@@ -122,6 +126,7 @@ public class InformationDrawer implements Disposable {
         Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
 
         currentlySelected.animateTo(pos, rot);
+        stage.setKeyboardFocus(null);
     }
 
     private float parseFloat(String string) {
@@ -185,7 +190,7 @@ public class InformationDrawer implements Disposable {
         textField.setPosition(x, y, align);
         textField.setWidth(50f);
         textField.setTextFieldListener(textFieldListener);
-        textField.setTextFieldFilter(new FloatFilter());
+        textField.setTextFieldFilter(floatFilter);
         textField.setDisabled(true);
         group.addActor(textField);
 
