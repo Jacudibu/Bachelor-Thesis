@@ -43,6 +43,16 @@ public class AnimationComponent implements Component {
         return anim;
     }
 
+    public static AnimationComponent lerpMovement(Entity entity, Vector3 movement) {
+        AnimationComponent anim = new AnimationComponent(entity);
+
+        anim.fromPos = ModelComponent.mapper.get(entity).getPosition();
+        anim.toPos = anim.fromPos.cpy().add(movement);
+        anim.position = true;
+
+        return anim;
+    }
+
     public AnimationComponent(Entity entity) {
         this.entity = entity;
         modelComponent = ModelComponent.mapper.get(entity);

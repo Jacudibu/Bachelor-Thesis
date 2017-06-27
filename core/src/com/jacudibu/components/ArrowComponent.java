@@ -23,13 +23,14 @@ public class ArrowComponent extends ModelComponent {
     private static Model head;
     public ModelInstance headInstance;
 
-    private Entity from;
-    private Entity to;
+    public Entity from;
+    public Entity to;
     private Material material;
 
-    public ArrowComponent(Entity from, Entity to) {
+    public ArrowComponent(Entity arrowEntity, Entity from, Entity to) {
         this.from = from;
         this.to = to;
+        this.entity = arrowEntity;
 
         material = new Material(ColorAttribute.createDiffuse(Color.CYAN));
         updateModel();
@@ -47,8 +48,8 @@ public class ArrowComponent extends ModelComponent {
 
         // Adjust start & end positions so that we won't poke into objects.
         Vector3 cutoff = toPos.cpy().sub(fromPos).nor().scl(0.1f); // That was the point i've realized that libGDX can be ugly.
-        toPos.sub(cutoff);
         fromPos.add(cutoff);
+        toPos.sub(cutoff.scl(1.1f));
 
         if (fromPos.equals(toPos)) {
             Gdx.app.log("Warning", "Can't draw Arrow, fromPos == toPos!");

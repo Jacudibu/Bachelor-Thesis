@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
 import com.jacudibu.components.SelectableComponent;
@@ -23,17 +24,24 @@ import com.jacudibu.components.ModelComponent;
  */
 public class SelectionSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
+    private Camera camera;
 
-    private Entity currentlyHovered = null;
-    private Entity currentlySelected = null;
+    public Entity currentlyHovered = null;
+    public Entity currentlySelected = null;
 
     private Vector3 currentlySelectedPosition;
 
-    public SelectionSystem() {}
+    public SelectionSystem() {
+        this(MainCamera.getCamera());
+    }
+
+    public SelectionSystem(Camera camera) {
+        this.camera = camera;
+    }
 
     @Override
     public void update(float deltaTime) {
-        Ray ray = MainCamera.getCamera().getPickRay(Gdx.input.getX(), Gdx.input.getY());
+        Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
         float distance = Float.MAX_VALUE;
         Entity closestEntity = null;
@@ -100,6 +108,7 @@ public class SelectionSystem extends EntitySystem {
             return;
         }
 
+        Entity lastSelected = currentlySelected;
         if (currentlySelected != null) {
             unselect();
         }
@@ -108,7 +117,17 @@ public class SelectionSystem extends EntitySystem {
             return;
         }
 
-        currentlySelected = currentlyHovered;
+        if (lastSelected != null) {
+            currentlySelected = InputManager.TwoEntitesSelected(lastSelected, currentlyHovered);
+
+            if (currentlySelected == null) {
+                return;
+            }
+        }
+        else {
+            currentlySelected = currentlyHovered;
+        }
+
         setEntityColor(currentlySelected, Color.BLUE);
 
         InformationDrawer.setCurrentlySelectedObject(ModelComponent.mapper.get(currentlySelected));
