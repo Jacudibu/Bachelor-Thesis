@@ -195,6 +195,13 @@ public class InputManager implements InputProcessor {
                     return true;
                 }
                 break;
+
+            case Input.Keys.FORWARD_DEL:
+                if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+                    currentAction = SelectionAction.NONE;
+                    NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
+                    return true;
+                }
         }
 
         currentAction = SelectionAction.NONE;

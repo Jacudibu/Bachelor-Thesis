@@ -191,20 +191,32 @@ public class NodeComponent implements Component {
         // Incoming
         for (int i = 0; i < node.incomingConnections.size; i++) {
             node.incomingConnections.get(i).node.addOutgoing(this);
-            node.incomingConnections.get(i).node.removeConnectionTo(node);
         }
 
         // Outgoing
         for (int i = 0; i < node.outgoingConnections.size; i++) {
             addOutgoing(node.outgoingConnections.get(i).node);
-            node.removeConnectionTo(node.outgoingConnections.get(i).node);
         }
 
-        Core.engine.removeEntity(node.entity);
+        node.delete();
     }
 
     public int getOutgoingCount() {
         return outgoingConnections.size;
+    }
+
+    public void delete() {
+        // Incoming
+        for (int i = incomingConnections.size - 1; i >= 0; i--) {
+            incomingConnections.get(i).node.removeConnectionTo(this);
+        }
+
+        // Outgoing
+        for (int i = outgoingConnections.size - 1; i >= 0; i--) {
+            removeConnectionTo(outgoingConnections.get(i).node);
+        }
+
+        Core.engine.removeEntity(entity);
     }
 
     //----------
