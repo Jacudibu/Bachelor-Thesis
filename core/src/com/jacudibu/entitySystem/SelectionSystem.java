@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
-import com.jacudibu.components.NodeComponent;
 import com.jacudibu.components.SelectableComponent;
 import com.jacudibu.components.ModelComponent;
 
@@ -119,7 +118,7 @@ public class SelectionSystem extends EntitySystem {
         }
 
         if (lastSelected != null) {
-            currentlySelected = InputManager.TwoEntitesSelected(lastSelected, currentlyHovered);
+            currentlySelected = InputManager.twoEntitiesSelected(lastSelected, currentlyHovered);
 
             if (currentlySelected == null) {
                 return;

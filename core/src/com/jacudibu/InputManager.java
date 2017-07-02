@@ -51,7 +51,7 @@ public class InputManager implements InputProcessor {
     /* Called by Selection System whenever a second entity is selected.
        Depending on pending acitons it will return the Entity that should be chosen as selected.
      */
-    public static Entity TwoEntitesSelected(Entity first, Entity second) {
+    public static Entity twoEntitiesSelected(Entity first, Entity second) {
         // Gdx.app.log("Double Selection", first + " <----> " + second);
 
         switch (currentAction) {
