@@ -3,12 +3,13 @@ package com.jacudibu.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Core;
 import com.jacudibu.Entities;
+import org.json.JSONObject;
 
-import javax.xml.soap.Node;
 import java.util.Stack;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Stack;
  */
 public class NodeComponent implements Component {
     public static final ComponentMapper<NodeComponent> mapper = ComponentMapper.getFor(NodeComponent.class);
+    public static int total = 0;
 
     private class Connection {
         public NodeComponent node;
@@ -29,7 +31,14 @@ public class NodeComponent implements Component {
     public boolean isMarker;
     public boolean isTracker;
 
+    public String name = "";
+    public int ID;
+
     public NodeComponent(Entity entity, boolean isMarker, boolean isTracker) {
+        this(entity, isMarker, isTracker, total, "Node " + total);
+    }
+
+    public NodeComponent(Entity entity, boolean isMarker, boolean isTracker, int ID, String name) {
         this.entity = entity;
 
         this.isMarker = isMarker;
@@ -37,6 +46,12 @@ public class NodeComponent implements Component {
 
         outgoingConnections = new Array<Connection>();
         incomingConnections = new Array<Connection>();
+
+        this.name = name;
+        this.ID = ID;
+        if (total <= ID) {
+            total = ID + 1;
+        }
     }
 
     public void addOutgoing(Entity entity) {
@@ -173,15 +188,73 @@ public class NodeComponent implements Component {
         // Incoming
         for (int i = 0; i < node.incomingConnections.size; i++) {
             node.incomingConnections.get(i).node.addOutgoing(this);
-            node.incomingConnections.get(i).node.removeConnectionTo(node);
         }
 
         // Outgoing
         for (int i = 0; i < node.outgoingConnections.size; i++) {
             addOutgoing(node.outgoingConnections.get(i).node);
-            node.removeConnectionTo(node.outgoingConnections.get(i).node);
         }
 
-        Core.engine.removeEntity(node.entity);
+        node.delete();
+    }
+
+    public int getOutgoingCount() {
+        return outgoingConnections.size;
+    }
+
+    public void delete() {
+        // Incoming
+        for (int i = incomingConnections.size - 1; i >= 0; i--) {
+            incomingConnections.get(i).node.removeConnectionTo(this);
+        }
+
+        // Outgoing
+        for (int i = outgoingConnections.size - 1; i >= 0; i--) {
+            removeConnectionTo(outgoingConnections.get(i).node);
+        }
+
+        Core.engine.removeEntity(entity);
+    }
+
+    //----------
+    //-- JSON --
+    //----------
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("id", ID);
+        json.put("name", name);
+        json.put("isTracker", isTracker);
+        json.put("isMarker", isMarker);
+
+        Vector3 pos = ModelComponent.mapper.get(entity).getPosition();
+        JSONObject posJson = new JSONObject();
+        posJson.put("x", pos.x);
+        posJson.put("y", pos.y);
+        posJson.put("z", pos.z);
+        json.put("position", posJson);
+
+        Quaternion rot = ModelComponent.mapper.get(entity).getRotation();
+        JSONObject rotJson = new JSONObject();
+        rotJson.put("x", rot.x);
+        rotJson.put("y", rot.y);
+        rotJson.put("z", rot.z);
+        rotJson.put("w", rot.w);
+        json.put("rotation", rotJson);
+
+        return json;
+    }
+
+    public JSONObject getOutgoingConnectionJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("from", ID);
+
+        for (int i = 0; i < outgoingConnections.size; i++) {
+            json.append("to", outgoingConnections.get(i).node.ID);
+        }
+
+        return json;
     }
 }

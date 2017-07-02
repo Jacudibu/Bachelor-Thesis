@@ -1,10 +1,11 @@
-package com.jacudibu;
+package com.jacudibu.fileSystem;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.Entities;
 import com.jacudibu.components.NodeComponent;
 
 import javax.xml.soap.Node;
@@ -13,7 +14,7 @@ import javax.xml.soap.Node;
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
  * Reads Files and creates Entites depending on their contents.
  */
-public class FileSystem {
+public class FileListener {
     public static final int TIMESTAMP = 5;
 
     public static final int QUATERNION_W = 10;
@@ -25,33 +26,13 @@ public class FileSystem {
     public static final int POSITION_Y = 17;
     public static final int POSITION_Z = 18;
 
-    public enum PathType {
-        INTERNAL,
-        EXTERNAL,
-        ABSOLUTE,
-        CLASSPATH,
-    }
 
     public static void parseFile(String path) {
         parseFile(path, PathType.ABSOLUTE);
     }
 
     public static void parseFile(String path, PathType pathType) {
-        FileHandle file = null;
-        switch (pathType) {
-            case INTERNAL:
-                file = Gdx.files.internal(path);
-                break;
-            case EXTERNAL:
-                file = Gdx.files.external(path);
-                break;
-            case ABSOLUTE:
-                file = Gdx.files.absolute(path);
-                break;
-            case CLASSPATH:
-                file = Gdx.files.classpath(path);
-                break;
-        }
+        FileHandle file = getFileHandle(path, pathType);
 
         if (!file.exists()) {
             Gdx.app.error("ERROR", "Unable to parse file from " + path);
@@ -65,6 +46,21 @@ public class FileSystem {
         Quaternion rotation = getQuaternion(dataPieces);
 
         createPair(position, rotation);
+    }
+
+    protected static FileHandle getFileHandle(String path, PathType pathType) {
+        switch (pathType) {
+            case INTERNAL:
+                return Gdx.files.internal(path);
+            case EXTERNAL:
+                return Gdx.files.external(path);
+            case ABSOLUTE:
+                return Gdx.files.absolute(path);
+            case CLASSPATH:
+                return Gdx.files.classpath(path);
+            default:
+                return null;
+        }
     }
 
     private static Vector3 getVector3(String[] dataPieces) {

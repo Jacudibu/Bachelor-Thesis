@@ -118,7 +118,7 @@ public class SelectionSystem extends EntitySystem {
         }
 
         if (lastSelected != null) {
-            currentlySelected = InputManager.TwoEntitesSelected(lastSelected, currentlyHovered);
+            currentlySelected = InputManager.twoEntitiesSelected(lastSelected, currentlyHovered);
 
             if (currentlySelected == null) {
                 return;

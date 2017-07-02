@@ -1,12 +1,6 @@
 package com.jacudibu;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.components.*;
@@ -19,30 +13,52 @@ public final class Entities {
     private Entities() {}
 
     public static Entity createMarker(Vector3 position, Quaternion rotation)	{
-        Entity marker = new Entity();
+        Entity entity = new Entity();
 
-        marker.add(new ModelComponent(marker, Core.testCube, position, rotation));
-        marker.add(new SelectableComponent(0.2f));
-        marker.add(new NodeComponent(marker, true, false));
+        entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
+        entity.add(new SelectableComponent(0.2f));
+        entity.add(new NodeComponent(entity, true, false));
+        entity.add(new GridLineComponent(entity));
 
-        marker.add(AnimationComponent.scale01(marker));
+        entity.add(AnimationComponent.scale01(entity));
 
 
-        Core.engine.addEntity(marker);
-        return marker;
+        Core.engine.addEntity(entity);
+        return entity;
     }
 
     public static Entity createTracker(Vector3 position, Quaternion rotation) {
-        Entity tracker = new Entity();
+        Entity entity = new Entity();
 
-        tracker.add(new ModelComponent(tracker, Core.testSphere, position, rotation));
-        tracker.add(new SelectableComponent(0.2f));
-        tracker.add(new NodeComponent(tracker, false, true));
+        entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
+        entity.add(new SelectableComponent(0.2f));
+        entity.add(new NodeComponent(entity, false, true));
+        entity.add(new GridLineComponent(entity));
 
-        tracker.add(AnimationComponent.scale01(tracker));
+        entity.add(AnimationComponent.scale01(entity));
 
-        Core.engine.addEntity(tracker);
-        return tracker;
+        Core.engine.addEntity(entity);
+        return entity;
+    }
+
+    public static Entity createNode(Vector3 position, Quaternion rotation, int ID, String name, boolean isTracker, boolean isMarker) {
+        Entity entity = new Entity();
+
+        if (isTracker) {
+            entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
+        }
+        else
+        {
+            entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
+        }
+        entity.add(new SelectableComponent(0.2f));
+        entity.add(new NodeComponent(entity, isMarker, isTracker, ID, name));
+        entity.add(new GridLineComponent(entity));
+
+        entity.add(AnimationComponent.scale01(entity));
+
+        Core.engine.addEntity(entity);
+        return entity;
     }
 
     public static Entity createArrow(Entity from, Entity to) {

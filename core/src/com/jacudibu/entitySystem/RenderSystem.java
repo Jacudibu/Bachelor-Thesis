@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.jacudibu.Core;
 import com.jacudibu.MainCamera;
 import com.jacudibu.components.ArrowComponent;
+import com.jacudibu.components.GridLineComponent;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -18,8 +20,9 @@ import com.jacudibu.components.ModelComponent;
  * System used for Rendering of every Entity having a ModelComponent.
  */
 public class RenderSystem extends EntitySystem {
-    private ImmutableArray<Entity> modelEntities;
-    private ImmutableArray<Entity> arrowEntities;
+    private ImmutableArray<Entity> models;
+    private ImmutableArray<Entity> arrows;
+    private ImmutableArray<Entity> gridLines;
 
     private ModelBatch modelBatch;
     private Environment environment;
@@ -33,27 +36,36 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        modelEntities = engine.getEntitiesFor((Family.all(ModelComponent.class).get()));
-        arrowEntities = engine.getEntitiesFor((Family.all(ArrowComponent.class).get()));
+        models = engine.getEntitiesFor((Family.all(ModelComponent.class).get()));
+        arrows = engine.getEntitiesFor((Family.all(ArrowComponent.class).get()));
+        gridLines = engine.getEntitiesFor((Family.all(GridLineComponent.class).get()));
     }
 
     @Override
     public void update(float deltaTime) {
         modelBatch.begin(MainCamera.getCamera());
 
-        for (int i = 0; i < modelEntities.size(); i++) {
-            Entity entity = modelEntities.get(i);
+        for (int i = 0; i < models.size(); i++) {
+            Entity entity = models.get(i);
             ModelComponent model = ModelComponent.mapper.get(entity);
             modelBatch.render(model.modelInstance, environment);
         }
 
         // Ashley doesn't seem to take inheritance into account,
         // therefore modelEntitites won't contain entities with arrowComponents.
-        for (int i = 0; i < arrowEntities.size(); i++) {
-            Entity entity = arrowEntities.get(i);
+        for (int i = 0; i < arrows.size(); i++) {
+            Entity entity = arrows.get(i);
             ArrowComponent arrow = ArrowComponent.mapper.get(entity);
             if (arrow.modelInstance != null) {
                 modelBatch.render(arrow.modelInstance, environment);
+            }
+        }
+
+        if (Core.grid.isDrawaing()) {
+            for (int i = 0; i < gridLines.size(); i++) {
+                Entity entity = gridLines.get(i);
+                GridLineComponent gridLine = GridLineComponent.mapper.get(entity);
+                modelBatch.render(gridLine.modelInstance, environment);
             }
         }
 

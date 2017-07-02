@@ -4,8 +4,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.jacudibu.components.GridLineComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
+import com.jacudibu.fileSystem.JsonExporter;
+import com.jacudibu.fileSystem.JsonImporter;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 11.05.2017.
@@ -49,7 +52,7 @@ public class InputManager implements InputProcessor {
     /* Called by Selection System whenever a second entity is selected.
        Depending on pending acitons it will return the Entity that should be chosen as selected.
      */
-    public static Entity TwoEntitesSelected(Entity first, Entity second) {
+    public static Entity twoEntitiesSelected(Entity first, Entity second) {
         // Gdx.app.log("Double Selection", first + " <----> " + second);
 
         switch (currentAction) {
@@ -72,6 +75,11 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+        {
+            return keyDownCTRL(keycode);
+        }
+
         switch (keycode) {
             case Input.Keys.G:
                 Core.grid.toggle();
@@ -80,11 +88,42 @@ public class InputManager implements InputProcessor {
             case Input.Keys.R:
                 MainCamera.instance.reset();
                 return true;
-
-            default:
-                return HandleSelectionActions(keycode);
         }
 
+        return HandleSelectionActions(keycode);
+    }
+
+    private boolean keyDownCTRL(int keycode) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        {
+            return keyDownCTRLSHIFT(keycode);
+        }
+
+        switch (keycode) {
+            case Input.Keys.S:
+                JsonExporter.export();
+                return true;
+
+            case Input.Keys.L:
+                JsonImporter.openLoadDialogue();
+                return true;
+
+            case Input.Keys.N:
+                Core.reset();
+                return true;
+        }
+
+        return false;
+    }
+
+    private boolean keyDownCTRLSHIFT(int keycode) {
+        switch (keycode) {
+            case Input.Keys.S:
+                JsonExporter.openSaveDialogue();
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -157,6 +196,13 @@ public class InputManager implements InputProcessor {
                     return true;
                 }
                 break;
+
+            case Input.Keys.FORWARD_DEL:
+                if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+                    currentAction = SelectionAction.NONE;
+                    NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
+                    return true;
+                }
         }
 
         currentAction = SelectionAction.NONE;
