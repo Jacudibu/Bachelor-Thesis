@@ -35,6 +35,10 @@ public class NodeComponent implements Component {
     public int ID;
 
     public NodeComponent(Entity entity, boolean isMarker, boolean isTracker) {
+        this(entity, isMarker, isTracker, total, "Node " + total);
+    }
+
+    public NodeComponent(Entity entity, boolean isMarker, boolean isTracker, int ID, String name) {
         this.entity = entity;
 
         this.isMarker = isMarker;
@@ -43,16 +47,9 @@ public class NodeComponent implements Component {
         outgoingConnections = new Array<Connection>();
         incomingConnections = new Array<Connection>();
 
-        ID = total;
-        total++;
-    }
-
-    public NodeComponent(Entity entity, boolean isMarker, boolean isTracker, int ID, String name) {
-        this(entity, isMarker, isTracker);
-
         this.name = name;
         this.ID = ID;
-        if (total < ID) {
+        if (total <= ID) {
             total = ID + 1;
         }
     }

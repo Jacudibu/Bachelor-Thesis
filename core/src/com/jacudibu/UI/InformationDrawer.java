@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.InputManager;
 import com.jacudibu.components.ModelComponent;
+import com.jacudibu.components.NodeComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
@@ -22,10 +23,12 @@ public class InformationDrawer implements Disposable {
     private Skin skin;
 
     private Group informationParent;
+    private Group nameGroup;
     private Group positionGroup;
     private Group rotationGroup;
     private TextField.TextFieldListener textFieldListener;
 
+    private TextField name;
     private TextField xPos, yPos, zPos;
     private TextField xRot, yRot, zRot;
     private FloatFilter floatFilter = new FloatFilter();
@@ -43,6 +46,7 @@ public class InformationDrawer implements Disposable {
         informationParent = new Group();
         stage.addActor(informationParent);
 
+        generateNameDrawer();
         generatePositionDrawer();
         generateRotationDrawer();
 
@@ -53,6 +57,7 @@ public class InformationDrawer implements Disposable {
         instance.currentlySelected = selectedObject;
 
         if (selectedObject != null) {
+            instance.setName(NodeComponent.mapper.get(selectedObject.getEntity()).name);
             instance.setPositionValues(selectedObject.modelInstance.transform.getTranslation(new Vector3()));
             instance.setRotationValues(selectedObject.modelInstance.transform.getRotation(new Quaternion()));
         }
@@ -61,6 +66,11 @@ public class InformationDrawer implements Disposable {
         }
 
         instance.updateUIPositions();
+    }
+
+    private void setName(String newName) {
+        name.setDisabled(false);
+        name.setText(newName);
     }
 
     private void setPositionValues(Vector3 pos) {
@@ -84,6 +94,9 @@ public class InformationDrawer implements Disposable {
     }
 
     private void disableInput() {
+        name.setText("");
+        name.setDisabled(true);
+
         xPos.setText("");
         yPos.setText("");
         zPos.setText("");
@@ -125,6 +138,7 @@ public class InformationDrawer implements Disposable {
 
         Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
 
+        NodeComponent.mapper.get(currentlySelected.getEntity()).name = name.getText();
         currentlySelected.animateTo(pos, rot);
         stage.setKeyboardFocus(null);
     }
@@ -136,13 +150,23 @@ public class InformationDrawer implements Disposable {
 
         string = string.replace(',','.');
 
-        // TODO: More error handling.
+        // TODO: More error handling?
 
         try {
             return Float.parseFloat(string);
         } catch (java.lang.NumberFormatException e) {
             return 0;
         }
+    }
+
+    private void generateNameDrawer() {
+        nameGroup = new Group();
+        informationParent.addActor(nameGroup);
+
+        name = setupTextField(20, -20, Align.topLeft, nameGroup);
+        name.setWidth(180);
+        name.setTextFieldFilter(null);
+        name.setAlignment(Align.center);
     }
 
     private void generatePositionDrawer() {
@@ -217,10 +241,11 @@ public class InformationDrawer implements Disposable {
         float x = 0;
         float y = 0;
 
+        nameGroup.setPosition(x, y, Align.topLeft);
+        y -= 50;
         positionGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
         rotationGroup.setPosition(x, y, Align.topLeft);
-        y -= 50;
 
         if (currentlySelected.isMarker()) {
             // TODO: Show Marker ID in a Text field
