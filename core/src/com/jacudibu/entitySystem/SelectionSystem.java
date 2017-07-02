@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
+import com.jacudibu.components.NodeComponent;
 import com.jacudibu.components.SelectableComponent;
 import com.jacudibu.components.ModelComponent;
 

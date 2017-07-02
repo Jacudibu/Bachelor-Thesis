@@ -89,6 +89,7 @@ public class ModelComponent implements Component {
     public Vector3 getPosition() {
         return modelInstance.transform.getTranslation(new Vector3());
     }
+    public Quaternion getRotation() {return modelInstance.transform.getRotation(new Quaternion()); }
 
     public NodeComponent getNode() {
         return NodeComponent.mapper.get(entity);

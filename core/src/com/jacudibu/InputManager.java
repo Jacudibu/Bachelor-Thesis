@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
+import com.jacudibu.fileSystem.JsonExporter;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 11.05.2017.
@@ -81,10 +82,15 @@ public class InputManager implements InputProcessor {
                 MainCamera.instance.reset();
                 return true;
 
-            default:
-                return HandleSelectionActions(keycode);
+            case Input.Keys.S:
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                    JsonExporter.export("test");
+                    return true;
+                }
+                break;
         }
 
+        return HandleSelectionActions(keycode);
     }
 
     @Override

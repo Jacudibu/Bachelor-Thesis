@@ -13,6 +13,7 @@ import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
+import com.jacudibu.fileSystem.FileListener;
 
 public class Core extends com.badlogic.gdx.Game {
 	public static ModelBuilder modelBuilder;
@@ -88,7 +89,7 @@ public class Core extends com.badlogic.gdx.Game {
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-		FileSystem.parseFile("HMDCam2IDS.txt", FileSystem.PathType.INTERNAL);
+		FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
 
 		// spawnDebugEntities();
 	}

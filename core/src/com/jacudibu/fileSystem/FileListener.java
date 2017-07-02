@@ -1,10 +1,11 @@
-package com.jacudibu;
+package com.jacudibu.fileSystem;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.Entities;
 import com.jacudibu.components.NodeComponent;
 
 import javax.xml.soap.Node;
@@ -13,7 +14,7 @@ import javax.xml.soap.Node;
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
  * Reads Files and creates Entites depending on their contents.
  */
-public class FileSystem {
+public class FileListener {
     public static final int TIMESTAMP = 5;
 
     public static final int QUATERNION_W = 10;
