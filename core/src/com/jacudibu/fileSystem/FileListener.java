@@ -26,33 +26,13 @@ public class FileListener {
     public static final int POSITION_Y = 17;
     public static final int POSITION_Z = 18;
 
-    public enum PathType {
-        INTERNAL,
-        EXTERNAL,
-        ABSOLUTE,
-        CLASSPATH,
-    }
 
     public static void parseFile(String path) {
         parseFile(path, PathType.ABSOLUTE);
     }
 
     public static void parseFile(String path, PathType pathType) {
-        FileHandle file = null;
-        switch (pathType) {
-            case INTERNAL:
-                file = Gdx.files.internal(path);
-                break;
-            case EXTERNAL:
-                file = Gdx.files.external(path);
-                break;
-            case ABSOLUTE:
-                file = Gdx.files.absolute(path);
-                break;
-            case CLASSPATH:
-                file = Gdx.files.classpath(path);
-                break;
-        }
+        FileHandle file = getFileHandle(path, pathType);
 
         if (!file.exists()) {
             Gdx.app.error("ERROR", "Unable to parse file from " + path);
@@ -66,6 +46,21 @@ public class FileListener {
         Quaternion rotation = getQuaternion(dataPieces);
 
         createPair(position, rotation);
+    }
+
+    protected static FileHandle getFileHandle(String path, PathType pathType) {
+        switch (pathType) {
+            case INTERNAL:
+                return Gdx.files.internal(path);
+            case EXTERNAL:
+                return Gdx.files.external(path);
+            case ABSOLUTE:
+                return Gdx.files.absolute(path);
+            case CLASSPATH:
+                return Gdx.files.classpath(path);
+            default:
+                return null;
+        }
     }
 
     private static Vector3 getVector3(String[] dataPieces) {

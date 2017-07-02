@@ -6,22 +6,52 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.jacudibu.Core;
 import com.jacudibu.Entities;
 import com.jacudibu.components.NodeComponent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
+
 /**
  * Created by Stefan Wolf (Jacudibu) on 02.07.2017.
  */
 public class JsonImporter {
-    public static void importJson(String filename) {
-        FileHandle file = Gdx.files.internal(filename + ".json");
+
+    public static void openLoadDialogue() {
+        JFileChooser fileChooser = new JFileChooser();
+
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.setVisible(false);
+        int result = fileChooser.showOpenDialog(frame);
+        frame.dispose();
+        if (result == JFileChooser.APPROVE_OPTION) {
+            importJson(fileChooser.getSelectedFile().getAbsolutePath(), PathType.ABSOLUTE);
+        }
+    }
+
+    public static void importJson(String path) {
+        importJson(path, PathType.INTERNAL);
+    }
+
+    public static void importJson(String path, PathType type) {
+        if (!path.endsWith(".json")) {
+            path += ".json";
+        }
+
+        Core.reset();
+
+        JsonExporter.savePath = path;
+        FileHandle file = FileListener.getFileHandle(path, type);
         JSONObject json = new JSONObject(file.readString());
 
         Array<NodeComponent> nodes = createNodes((JSONArray)json.get("nodes"));
         createConnections((JSONArray)json.get("connections"), nodes);
     }
+
 
     private static Array<NodeComponent> createNodes(JSONArray nodeArray) {
         Array<NodeComponent> nodes = new Array<NodeComponent>();

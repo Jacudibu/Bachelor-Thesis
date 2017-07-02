@@ -10,12 +10,46 @@ import com.jacudibu.components.NodeComponent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
+
 /**
  * Created by Stefan Wolf (Jacudibu) on 02.07.2017.
  */
 public class JsonExporter {
-    public static void export(String fileName) {
-        FileHandle file = Gdx.files.local(fileName + ".json");
+    public static String savePath;
+
+    public static void openSaveDialogue() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save as...");
+        fileChooser.setApproveButtonText("Save");
+
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.setVisible(false);
+        int result = fileChooser.showSaveDialog(frame);
+        frame.dispose();
+        if (result == JFileChooser.APPROVE_OPTION) {
+            export(fileChooser.getSelectedFile().getAbsolutePath(), PathType.ABSOLUTE);
+        }
+    }
+
+    public static void export() {
+        if (savePath != null && !savePath.isEmpty()) {
+            export(savePath, PathType.ABSOLUTE);
+        }
+        else {
+            openSaveDialogue();
+        }
+    }
+
+    public static void export(String path) {
+        export(path, PathType.INTERNAL);
+    }
+
+    public static void export(String path, PathType pathType) {
+        savePath = path;
+        FileHandle file = FileListener.getFileHandle(path, pathType);
         file.writeString(createJson().toString(), false);
     }
 

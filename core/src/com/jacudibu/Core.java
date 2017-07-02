@@ -13,6 +13,7 @@ import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
+import com.jacudibu.fileSystem.JsonExporter;
 import com.jacudibu.fileSystem.JsonImporter;
 
 public class Core extends com.badlogic.gdx.Game {
@@ -91,19 +92,10 @@ public class Core extends com.badlogic.gdx.Game {
 
 		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
 		JsonImporter.importJson("test");
-
-		// spawnDebugEntities();
 	}
 
-	private void spawnDebugEntities() {
-		//// Some random trackers
-		Entities.createTracker(new Vector3(0f, 0f, 0f), new Quaternion());
-		Entities.createTracker(new Vector3(-20f, 20f, 0f), new Quaternion());
-
-		// Some more markers, for fun.
-		Entities.createMarker(new Vector3(10f, 0f, -10f), new Quaternion());
-		Entities.createMarker(new Vector3(-20f, 0f, -10f), new Quaternion());
-		Entities.createMarker(new Vector3(0f, 0f, -20f), new Quaternion());
+	public static void reset() {
+		engine.removeAllEntities();
+		JsonExporter.savePath = "";
 	}
-
 }

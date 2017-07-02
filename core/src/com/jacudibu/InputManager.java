@@ -74,6 +74,11 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+        {
+            return keyDownCTRL(keycode);
+        }
+
         switch (keycode) {
             case Input.Keys.G:
                 Core.grid.toggle();
@@ -82,23 +87,27 @@ public class InputManager implements InputProcessor {
             case Input.Keys.R:
                 MainCamera.instance.reset();
                 return true;
-
-            case Input.Keys.S:
-                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                    JsonExporter.export("test");
-                    return true;
-                }
-                break;
-
-            case Input.Keys.L:
-                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                    JsonImporter.importJson("test");
-                    return true;
-                }
-                break;
         }
 
         return HandleSelectionActions(keycode);
+    }
+
+    private boolean keyDownCTRL(int keycode) {
+        switch (keycode) {
+            case Input.Keys.S:
+                JsonExporter.export();
+                return true;
+
+            case Input.Keys.L:
+                JsonImporter.openLoadDialogue();
+                return true;
+
+            case Input.Keys.N:
+                Core.reset();
+                return true;
+        }
+
+        return false;
     }
 
     @Override
