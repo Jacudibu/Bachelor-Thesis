@@ -27,6 +27,10 @@ public class Grid3d implements Disposable{
 
     private boolean drawing = true;
 
+    public boolean isDrawaing() {
+        return drawing;
+    }
+
     public Grid3d(int size, boolean circular) {
         this.size = size;
         modelBatch = new ModelBatch();

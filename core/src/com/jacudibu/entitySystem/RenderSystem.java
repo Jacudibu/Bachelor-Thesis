@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.jacudibu.Core;
 import com.jacudibu.MainCamera;
 import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.GridLineComponent;
@@ -60,10 +61,12 @@ public class RenderSystem extends EntitySystem {
             }
         }
 
-        for (int i = 0; i < gridLines.size(); i++) {
-            Entity entity = gridLines.get(i);
-            GridLineComponent gridLine = GridLineComponent.mapper.get(entity);
-            modelBatch.render(gridLine.modelInstance, environment);
+        if (Core.grid.isDrawaing()) {
+            for (int i = 0; i < gridLines.size(); i++) {
+                Entity entity = gridLines.get(i);
+                GridLineComponent gridLine = GridLineComponent.mapper.get(entity);
+                modelBatch.render(gridLine.modelInstance, environment);
+            }
         }
 
         modelBatch.end();
