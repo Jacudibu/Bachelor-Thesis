@@ -93,6 +93,11 @@ public class InputManager implements InputProcessor {
     }
 
     private boolean keyDownCTRL(int keycode) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        {
+            return keyDownCTRLSHIFT(keycode);
+        }
+
         switch (keycode) {
             case Input.Keys.S:
                 JsonExporter.export();
@@ -104,6 +109,16 @@ public class InputManager implements InputProcessor {
 
             case Input.Keys.N:
                 Core.reset();
+                return true;
+        }
+
+        return false;
+    }
+
+    private boolean keyDownCTRLSHIFT(int keycode) {
+        switch (keycode) {
+            case Input.Keys.S:
+                JsonExporter.openSaveDialogue();
                 return true;
         }
 
