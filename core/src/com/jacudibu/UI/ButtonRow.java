@@ -44,8 +44,8 @@ public class ButtonRow implements Disposable {
     }
 
     private void createMarkerButton() {
-        addMarkerTexture = new Texture(Gdx.files.internal("addMarker.png"));
-        addMarkerPressedTexture = new Texture(Gdx.files.internal("addMarkerPressed.png"));
+        addMarkerTexture = new Texture(Gdx.files.internal("buttons/addMarker.png"));
+        addMarkerPressedTexture = new Texture(Gdx.files.internal("buttons/addMarkerPressed.png"));
 
         ImageButton createMarker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addMarkerTexture)),
                 new TextureRegionDrawable(new TextureRegion(addMarkerPressedTexture)));
@@ -61,8 +61,8 @@ public class ButtonRow implements Disposable {
     }
 
     private void createTrackerButton() {
-        addTrackerTexture = new Texture(Gdx.files.internal("addTracker.png"));
-        addTrackerPressedTexture = new Texture(Gdx.files.internal("addTrackerPressed.png"));
+        addTrackerTexture = new Texture(Gdx.files.internal("buttons/addTracker.png"));
+        addTrackerPressedTexture = new Texture(Gdx.files.internal("buttons/addTrackerPressed.png"));
 
         ImageButton createTracker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addTrackerTexture)),
                 new TextureRegionDrawable(new TextureRegion(addTrackerPressedTexture)));
