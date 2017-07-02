@@ -187,25 +187,59 @@ public class InputManager implements InputProcessor {
 
         switch (keycode) {
             case Input.Keys.M:
-                currentAction = SelectionAction.MERGE;
-                return true;
+                if(setMergeMode()) {
+                    return true;
+                }
+                break;
 
             case Input.Keys.C:
-                if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
-                    currentAction = SelectionAction.CONNECT;
+                if(setConnectMode()) {
                     return true;
                 }
                 break;
 
             case Input.Keys.FORWARD_DEL:
-                if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
-                    currentAction = SelectionAction.NONE;
-                    NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
+                if(setDeleteMode()) {
                     return true;
                 }
+                break;
         }
 
         currentAction = SelectionAction.NONE;
+        return false;
+    }
+
+    public boolean setMergeMode() {
+        SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+
+        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+            currentAction = SelectionAction.MERGE;
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean setConnectMode() {
+        SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+
+        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+            currentAction = SelectionAction.CONNECT;
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean setDeleteMode() {
+        SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+
+        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+            currentAction = SelectionAction.NONE;
+            NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
+            return true;
+        }
+
         return false;
     }
 }

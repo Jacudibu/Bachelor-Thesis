@@ -13,8 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.jacudibu.Core;
 import com.jacudibu.Entities;
+import com.jacudibu.InputManager;
+import com.jacudibu.fileSystem.JsonExporter;
+import com.jacudibu.fileSystem.JsonImporter;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
@@ -23,10 +28,7 @@ import com.jacudibu.Entities;
 public class ButtonRow implements Disposable {
     private Stage stage;
     private Skin skin;
-    private Texture addTrackerTexture;
-    private Texture addTrackerPressedTexture;
-    private Texture addMarkerTexture;
-    private Texture addMarkerPressedTexture;
+    Array<Texture> textureArray = new Array<Texture>();
 
     Group buttonGroup;
 
@@ -37,45 +39,106 @@ public class ButtonRow implements Disposable {
         this.stage = stage;
         this.skin = skin;
 
-        createMarkerButton();
-        createTrackerButton();
+        createSaveButton(0, 0);
+        createLoadButton(64, 0);
+
+        createMarkerButton(0, -64 - 5);
+        createTrackerButton(64, -64 - 5);
+
+        createConnectButton(0, -64*2 - 10);
+        createMergeButton(64, -64*2 - 10);
+
+        createToggleGridButton(0, -64 * 3 - 15);
 
         updateUIPositions();
     }
 
-    private void createMarkerButton() {
-        addMarkerTexture = new Texture(Gdx.files.internal("addMarker.png"));
-        addMarkerPressedTexture = new Texture(Gdx.files.internal("addMarkerPressed.png"));
+    private void createButton(int x, int y, String image, String imagePressed, ActorGestureListener actionListener) {
+        Texture normalTexture = new Texture(Gdx.files.internal(image));
+        Texture pressedTexture = new Texture(Gdx.files.internal(imagePressed));
 
-        ImageButton createMarker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addMarkerTexture)),
-                new TextureRegionDrawable(new TextureRegion(addMarkerPressedTexture)));
+        ImageButton button = new ImageButton(new TextureRegionDrawable(new TextureRegion(normalTexture)),
+                new TextureRegionDrawable(new TextureRegion(pressedTexture)));
 
-        createMarker.addListener(new ActorGestureListener() {
-            public void tap(InputEvent event, float x, float y, int count, int button) {
-                super.tap(event, x, y, count, button);
-                Entities.createMarker(new Vector3(), new Quaternion());
-            }
-        });
-        createMarker.setPosition(0, 0, Align.topLeft);
-        buttonGroup.addActor(createMarker);
+        button.addListener(actionListener);
+        button.setPosition(x, y, Align.topLeft);
+        buttonGroup.addActor(button);
+
+        textureArray.add(normalTexture);
+        textureArray.add(pressedTexture);
     }
 
-    private void createTrackerButton() {
-        addTrackerTexture = new Texture(Gdx.files.internal("addTracker.png"));
-        addTrackerPressedTexture = new Texture(Gdx.files.internal("addTrackerPressed.png"));
+    private void createSaveButton(int x, int y) {
+        createButton(x, y, "buttons/save.png", "buttons/savePressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        JsonExporter.openSaveDialogue();
+                    }
+                });
+    }
 
-        ImageButton createTracker = new ImageButton(new TextureRegionDrawable(new TextureRegion(addTrackerTexture)),
-                new TextureRegionDrawable(new TextureRegion(addTrackerPressedTexture)));
+    private void createLoadButton(int x, int y) {
+        createButton(x, y, "buttons/load.png", "buttons/loadPressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        JsonImporter.openLoadDialogue();
+                    }
+                });
+    }
+    private void createMarkerButton(int x, int y) {
+        createButton(x, y, "buttons/addMarker.png", "buttons/addMarkerPressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        Entities.createMarker(new Vector3(), new Quaternion());
+                    }
+                });
+    }
 
-        createTracker.addListener(new ActorGestureListener() {
+    private void createTrackerButton(int x, int y) {
+        createButton(x, y, "buttons/addTracker.png", "buttons/addTrackerPressed.png",
+            new ActorGestureListener() {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 Entities.createTracker(new Vector3(), new Quaternion());
-            }
-        });
-        createTracker.setPosition(64 + 10,0, Align.topLeft);
-        buttonGroup.addActor(createTracker);
+                }
+            });
     }
+
+    private void createConnectButton(int x, int y) {
+        createButton(x, y, "buttons/connect.png", "buttons/connectPressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        InputManager.instance.setConnectMode();
+                    }
+                });
+    }
+
+    private void createMergeButton(int x, int y) {
+        createButton(x, y, "buttons/merge.png", "buttons/mergePressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        InputManager.instance.setMergeMode();
+                    }
+                });
+    }
+
+
+
+    private void createToggleGridButton(int x, int y) {
+        createButton(x, y, "buttons/toggleGrid.png", "buttons/toggleGridPressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        Core.grid.toggle();
+                    }
+                });
+    }
+
 
     public void updateUIPositions() {
         buttonGroup.setPosition(10, Gdx.graphics.getHeight() - 10);
@@ -83,9 +146,8 @@ public class ButtonRow implements Disposable {
 
     @Override
     public void dispose() {
-        addTrackerTexture.dispose();
-        addTrackerPressedTexture.dispose();
-        addMarkerTexture.dispose();
-        addMarkerPressedTexture.dispose();
+        for (int i = textureArray.size -1; i >= 0; i--) {
+            textureArray.get(i).dispose();
+        }
     }
 }
