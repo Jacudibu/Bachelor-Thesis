@@ -88,6 +88,10 @@ public class AnimationComponent implements Component {
 
         modelComponent.updateTransform(currentPos, currentRot, currentScale);
 
+        if (position && GridLineComponent.mapper.get(entity) != null) {
+            GridLineComponent.mapper.get(entity).updatePosition();
+        }
+
         if (currentAnimationProgress == 1) {
             entity.remove(AnimationComponent.class);
         }

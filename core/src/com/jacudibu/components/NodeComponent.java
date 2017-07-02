@@ -246,7 +246,6 @@ public class NodeComponent implements Component {
         rotJson.put("w", rot.w);
         json.put("rotation", rotJson);
 
-        System.out.println(json.toString());
         return json;
     }
 

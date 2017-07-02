@@ -13,49 +13,52 @@ public final class Entities {
     private Entities() {}
 
     public static Entity createMarker(Vector3 position, Quaternion rotation)	{
-        Entity marker = new Entity();
+        Entity entity = new Entity();
 
-        marker.add(new ModelComponent(marker, Core.markerModel, position, rotation));
-        marker.add(new SelectableComponent(0.2f));
-        marker.add(new NodeComponent(marker, true, false));
+        entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
+        entity.add(new SelectableComponent(0.2f));
+        entity.add(new NodeComponent(entity, true, false));
+        entity.add(new GridLineComponent(entity));
 
-        marker.add(AnimationComponent.scale01(marker));
+        entity.add(AnimationComponent.scale01(entity));
 
 
-        Core.engine.addEntity(marker);
-        return marker;
+        Core.engine.addEntity(entity);
+        return entity;
     }
 
     public static Entity createTracker(Vector3 position, Quaternion rotation) {
-        Entity tracker = new Entity();
+        Entity entity = new Entity();
 
-        tracker.add(new ModelComponent(tracker, Core.trackerModel, position, rotation));
-        tracker.add(new SelectableComponent(0.2f));
-        tracker.add(new NodeComponent(tracker, false, true));
+        entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
+        entity.add(new SelectableComponent(0.2f));
+        entity.add(new NodeComponent(entity, false, true));
+        entity.add(new GridLineComponent(entity));
 
-        tracker.add(AnimationComponent.scale01(tracker));
+        entity.add(AnimationComponent.scale01(entity));
 
-        Core.engine.addEntity(tracker);
-        return tracker;
+        Core.engine.addEntity(entity);
+        return entity;
     }
 
     public static Entity createNode(Vector3 position, Quaternion rotation, int ID, String name, boolean isTracker, boolean isMarker) {
-        Entity node = new Entity();
+        Entity entity = new Entity();
 
         if (isTracker) {
-            node.add(new ModelComponent(node, Core.trackerModel, position, rotation));
+            entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
         }
         else
         {
-            node.add(new ModelComponent(node, Core.markerModel, position, rotation));
+            entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
         }
-        node.add(new SelectableComponent(0.2f));
-        node.add(new NodeComponent(node, isMarker, isTracker, ID, name));
+        entity.add(new SelectableComponent(0.2f));
+        entity.add(new NodeComponent(entity, isMarker, isTracker, ID, name));
+        entity.add(new GridLineComponent(entity));
 
-        node.add(AnimationComponent.scale01(node));
+        entity.add(AnimationComponent.scale01(entity));
 
-        Core.engine.addEntity(node);
-        return node;
+        Core.engine.addEntity(entity);
+        return entity;
     }
 
     public static Entity createArrow(Entity from, Entity to) {
