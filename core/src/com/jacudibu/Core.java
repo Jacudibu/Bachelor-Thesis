@@ -13,13 +13,13 @@ import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
-import com.jacudibu.fileSystem.FileListener;
+import com.jacudibu.fileSystem.JsonImporter;
 
 public class Core extends com.badlogic.gdx.Game {
 	public static ModelBuilder modelBuilder;
 	public static InputMultiplexer inputMultiplexer;
-	public static Model testCube;
-	public static Model testSphere;
+	public static Model markerModel;
+	public static Model trackerModel;
 	public static Engine engine = new Engine();
 
 	public static int windowHeight;
@@ -59,8 +59,8 @@ public class Core extends com.badlogic.gdx.Game {
 
 	@Override
 	public void dispose () {
-		testCube.dispose();
-		testSphere.dispose();
+		markerModel.dispose();
+		trackerModel.dispose();
 		screen.dispose();
 		grid.dispose();
 	}
@@ -81,15 +81,16 @@ public class Core extends com.badlogic.gdx.Game {
 
 	private void initDebugStuff() {
 		modelBuilder = new ModelBuilder();
-		testCube = modelBuilder.createBox(0.2f, 0.2f, 0.2f,
+		markerModel = modelBuilder.createBox(0.2f, 0.2f, 0.2f,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-		testSphere = modelBuilder.createSphere(0.2f, 0.2f, 0.2f,50, 50,
+		trackerModel = modelBuilder.createSphere(0.2f, 0.2f, 0.2f,50, 50,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-		FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
+		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
+		JsonImporter.importJson("test");
 
 		// spawnDebugEntities();
 	}

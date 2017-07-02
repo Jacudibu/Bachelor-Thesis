@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Core;
 import com.jacudibu.Entities;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Stack;
@@ -33,7 +32,7 @@ public class NodeComponent implements Component {
     public boolean isTracker;
 
     public String name = "";
-    public final int ID;
+    public int ID;
 
     public NodeComponent(Entity entity, boolean isMarker, boolean isTracker) {
         this.entity = entity;
@@ -46,6 +45,16 @@ public class NodeComponent implements Component {
 
         ID = total;
         total++;
+    }
+
+    public NodeComponent(Entity entity, boolean isMarker, boolean isTracker, int ID, String name) {
+        this(entity, isMarker, isTracker);
+
+        this.name = name;
+        this.ID = ID;
+        if (total < ID) {
+            total = ID + 1;
+        }
     }
 
     public void addOutgoing(Entity entity) {
@@ -192,6 +201,10 @@ public class NodeComponent implements Component {
         }
 
         Core.engine.removeEntity(node.entity);
+    }
+
+    public int getOutgoingCount() {
+        return outgoingConnections.size;
     }
 
     //----------

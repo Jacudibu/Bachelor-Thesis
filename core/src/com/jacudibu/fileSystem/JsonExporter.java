@@ -28,7 +28,9 @@ public class JsonExporter {
             NodeComponent node = NodeComponent.mapper.get(nodeEntities.get(i));
 
             nodeArray.put(node.toJson());
-            connectionArray.put(node.getOutgoingConnectionJson());
+            if (node.getOutgoingCount() > 0) {
+                connectionArray.put(node.getOutgoingConnectionJson());
+            }
         }
 
         JSONObject result = new JSONObject();

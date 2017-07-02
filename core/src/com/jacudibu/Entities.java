@@ -1,12 +1,6 @@
 package com.jacudibu;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.components.*;
@@ -21,7 +15,7 @@ public final class Entities {
     public static Entity createMarker(Vector3 position, Quaternion rotation)	{
         Entity marker = new Entity();
 
-        marker.add(new ModelComponent(marker, Core.testCube, position, rotation));
+        marker.add(new ModelComponent(marker, Core.markerModel, position, rotation));
         marker.add(new SelectableComponent(0.2f));
         marker.add(new NodeComponent(marker, true, false));
 
@@ -35,7 +29,7 @@ public final class Entities {
     public static Entity createTracker(Vector3 position, Quaternion rotation) {
         Entity tracker = new Entity();
 
-        tracker.add(new ModelComponent(tracker, Core.testSphere, position, rotation));
+        tracker.add(new ModelComponent(tracker, Core.trackerModel, position, rotation));
         tracker.add(new SelectableComponent(0.2f));
         tracker.add(new NodeComponent(tracker, false, true));
 
@@ -43,6 +37,25 @@ public final class Entities {
 
         Core.engine.addEntity(tracker);
         return tracker;
+    }
+
+    public static Entity createNode(Vector3 position, Quaternion rotation, int ID, String name, boolean isTracker, boolean isMarker) {
+        Entity node = new Entity();
+
+        if (isTracker) {
+            node.add(new ModelComponent(node, Core.trackerModel, position, rotation));
+        }
+        else
+        {
+            node.add(new ModelComponent(node, Core.markerModel, position, rotation));
+        }
+        node.add(new SelectableComponent(0.2f));
+        node.add(new NodeComponent(node, isMarker, isTracker, ID, name));
+
+        node.add(AnimationComponent.scale01(node));
+
+        Core.engine.addEntity(node);
+        return node;
     }
 
     public static Entity createArrow(Entity from, Entity to) {
