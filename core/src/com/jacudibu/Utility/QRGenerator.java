@@ -28,7 +28,10 @@ public class QRGenerator {
 
     public static Texture generate(String code) {
         if (isValidCode(code)) {
-            return new Texture(generatePixmap(code));
+            Pixmap map = generatePixmap(code);
+            Texture tex = new Texture(map);
+            map.dispose();
+            return tex;
         }
         else {
             return null;

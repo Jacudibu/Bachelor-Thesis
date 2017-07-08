@@ -89,12 +89,12 @@ public class InformationDrawer implements Disposable {
     private void setHex(String newHex) {
         hex.setDisabled(false);
         hex.setText(newHex);
-        hex.setWidth(50f);
+        hex.setPosition(150f, -20, Align.topLeft);
     }
 
     private void hideHex() {
         hex.setDisabled(true);
-        hex.setWidth(0);
+        hex.setPosition(100050f, -20, Align.topLeft);
     }
 
     private void setPositionValues(Vector3 pos) {
