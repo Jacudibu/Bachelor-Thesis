@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -90,6 +91,7 @@ public class ModelComponent implements Component {
         return modelInstance.transform.getTranslation(new Vector3());
     }
     public Quaternion getRotation() {return modelInstance.transform.getRotation(new Quaternion()); }
+    public Matrix4 getWorldTransform() {return modelInstance.transform; }
 
     public NodeComponent getNode() {
         return NodeComponent.mapper.get(entity);

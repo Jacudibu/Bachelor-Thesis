@@ -19,6 +19,7 @@ public final class Entities {
         entity.add(new SelectableComponent(0.2f));
         entity.add(new NodeComponent(entity, true, false));
         entity.add(new GridLineComponent(entity));
+        entity.add(ColliderComponent.createMarkerCollider(entity));
 
         entity.add(AnimationComponent.scale01(entity));
 
@@ -34,6 +35,7 @@ public final class Entities {
         entity.add(new SelectableComponent(0.2f));
         entity.add(new NodeComponent(entity, false, true));
         entity.add(new GridLineComponent(entity));
+        entity.add(ColliderComponent.createTrackerCollider(entity));
 
         entity.add(AnimationComponent.scale01(entity));
 
