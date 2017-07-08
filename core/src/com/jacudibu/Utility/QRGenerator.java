@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class QRGenerator {
     private static final int size = 64;
-    private static final int cellSize = size / 4;
+    private static final int borderSize = 2;
+    private static final int cellSize = (size - borderSize * 2) / 4;
     private static final Color markedColor = Color.BLACK;
     private static final Color freeColor = Color.WHITE;
 
@@ -53,7 +54,7 @@ public class QRGenerator {
 
     private static void drawCell(Pixmap map, int value, int row, int cell) {
         setMapColor(map, value, cell);
-        map.fillRectangle(row * cellSize, (3 - cell) * cellSize, cellSize, cellSize);
+        map.fillRectangle(borderSize + row * cellSize, borderSize + (3 - cell) * cellSize, cellSize, cellSize);
     }
 
     private static void setMapColor(Pixmap map, int value, int cell) {
