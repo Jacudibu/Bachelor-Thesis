@@ -1,8 +1,8 @@
 package com.jacudibu.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Disposable;
  * Created by Stefan Wolf (Jacudibu) on 08.07.2017.
  */
 public class ColliderComponent implements Component, Disposable{
+    public static final ComponentMapper<ColliderComponent> mapper = ComponentMapper.getFor(ColliderComponent.class);
+
     public btCollisionObject collisionObject;
     private boolean isArrow;
 

@@ -68,6 +68,10 @@ public class ModelComponent implements Component {
         if (NodeComponent.mapper.get(entity) != null) {
             NodeComponent.mapper.get(entity).handlePositionUpdate();
         }
+
+        if (ColliderComponent.mapper.get(entity) != null) {
+            ColliderComponent.mapper.get(entity).updateTransform(modelInstance.transform);
+        }
     }
 
     public Entity getEntity() {
