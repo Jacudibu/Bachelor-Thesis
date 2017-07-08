@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
@@ -33,6 +34,7 @@ public class Core extends com.badlogic.gdx.Game {
 		windowHeight = Gdx.graphics.getHeight();
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
+		Bullet.init();
 
 		MainCamera.initialize();
 		engine.addSystem(new AnimationSystem());
