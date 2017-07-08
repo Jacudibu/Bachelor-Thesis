@@ -213,7 +213,7 @@ public class NodeComponent implements Component {
             removeConnectionTo(outgoingConnections.get(i).node);
         }
 
-        Core.engine.removeEntity(entity);
+        Entities.destroyEntity(entity);
     }
 
     //----------

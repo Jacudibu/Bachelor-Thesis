@@ -3,19 +3,18 @@ package com.jacudibu.entitySystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.jacudibu.Core;
 import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
-import com.jacudibu.components.SelectableComponent;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -23,13 +22,12 @@ import com.jacudibu.components.ModelComponent;
  * System managing interaction with SelectableComponents.
  */
 public class SelectionSystem extends EntitySystem {
-    private ImmutableArray<Entity> entities;
     private Camera camera;
 
     public Entity currentlyHovered = null;
     public Entity currentlySelected = null;
 
-    private Vector3 currentlySelectedPosition;
+    private static final float MAX_RAY_DISTANCE = 100f;
 
     public SelectionSystem() {
         this(MainCamera.getCamera());
@@ -43,35 +41,29 @@ public class SelectionSystem extends EntitySystem {
     public void update(float deltaTime) {
         Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
-        float distance = Float.MAX_VALUE;
-        Entity closestEntity = null;
+        Vector3 rayFrom = ray.origin;
+        Vector3 rayTo = ray.direction.scl(MAX_RAY_DISTANCE).add(ray.origin);
 
-        for (int i = 0; i < entities.size(); i++) {
-            Entity currentlyCheckedEntity = entities.get(i);
+        ClosestRayResultCallback raycast = new ClosestRayResultCallback(rayFrom, rayTo);
 
-            SelectableComponent clickable = SelectableComponent.mapper.get(currentlyCheckedEntity);
-            ModelComponent model = ModelComponent.mapper.get(currentlyCheckedEntity);
+        Core.collisionWorld.rayTest(rayFrom, rayTo, raycast);
+        Entity hitEntity = null;
 
-            Vector3 position = model.modelInstance.transform.getTranslation(Vector3.Zero);
-            float currentDistance = ray.origin.dst2(position);
 
-            if (currentDistance > distance) {
-                continue;
-            }
-
-            if (Intersector.intersectRaySphere(ray, position, clickable.radius, null)) {
-                closestEntity = currentlyCheckedEntity;
-                distance = currentDistance;
-                currentlySelectedPosition = position;
-            }
+        if (raycast.hasHit()) {
+            final btCollisionObject hit = raycast.getCollisionObject();
+            hitEntity = (Entity) hit.userData;
+            //Gdx.app.log("Raycast", "hit: " + hitEntity.toString());
+        }
+        else {
+            //Gdx.app.log("Raycast", "nohit");
         }
 
-        hover(closestEntity);
+        hover(hitEntity);
     }
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor((Family.all(ModelComponent.class, SelectableComponent.class).get()));
     }
 
 
