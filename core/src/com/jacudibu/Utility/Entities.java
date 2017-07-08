@@ -1,8 +1,9 @@
-package com.jacudibu;
+package com.jacudibu.Utility;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.Core;
 import com.jacudibu.components.*;
 
 /**
