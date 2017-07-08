@@ -7,6 +7,7 @@ import com.jacudibu.Core;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.samples = 3;
 		new LwjglApplication(new Core(), config);
 	}
 }

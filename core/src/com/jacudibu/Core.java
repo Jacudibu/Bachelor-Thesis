@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.Utility.Grid3d;
+import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
@@ -73,7 +74,8 @@ public class Core extends com.badlogic.gdx.Game {
 	@Override
 	public void render () {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
+							| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		grid.render();
@@ -123,11 +125,12 @@ public class Core extends com.badlogic.gdx.Game {
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
 		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
-		JsonImporter.importJson("test");
+		JsonImporter.importJson("QRtest");
 	}
 
 	public static void reset() {
 		engine.removeAllEntities();
 		JsonExporter.savePath = "";
+		NodeComponent.resetCounter();
 	}
 }

@@ -90,10 +90,6 @@ public class InputManager implements InputProcessor {
             case Input.Keys.R:
                 MainCamera.instance.reset();
                 return true;
-
-            case Input.Keys.NUM_0:
-                ModelComponent.mapper.get(Core.engine.getSystem(SelectionSystem.class).currentlySelected).setTextureAttribute(QRGenerator.generate("F731"));
-                return true;
         }
 
         return HandleSelectionActions(keycode);

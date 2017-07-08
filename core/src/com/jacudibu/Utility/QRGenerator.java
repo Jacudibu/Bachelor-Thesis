@@ -53,7 +53,7 @@ public class QRGenerator {
 
     private static void drawCell(Pixmap map, int value, int row, int cell) {
         setMapColor(map, value, cell);
-        map.fillRectangle(row * cellSize, cell * cellSize, cellSize, cellSize);
+        map.fillRectangle(row * cellSize, (3 - cell) * cellSize, cellSize, cellSize);
     }
 
     private static void setMapColor(Pixmap map, int value, int cell) {
