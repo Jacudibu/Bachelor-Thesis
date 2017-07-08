@@ -79,6 +79,7 @@ public class Core extends com.badlogic.gdx.Game {
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		grid.render();
 
+		collisionWorld.updateAabbs();
 		engine.update(Gdx.graphics.getDeltaTime());
 		screen.render(Gdx.graphics.getDeltaTime());
 

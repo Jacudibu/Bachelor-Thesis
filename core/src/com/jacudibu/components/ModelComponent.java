@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.Core;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 07.05.2017.
