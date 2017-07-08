@@ -3,10 +3,13 @@ package com.jacudibu.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.Core;
@@ -38,6 +41,15 @@ public class ColliderComponent implements Component, Disposable{
         return collider;
     }
 
+    public static ColliderComponent createArrowCollider(Entity entity) {
+        ColliderComponent collider = new ColliderComponent(entity);
+
+        collider.updateArrowCollider(ArrowComponent.mapper.get(entity));
+        Core.collisionWorld.addCollisionObject(collider.collisionObject);
+
+        return collider;
+    }
+
     private ColliderComponent(Entity entity) {
         this.collisionObject = new btCollisionObject();
         this.collisionObject.userData = entity;
@@ -45,6 +57,11 @@ public class ColliderComponent implements Component, Disposable{
 
     public void updateTransform(Matrix4 transform) {
         collisionObject.setWorldTransform(transform);
+    }
+
+    public void updateArrowCollider(ArrowComponent arrowComponent) {
+        collisionObject.setCollisionShape(Bullet.obtainStaticNodeShape(arrowComponent.model.nodes));
+        collisionObject.setWorldTransform(arrowComponent.getWorldTransform());
     }
 
     @Override

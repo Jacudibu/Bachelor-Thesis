@@ -15,6 +15,7 @@ import com.jacudibu.Core;
 import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
+import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.ModelComponent;
 
 /**
@@ -132,6 +133,12 @@ public class SelectionSystem extends EntitySystem {
     }
 
     private void setEntityColor(Entity entity, Color color) {
-        ModelComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+        if (ModelComponent.mapper.get(entity) != null) {
+            ModelComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+        }
+        else if (ArrowComponent.mapper.get(entity) != null) {
+            ArrowComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+        }
+
     }
 }

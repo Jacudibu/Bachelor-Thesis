@@ -63,12 +63,13 @@ public final class Entities {
     }
 
     public static Entity createArrow(Entity from, Entity to) {
-        Entity arrow = new Entity();
+        Entity entity = new Entity();
 
-        arrow.add(new ArrowComponent(arrow, from, to));
+        entity.add(new ArrowComponent(entity, from, to));
+        entity.add(ColliderComponent.createArrowCollider(entity));
 
-        Core.engine.addEntity(arrow);
-        return arrow;
+        Core.engine.addEntity(entity);
+        return entity;
     }
 
     public static void destroyEntity(Entity e) {

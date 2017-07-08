@@ -98,6 +98,23 @@ public class NodeComponent implements Component {
         if (connection != null) {
             Entities.destroyEntity(connection.arrow.getEntity());
             outgoingConnections.removeValue(connection, true);
+            connection.node.removeIncomingConnection(this);
+        }
+    }
+
+    // Only called by removeConnectionTo. So if you want to remove connections by yourself, only call removeConnectionTo!
+    private void removeIncomingConnection(NodeComponent node) {
+        Connection connection = null;
+
+        for (int i = 0; i < incomingConnections.size; i++) {
+            if (incomingConnections.get(i).node == node) {
+                connection = incomingConnections.get(i);
+                break;
+            }
+        }
+
+        if (connection != null) {
+            incomingConnections.removeValue(connection, true);
         }
     }
 

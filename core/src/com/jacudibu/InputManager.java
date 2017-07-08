@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.GridLineComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
@@ -239,6 +240,12 @@ public class InputManager implements InputProcessor {
             NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
             return true;
         }
+        else if (ArrowComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+            currentAction = SelectionAction.NONE;
+            ArrowComponent.mapper.get(selectionSystem.currentlySelected).delete();
+            return true;
+        }
+
 
         return false;
     }

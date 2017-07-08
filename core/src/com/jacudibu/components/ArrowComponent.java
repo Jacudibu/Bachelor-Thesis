@@ -67,10 +67,18 @@ public class ArrowComponent extends ModelComponent implements Disposable {
                 material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
         modelInstance = new ModelInstance(model);
+
+        if (ColliderComponent.mapper.get(entity) != null) {
+            ColliderComponent.mapper.get(entity).updateArrowCollider(this);
+        }
     }
 
     @Override
     public void dispose() {
         model.dispose();
+    }
+
+    public void delete() {
+        NodeComponent.mapper.get(to).removeConnectionTo(from);
     }
 }
