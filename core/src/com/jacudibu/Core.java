@@ -114,7 +114,7 @@ public class Core extends com.badlogic.gdx.Game {
 
 	private void initDebugStuff() {
 		modelBuilder = new ModelBuilder();
-		markerModel = modelBuilder.createBox(0.2f, 0.2f, 0.2f,
+		markerModel = modelBuilder.createBox(0.2f, 0.2f, 0.01f,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
