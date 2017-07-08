@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.jacudibu.InputManager;
 import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
 
@@ -29,6 +28,7 @@ public class InformationDrawer implements Disposable {
     private TextField.TextFieldListener textFieldListener;
 
     private TextField name;
+    private TextField hex;
     private TextField xPos, yPos, zPos;
     private TextField xRot, yRot, zRot;
     private FloatFilter floatFilter = new FloatFilter();
@@ -46,7 +46,7 @@ public class InformationDrawer implements Disposable {
         informationParent = new Group();
         stage.addActor(informationParent);
 
-        generateNameDrawer();
+        generateNameDrawers();
         generatePositionDrawer();
         generateRotationDrawer();
 
@@ -57,7 +57,16 @@ public class InformationDrawer implements Disposable {
         instance.currentlySelected = selectedObject;
 
         if (selectedObject != null) {
-            instance.setName(NodeComponent.mapper.get(selectedObject.getEntity()).name);
+            NodeComponent node = NodeComponent.mapper.get(selectedObject.getEntity());
+
+            instance.setName(node.name);
+            if (node.isMarker) {
+                instance.setHex(node.getHex());
+            }
+            else {
+                instance.hideHex();
+            }
+
             instance.setPositionValues(selectedObject.modelInstance.transform.getTranslation(new Vector3()));
             instance.setRotationValues(selectedObject.modelInstance.transform.getRotation(new Quaternion()));
         }
@@ -68,9 +77,24 @@ public class InformationDrawer implements Disposable {
         instance.updateUIPositions();
     }
 
+    public static boolean isCurrentlyFocused() {
+        return instance.stage.getKeyboardFocus() != null;
+    }
+
     private void setName(String newName) {
         name.setDisabled(false);
         name.setText(newName);
+    }
+
+    private void setHex(String newHex) {
+        hex.setDisabled(false);
+        hex.setText(newHex);
+        hex.setWidth(50f);
+    }
+
+    private void hideHex() {
+        hex.setDisabled(true);
+        hex.setWidth(0);
     }
 
     private void setPositionValues(Vector3 pos) {
@@ -96,6 +120,9 @@ public class InformationDrawer implements Disposable {
     private void disableInput() {
         name.setText("");
         name.setDisabled(true);
+
+        hex.setText("");
+        hex.setDisabled(true);
 
         xPos.setText("");
         yPos.setText("");
@@ -139,6 +166,7 @@ public class InformationDrawer implements Disposable {
         Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
 
         NodeComponent.mapper.get(currentlySelected.getEntity()).name = name.getText();
+        NodeComponent.mapper.get(currentlySelected.getEntity()).setHex(hex.getText());
         currentlySelected.animateTo(pos, rot);
         stage.setKeyboardFocus(null);
     }
@@ -159,14 +187,19 @@ public class InformationDrawer implements Disposable {
         }
     }
 
-    private void generateNameDrawer() {
+    private void generateNameDrawers() {
         nameGroup = new Group();
         informationParent.addActor(nameGroup);
 
         name = setupTextField(20, -20, Align.topLeft, nameGroup);
-        name.setWidth(180);
+        name.setWidth(115);
         name.setTextFieldFilter(null);
         name.setAlignment(Align.center);
+
+        hex = setupTextField(150, -20, Align.topLeft, nameGroup);
+        hex.setTextFieldFilter(new HexFilter());
+        hex.setAlignment(Align.center);
+        hex.setMaxLength(4);
     }
 
     private void generatePositionDrawer() {

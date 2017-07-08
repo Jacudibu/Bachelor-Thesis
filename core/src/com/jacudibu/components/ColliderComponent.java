@@ -34,7 +34,7 @@ public class ColliderComponent implements Component, Disposable{
 
     public static ColliderComponent createMarkerCollider(Entity entity) {
         ColliderComponent collider = new ColliderComponent(entity);
-        collider.collisionObject.setCollisionShape(new btBoxShape(new Vector3(0.1f, 0.1f, 0.1f)));
+        collider.collisionObject.setCollisionShape(new btBoxShape(new Vector3(0.1f, 0.1f, 0.01f)));
         collider.collisionObject.setWorldTransform(ModelComponent.mapper.get(entity).getWorldTransform());
         Core.collisionWorld.addCollisionObject(collider.collisionObject);
 

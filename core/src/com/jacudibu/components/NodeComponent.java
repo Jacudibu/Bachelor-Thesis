@@ -32,8 +32,8 @@ public class NodeComponent implements Component {
     public boolean isTracker;
 
     public String name = "";
-    public String hex = "";
     public int ID;
+    private String hex = "";
 
     public NodeComponent(Entity entity, boolean isMarker, boolean isTracker) {
         this(entity, isMarker, isTracker, total, "Node " + total);
@@ -234,11 +234,23 @@ public class NodeComponent implements Component {
         Entities.destroyEntity(entity);
     }
 
+    public String getHex() {
+        return hex;
+    }
+
     public void setHex(String hex) {
+        if (this.hex == hex) {
+            return;
+        }
+
         this.hex = hex;
         if (isMarker && QRGenerator.isValidCode(hex)) {
             ModelComponent.mapper.get(entity).setTextureAttribute(QRGenerator.generate(hex));
         }
+    }
+
+    public static void resetCounter() {
+        total = 0;
     }
 
     //----------

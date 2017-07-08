@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.UI.InformationDrawer;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 11.05.2017.
@@ -39,13 +40,14 @@ public class MainCamera {
     }
 
     public void update(float deltaTime) {
+        if (!InformationDrawer.isCurrentlyFocused()) {
+            Vector3 movement = processMovementInput(deltaTime);
 
-        Vector3 movement = processMovementInput(deltaTime);
-
-        Vector3 camRightVector = new Vector3().set(cam.direction).crs(cam.up).nor();
-        cam.position.add(camRightVector.x * movement.x, camRightVector.y * movement.x, camRightVector.z * movement.x);
-        cam.position.add(cam.up.x * movement.y, cam.up.y * movement.y, cam.up.z * movement.y);
-        zoom(movement.z);
+            Vector3 camRightVector = new Vector3().set(cam.direction).crs(cam.up).nor();
+            cam.position.add(camRightVector.x * movement.x, camRightVector.y * movement.x, camRightVector.z * movement.x);
+            cam.position.add(cam.up.x * movement.y, cam.up.y * movement.y, cam.up.z * movement.y);
+            zoom(movement.z);
+        }
 
         cam.update();
     }
