@@ -96,7 +96,7 @@ public class NodeComponent implements Component {
         }
 
         if (connection != null) {
-            Core.engine.removeEntity(connection.arrow.getEntity());
+            Entities.destroyEntity(connection.arrow.getEntity());
             outgoingConnections.removeValue(connection, true);
         }
     }

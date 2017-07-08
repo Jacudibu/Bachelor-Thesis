@@ -46,14 +46,15 @@ public final class Entities {
 
         if (isTracker) {
             entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
+            entity.add(ColliderComponent.createTrackerCollider(entity));
         }
         else
         {
             entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
+            entity.add(ColliderComponent.createMarkerCollider(entity));
         }
         entity.add(new NodeComponent(entity, isMarker, isTracker, ID, name));
         entity.add(new GridLineComponent(entity));
-        entity.add(ColliderComponent.createMarkerCollider(entity));
 
         entity.add(AnimationComponent.scale01(entity));
 
