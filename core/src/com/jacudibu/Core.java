@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
@@ -21,11 +25,20 @@ public class Core extends com.badlogic.gdx.Game {
 	public static InputMultiplexer inputMultiplexer;
 	public static Model markerModel;
 	public static Model trackerModel;
+
+	public static btCollisionWorld collisionWorld;
+	btCollisionConfiguration collisionConfig;
+	btBroadphaseInterface broadphase;
+	btCollisionDispatcher dispatcher;
+
 	public static Engine engine = new Engine();
 
 	public static int windowHeight;
 	public static int windowWidth;
 	public static Grid3d grid;
+
+	public final static boolean DEBUG_DRAW = false;
+	private DebugDrawer debugDrawer;
 
 	@Override
 	public void create () {
@@ -33,6 +46,18 @@ public class Core extends com.badlogic.gdx.Game {
 		windowHeight = Gdx.graphics.getHeight();
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
+
+		Bullet.init();
+		collisionConfig = new btDefaultCollisionConfiguration();
+		dispatcher = new btCollisionDispatcher(collisionConfig);
+		broadphase = new btDbvtBroadphase();
+		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+
+		if (DEBUG_DRAW) {
+			debugDrawer = new DebugDrawer();
+			debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
+			collisionWorld.setDebugDrawer(debugDrawer);
+		}
 
 		MainCamera.initialize();
 		engine.addSystem(new AnimationSystem());
@@ -54,14 +79,22 @@ public class Core extends com.badlogic.gdx.Game {
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		grid.render();
 
+		collisionWorld.updateAabbs();
 		engine.update(Gdx.graphics.getDeltaTime());
 		screen.render(Gdx.graphics.getDeltaTime());
+
+		if (DEBUG_DRAW) {
+			debugDrawer.begin(MainCamera.instance.cam);
+			collisionWorld.debugDrawWorld();
+			debugDrawer.end();
+		}
 	}
 
 	@Override
 	public void dispose () {
 		markerModel.dispose();
 		trackerModel.dispose();
+		collisionWorld.dispose();
 		screen.dispose();
 		grid.dispose();
 	}

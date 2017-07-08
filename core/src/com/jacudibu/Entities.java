@@ -16,9 +16,9 @@ public final class Entities {
         Entity entity = new Entity();
 
         entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
-        entity.add(new SelectableComponent(0.2f));
         entity.add(new NodeComponent(entity, true, false));
         entity.add(new GridLineComponent(entity));
+        entity.add(ColliderComponent.createMarkerCollider(entity));
 
         entity.add(AnimationComponent.scale01(entity));
 
@@ -31,9 +31,9 @@ public final class Entities {
         Entity entity = new Entity();
 
         entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
-        entity.add(new SelectableComponent(0.2f));
         entity.add(new NodeComponent(entity, false, true));
         entity.add(new GridLineComponent(entity));
+        entity.add(ColliderComponent.createTrackerCollider(entity));
 
         entity.add(AnimationComponent.scale01(entity));
 
@@ -46,12 +46,13 @@ public final class Entities {
 
         if (isTracker) {
             entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
+            entity.add(ColliderComponent.createTrackerCollider(entity));
         }
         else
         {
             entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
+            entity.add(ColliderComponent.createMarkerCollider(entity));
         }
-        entity.add(new SelectableComponent(0.2f));
         entity.add(new NodeComponent(entity, isMarker, isTracker, ID, name));
         entity.add(new GridLineComponent(entity));
 
@@ -62,11 +63,24 @@ public final class Entities {
     }
 
     public static Entity createArrow(Entity from, Entity to) {
-        Entity arrow = new Entity();
+        Entity entity = new Entity();
 
-        arrow.add(new ArrowComponent(arrow, from, to));
+        entity.add(new ArrowComponent(entity, from, to));
+        entity.add(ColliderComponent.createArrowCollider(entity));
 
-        Core.engine.addEntity(arrow);
-        return arrow;
+        Core.engine.addEntity(entity);
+        return entity;
+    }
+
+    public static void destroyEntity(Entity e) {
+        if (ColliderComponent.mapper.get(e) != null) {
+            ColliderComponent.mapper.get(e).dispose();
+        }
+
+        if (ArrowComponent.mapper.get(e) != null) {
+            ArrowComponent.mapper.get(e).dispose();
+        }
+
+        Core.engine.removeEntity(e);
     }
 }

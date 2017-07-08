@@ -11,13 +11,14 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.Core;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
  * Data Container used to visualized relations between Trackers and Markers.
  */
-public class ArrowComponent extends ModelComponent {
+public class ArrowComponent extends ModelComponent implements Disposable {
     public static final ComponentMapper<ArrowComponent> mapper = ComponentMapper.getFor(ArrowComponent.class);
 
     private static Model head;
@@ -66,5 +67,18 @@ public class ArrowComponent extends ModelComponent {
                 material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
         modelInstance = new ModelInstance(model);
+
+        if (ColliderComponent.mapper.get(entity) != null) {
+            ColliderComponent.mapper.get(entity).updateArrowCollider(this);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        model.dispose();
+    }
+
+    public void delete() {
+        NodeComponent.mapper.get(to).removeConnectionTo(from);
     }
 }
