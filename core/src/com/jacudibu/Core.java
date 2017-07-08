@@ -116,11 +116,11 @@ public class Core extends com.badlogic.gdx.Game {
 		modelBuilder = new ModelBuilder();
 		markerModel = modelBuilder.createBox(0.2f, 0.2f, 0.2f,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
 		trackerModel = modelBuilder.createSphere(0.2f, 0.2f, 0.2f,50, 50,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
 		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
 		JsonImporter.importJson("test");

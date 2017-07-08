@@ -78,10 +78,12 @@ public class JsonImporter {
 
         int id = json.getInt("id");
         String name = json.getString("name");
+        String hex = json.getString("hex");
         boolean isTracker = json.getBoolean("isTracker");
         boolean isMarker = json.getBoolean("isMarker");
 
-        Entity e = Entities.createNode(pos, rot, id, name, isTracker, isMarker);
+        Entity e = Entities.createNode(pos, rot, id, name, isTracker, isMarker, hex);
+
         return NodeComponent.mapper.get(e);
     }
 

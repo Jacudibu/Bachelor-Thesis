@@ -43,7 +43,13 @@ public final class Entities {
     }
 
     public static Entity createNode(Vector3 position, Quaternion rotation, int ID, String name, boolean isTracker, boolean isMarker) {
+        return createNode(position, rotation, ID, name, isTracker, isMarker, "");
+    }
+
+    public static Entity createNode(Vector3 position, Quaternion rotation, int ID, String name, boolean isTracker, boolean isMarker, String hex) {
         Entity entity = new Entity();
+
+        entity.add(new NodeComponent(entity, isMarker, isTracker, ID, name));
 
         if (isTracker) {
             entity.add(new ModelComponent(entity, Core.trackerModel, position, rotation));
@@ -53,10 +59,10 @@ public final class Entities {
         {
             entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
             entity.add(ColliderComponent.createMarkerCollider(entity));
+            NodeComponent.mapper.get(entity).setHex(hex);
         }
-        entity.add(new NodeComponent(entity, isMarker, isTracker, ID, name));
-        entity.add(new GridLineComponent(entity));
 
+        entity.add(new GridLineComponent(entity));
         entity.add(AnimationComponent.scale01(entity));
 
         Core.engine.addEntity(entity);

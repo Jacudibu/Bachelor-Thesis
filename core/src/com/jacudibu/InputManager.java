@@ -4,7 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.jacudibu.Utility.QRGenerator;
 import com.jacudibu.components.ArrowComponent;
+import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.fileSystem.JsonExporter;
@@ -87,6 +89,10 @@ public class InputManager implements InputProcessor {
 
             case Input.Keys.R:
                 MainCamera.instance.reset();
+                return true;
+
+            case Input.Keys.NUM_0:
+                ModelComponent.mapper.get(Core.engine.getSystem(SelectionSystem.class).currentlySelected).setTextureAttribute(QRGenerator.generate("F731"));
                 return true;
         }
 

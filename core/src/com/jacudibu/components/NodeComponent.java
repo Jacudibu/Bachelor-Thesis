@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Utility.Entities;
+import com.jacudibu.Utility.QRGenerator;
 import org.json.JSONObject;
 
 import java.util.Stack;
@@ -31,6 +32,7 @@ public class NodeComponent implements Component {
     public boolean isTracker;
 
     public String name = "";
+    public String hex = "";
     public int ID;
 
     public NodeComponent(Entity entity, boolean isMarker, boolean isTracker) {
@@ -232,6 +234,13 @@ public class NodeComponent implements Component {
         Entities.destroyEntity(entity);
     }
 
+    public void setHex(String hex) {
+        this.hex = hex;
+        if (isMarker && QRGenerator.isValidCode(hex)) {
+            ModelComponent.mapper.get(entity).setTextureAttribute(QRGenerator.generate(hex));
+        }
+    }
+
     //----------
     //-- JSON --
     //----------
@@ -241,6 +250,7 @@ public class NodeComponent implements Component {
 
         json.put("id", ID);
         json.put("name", name);
+        json.put("hex", hex);
         json.put("isTracker", isTracker);
         json.put("isMarker", isMarker);
 

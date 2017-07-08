@@ -8,17 +8,34 @@ import com.badlogic.gdx.graphics.Texture;
  * Created by Stefan Wolf (Jacudibu) on 08.07.2017.
  */
 public class QRGenerator {
-    private static final int size = 1024;
+    private static final int size = 64;
     private static final int cellSize = size / 4;
     private static final Color markedColor = Color.BLACK;
     private static final Color freeColor = Color.WHITE;
 
+    public static boolean isValidCode(String code) {
+        if (code.isEmpty() || code.length() > 4) {
+            return false;
+        }
+
+        int value = Integer.parseInt(code, 16);
+        if (value < 0 || value > 65535) {
+            return false;
+        }
+        return true;
+    }
+
     public static Texture generate(String code) {
-        return new Texture(generatePixmap(code));
+        if (isValidCode(code)) {
+            return new Texture(generatePixmap(code));
+        }
+        else {
+            return null;
+        }
     }
 
     private static Pixmap generatePixmap(String code) {
-        Pixmap map = new Pixmap(size, size, null);
+        Pixmap map = new Pixmap(size, size, Pixmap.Format.RGBA8888 );
 
         for (int row = 0; row < 4; row++) {
             drawRow(map, code.charAt(row), row);

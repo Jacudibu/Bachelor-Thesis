@@ -134,10 +134,10 @@ public class SelectionSystem extends EntitySystem {
 
     private void setEntityColor(Entity entity, Color color) {
         if (ModelComponent.mapper.get(entity) != null) {
-            ModelComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+            ModelComponent.mapper.get(entity).setColorAttribute(color);
         }
         else if (ArrowComponent.mapper.get(entity) != null) {
-            ArrowComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+            ArrowComponent.mapper.get(entity).setColorAttribute(color);
         }
 
     }

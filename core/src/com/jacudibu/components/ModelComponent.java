@@ -3,8 +3,12 @@ package com.jacudibu.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -100,6 +104,14 @@ public class ModelComponent implements Component {
 
     public NodeComponent getNode() {
         return NodeComponent.mapper.get(entity);
+    }
+
+    public void setColorAttribute(Color color) {
+        modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+    }
+
+    public void setTextureAttribute(Texture texture) {
+        modelInstance.materials.get(0).set(TextureAttribute.createDiffuse(texture));
     }
 
 }
