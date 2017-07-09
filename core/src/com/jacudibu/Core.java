@@ -125,7 +125,7 @@ public class Core extends com.badlogic.gdx.Game {
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
 		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
-		JsonImporter.importJson("QRtest");
+		JsonImporter.importJson("test-qr");
 	}
 
 	public static void reset() {
