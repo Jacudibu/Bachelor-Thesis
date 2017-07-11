@@ -19,6 +19,7 @@ import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 import com.jacudibu.fileSystem.JsonExporter;
 import com.jacudibu.fileSystem.JsonImporter;
+import ubitrack.*;
 
 public class Core extends com.badlogic.gdx.Game {
 	public static ModelBuilder modelBuilder;
@@ -37,7 +38,7 @@ public class Core extends com.badlogic.gdx.Game {
 	public static int windowWidth;
 	public static Grid3d grid;
 
-	public final static boolean DEBUG_DRAW = false;
+	public final static boolean DEBUG_DRAW = true;
 	private DebugDrawer debugDrawer;
 
 	@Override
@@ -46,6 +47,9 @@ public class Core extends com.badlogic.gdx.Game {
 		windowHeight = Gdx.graphics.getHeight();
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
+
+		SimpleFacade f = new SimpleFacade("C:\\Ubitrack\\bin\\ubitrack");
+
 
 		Bullet.init();
 		collisionConfig = new btDefaultCollisionConfiguration();
