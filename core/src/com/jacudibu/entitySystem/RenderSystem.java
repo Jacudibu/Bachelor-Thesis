@@ -47,7 +47,7 @@ public class RenderSystem extends EntitySystem {
 
         for (int i = 0; i < models.size(); i++) {
             Entity entity = models.get(i);
-            ModelComponent model = ModelComponent.mapper.get(entity);
+            ModelComponent model = ModelComponent.get(entity);
             modelBatch.render(model.modelInstance, environment);
         }
 
@@ -55,7 +55,7 @@ public class RenderSystem extends EntitySystem {
         // therefore modelEntitites won't contain entities with arrowComponents.
         for (int i = 0; i < arrows.size(); i++) {
             Entity entity = arrows.get(i);
-            ArrowComponent arrow = ArrowComponent.mapper.get(entity);
+            ArrowComponent arrow = ArrowComponent.get(entity);
             if (arrow.modelInstance != null) {
                 modelBatch.render(arrow.modelInstance, environment);
             }
@@ -64,7 +64,7 @@ public class RenderSystem extends EntitySystem {
         if (Core.grid.isDrawaing()) {
             for (int i = 0; i < gridLines.size(); i++) {
                 Entity entity = gridLines.get(i);
-                GridLineComponent gridLine = GridLineComponent.mapper.get(entity);
+                GridLineComponent gridLine = GridLineComponent.get(entity);
                 modelBatch.render(gridLine.modelInstance, environment);
             }
         }

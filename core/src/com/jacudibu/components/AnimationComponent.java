@@ -13,7 +13,7 @@ import com.jacudibu.entitySystem.AnimationSystem;
  * Data container for Entities that need some sort of Animation.
  */
 public class AnimationComponent implements Component {
-    public static final ComponentMapper<AnimationComponent> mapper = ComponentMapper.getFor(AnimationComponent.class);
+    private static final ComponentMapper<AnimationComponent> mapper = ComponentMapper.getFor(AnimationComponent.class);
 
     public boolean position;
     public Vector3 fromPos;
@@ -33,6 +33,10 @@ public class AnimationComponent implements Component {
     private Entity entity;
     private ModelComponent modelComponent;
 
+    public static AnimationComponent get(Entity e) {
+        return mapper.get(e);
+    }
+
     public static AnimationComponent scale01(Entity entity) {
         AnimationComponent anim = new AnimationComponent(entity);
 
@@ -46,7 +50,7 @@ public class AnimationComponent implements Component {
     public static AnimationComponent lerpMovement(Entity entity, Vector3 movement) {
         AnimationComponent anim = new AnimationComponent(entity);
 
-        anim.fromPos = ModelComponent.mapper.get(entity).getPosition();
+        anim.fromPos = ModelComponent.get(entity).getPosition();
         anim.toPos = anim.fromPos.cpy().add(movement);
         anim.position = true;
 
@@ -55,7 +59,7 @@ public class AnimationComponent implements Component {
 
     public AnimationComponent(Entity entity) {
         this.entity = entity;
-        modelComponent = ModelComponent.mapper.get(entity);
+        modelComponent = ModelComponent.get(entity);
     }
 
     public void update(float deltaTime) {
@@ -88,8 +92,8 @@ public class AnimationComponent implements Component {
 
         modelComponent.updateTransform(currentPos, currentRot, currentScale);
 
-        if (position && GridLineComponent.mapper.get(entity) != null) {
-            GridLineComponent.mapper.get(entity).updatePosition();
+        if (position && GridLineComponent.get(entity) != null) {
+            GridLineComponent.get(entity).updatePosition();
         }
 
         if (currentAnimationProgress == 1) {

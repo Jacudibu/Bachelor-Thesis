@@ -83,7 +83,7 @@ public class FileListener {
         Entity newMarker = Entities.createMarker(position, rotation);
         Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
 
-        NodeComponent.mapper.get(newTracker).addOutgoing(newMarker);
+        NodeComponent.get(newTracker).addOutgoing(newMarker);
     }
 
 

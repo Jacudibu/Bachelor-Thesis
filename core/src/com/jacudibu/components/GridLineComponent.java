@@ -19,12 +19,16 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Stefan Wolf (Jacudibu) on 02.07.2017.
  */
 public class GridLineComponent implements Component {
-    public static final ComponentMapper<GridLineComponent> mapper = ComponentMapper.getFor(GridLineComponent.class);
+    private static final ComponentMapper<GridLineComponent> mapper = ComponentMapper.getFor(GridLineComponent.class);
     private static boolean drawIntersections = true;
 
     private Model model;
     private Entity entity;
     public ModelInstance modelInstance;
+
+    public static GridLineComponent get(Entity e) {
+        return mapper.get(e);
+    }
 
     public GridLineComponent(Entity entity) {
         this.entity = entity;
@@ -40,7 +44,7 @@ public class GridLineComponent implements Component {
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked, material);
         builder.setColor(new Color(1f,1f,1f,0.2f));
 
-        Vector3 position = ModelComponent.mapper.get(entity).getPosition();
+        Vector3 position = ModelComponent.get(entity).getPosition();
         Vector3 target = position.cpy();
         target.y = 0;
 

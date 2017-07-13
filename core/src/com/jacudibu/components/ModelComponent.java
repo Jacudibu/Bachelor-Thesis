@@ -19,11 +19,15 @@ import com.jacudibu.Core;
  * Data Container for everything that needs to be rendered.
  */
 public class ModelComponent implements Component {
-    public static final ComponentMapper<ModelComponent> mapper = ComponentMapper.getFor(ModelComponent.class);
+    private static final ComponentMapper<ModelComponent> mapper = ComponentMapper.getFor(ModelComponent.class);
 
     public Model model;
     public ModelInstance modelInstance;
     protected Entity entity;
+
+    public static ModelComponent get(Entity e) {
+        return mapper.get(e);
+    }
 
     protected ModelComponent() {}
 
@@ -70,12 +74,12 @@ public class ModelComponent implements Component {
     public void updateTransform(Vector3 position, Quaternion rotation, Vector3 scale) {
         modelInstance.transform.set(position, rotation);
 
-        if (NodeComponent.mapper.get(entity) != null) {
-            NodeComponent.mapper.get(entity).handlePositionUpdate();
+        if (NodeComponent.get(entity) != null) {
+            NodeComponent.get(entity).handlePositionUpdate();
         }
 
-        if (ColliderComponent.mapper.get(entity) != null) {
-            ColliderComponent.mapper.get(entity).updateTransform(modelInstance.transform);
+        if (ColliderComponent.get(entity) != null) {
+            ColliderComponent.get(entity).updateTransform(modelInstance.transform);
         }
     }
 
@@ -84,14 +88,14 @@ public class ModelComponent implements Component {
     }
 
     public boolean isMarker() {
-        if  (NodeComponent.mapper.get(entity) != null) {
-            return NodeComponent.mapper.get(entity).isMarker;
+        if  (NodeComponent.get(entity) != null) {
+            return NodeComponent.get(entity).isMarker;
         }
         return false;
     }
     public boolean isTracker() {
-        if  (NodeComponent.mapper.get(entity) != null) {
-            return NodeComponent.mapper.get(entity).isTracker;
+        if  (NodeComponent.get(entity) != null) {
+            return NodeComponent.get(entity).isTracker;
         }
         return false;
     }
@@ -103,7 +107,7 @@ public class ModelComponent implements Component {
     public Matrix4 getWorldTransform() {return modelInstance.transform; }
 
     public NodeComponent getNode() {
-        return NodeComponent.mapper.get(entity);
+        return NodeComponent.get(entity);
     }
 
     public void setColorAttribute(Color color) {
