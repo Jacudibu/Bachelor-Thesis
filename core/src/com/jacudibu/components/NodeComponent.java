@@ -6,8 +6,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.jacudibu.Utility.Entities;
-import com.jacudibu.Utility.QRGenerator;
+import com.jacudibu.utility.Entities;
+import com.jacudibu.utility.QRGenerator;
 import org.json.JSONObject;
 
 import java.util.Stack;

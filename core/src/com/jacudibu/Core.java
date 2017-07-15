@@ -12,14 +12,14 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
-import com.jacudibu.Utility.Grid3d;
+import com.jacudibu.ubiWrap.UbiManager;
+import com.jacudibu.utility.Grid3d;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.AnimationSystem;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.entitySystem.RenderSystem;
 import com.jacudibu.fileSystem.JsonExporter;
 import com.jacudibu.fileSystem.JsonImporter;
-import ubitrack.*;
 
 public class Core extends com.badlogic.gdx.Game {
 	public static ModelBuilder modelBuilder;
@@ -42,8 +42,6 @@ public class Core extends com.badlogic.gdx.Game {
 	private DebugDrawer debugDrawer;
 
 	float testTimer = 0f;
-	SimpleFacade facade;
-	PoseReceiver receiver;
 
 	@Override
 	public void create () {
@@ -52,7 +50,7 @@ public class Core extends com.badlogic.gdx.Game {
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		setupUbitrack();
+		UbiManager.init();
 
 		Bullet.init();
 		collisionConfig = new btDefaultCollisionConfiguration();
@@ -84,10 +82,12 @@ public class Core extends com.badlogic.gdx.Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
 				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		if (facade.getLastError() != null) {
-			Gdx.app.log("Ubitrack", facade.getLastError());
+		try {
+			UbiManager.update();
+		} catch (Exception e) {
 			return;
 		}
+
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		grid.render();
@@ -100,10 +100,6 @@ public class Core extends com.badlogic.gdx.Game {
 			debugDrawer.begin(MainCamera.instance.cam);
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
-		}
-
-		if (receiver.requestUpdate) {
-			receiver.update();
 		}
 	}
 
@@ -150,17 +146,4 @@ public class Core extends com.badlogic.gdx.Game {
 		NodeComponent.resetCounter();
 	}
 
-	private void setupUbitrack() {
-		// ubitrack.initLogging();
-		facade = new SimpleFacade("C:\\Ubitrack\\bin\\ubitrack");
-		Gdx.app.log("f", facade.getLastError());
-		facade.loadDataflow("C:\\Ubitrack\\wolfBA_DFG.dfg");
-		Gdx.app.log("f", facade.getLastError());
-		facade.startDataflow();
-		Gdx.app.log("f", facade.getLastError());
-
-		receiver = new PoseReceiver("5cc5");
-		facade.setPoseCallback("272pose", receiver);
-		Gdx.app.log("f", facade.getLastError());
-	}
 }

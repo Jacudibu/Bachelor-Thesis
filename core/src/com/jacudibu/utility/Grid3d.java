@@ -1,4 +1,4 @@
-package com.jacudibu.Utility;
+package com.jacudibu.utility;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
