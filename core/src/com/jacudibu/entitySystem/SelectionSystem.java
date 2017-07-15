@@ -123,7 +123,7 @@ public class SelectionSystem extends EntitySystem {
 
         setEntityColor(currentlySelected, Color.BLUE);
 
-        InformationDrawer.setCurrentlySelectedObject(ModelComponent.mapper.get(currentlySelected));
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(currentlySelected));
     }
 
     private void unselect() {
@@ -133,11 +133,11 @@ public class SelectionSystem extends EntitySystem {
     }
 
     private void setEntityColor(Entity entity, Color color) {
-        if (ModelComponent.mapper.get(entity) != null) {
-            ModelComponent.mapper.get(entity).setColorAttribute(color);
+        if (ModelComponent.get(entity) != null) {
+            ModelComponent.get(entity).setColorAttribute(color);
         }
-        else if (ArrowComponent.mapper.get(entity) != null) {
-            ArrowComponent.mapper.get(entity).setColorAttribute(color);
+        else if (ArrowComponent.get(entity) != null) {
+            ArrowComponent.get(entity).setColorAttribute(color);
         }
 
     }

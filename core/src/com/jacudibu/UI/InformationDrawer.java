@@ -57,7 +57,7 @@ public class InformationDrawer implements Disposable {
         instance.currentlySelected = selectedObject;
 
         if (selectedObject != null) {
-            NodeComponent node = NodeComponent.mapper.get(selectedObject.getEntity());
+            NodeComponent node = NodeComponent.get(selectedObject.getEntity());
 
             instance.setName(node.name);
             if (node.isMarker) {
@@ -165,8 +165,8 @@ public class InformationDrawer implements Disposable {
 
         Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
 
-        NodeComponent.mapper.get(currentlySelected.getEntity()).name = name.getText();
-        NodeComponent.mapper.get(currentlySelected.getEntity()).setHex(hex.getText());
+        NodeComponent.get(currentlySelected.getEntity()).name = name.getText();
+        NodeComponent.get(currentlySelected.getEntity()).setHex(hex.getText());
         currentlySelected.animateTo(pos, rot);
         stage.setKeyboardFocus(null);
     }
@@ -279,11 +279,6 @@ public class InformationDrawer implements Disposable {
         positionGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
         rotationGroup.setPosition(x, y, Align.topLeft);
-
-        if (currentlySelected.isMarker()) {
-            // TODO: Show Marker ID in a Text field
-        }
-
     }
 
     @Override

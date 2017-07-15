@@ -84,7 +84,7 @@ public class JsonImporter {
 
         Entity e = Entities.createNode(pos, rot, id, name, isTracker, isMarker, hex);
 
-        return NodeComponent.mapper.get(e);
+        return NodeComponent.get(e);
     }
 
     private static void createConnections(JSONArray connectionArray, Array<NodeComponent> nodes) {

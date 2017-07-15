@@ -59,7 +59,7 @@ public class JsonExporter {
 
         ImmutableArray<Entity> nodeEntities = Core.engine.getEntitiesFor((Family.all(NodeComponent.class).get()));
         for (int i = 0; i < nodeEntities.size(); i++) {
-            NodeComponent node = NodeComponent.mapper.get(nodeEntities.get(i));
+            NodeComponent node = NodeComponent.get(nodeEntities.get(i));
 
             nodeArray.put(node.toJson());
             if (node.getOutgoingCount() > 0) {

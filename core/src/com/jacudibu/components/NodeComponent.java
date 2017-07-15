@@ -16,8 +16,12 @@ import java.util.Stack;
  * Created by Stefan Wolf (Jacudibu) on 26.06.2017.
  */
 public class NodeComponent implements Component {
-    public static final ComponentMapper<NodeComponent> mapper = ComponentMapper.getFor(NodeComponent.class);
+    private static final ComponentMapper<NodeComponent> mapper = ComponentMapper.getFor(NodeComponent.class);
     public static int total = 0;
+
+    public static NodeComponent get(Entity e) {
+        return mapper.get(e);
+    }
 
     private class Connection {
         public NodeComponent node;
@@ -64,7 +68,7 @@ public class NodeComponent implements Component {
         connection.node = node;
 
         Entity arrow = Entities.createArrow(node.getEntity(), entity);
-        connection.arrow = ArrowComponent.mapper.get(arrow);
+        connection.arrow = ArrowComponent.get(arrow);
 
         outgoingConnections.add(connection);
         node.addIncoming(this, connection.arrow);
@@ -188,8 +192,8 @@ public class NodeComponent implements Component {
         }
 
         // Move Subtree
-        Vector3 start = ModelComponent.mapper.get(this.entity).getPosition();
-        Vector3 end = ModelComponent.mapper.get(node.entity).getPosition();
+        Vector3 start = ModelComponent.get(this.entity).getPosition();
+        Vector3 end = ModelComponent.get(node.entity).getPosition();
         Vector3 movement = start.cpy().sub(end);
         for (int i = 0; i < subtree.size; i++) {
             subtree.get(i).entity.add(AnimationComponent.lerpMovement(subtree.get(i).entity, movement));
@@ -245,7 +249,7 @@ public class NodeComponent implements Component {
 
         this.hex = hex;
         if (isMarker && QRGenerator.isValidCode(hex)) {
-            ModelComponent.mapper.get(entity).setTextureAttribute(QRGenerator.generate(hex));
+            ModelComponent.get(entity).setTextureAttribute(QRGenerator.generate(hex));
         }
     }
 
@@ -266,14 +270,14 @@ public class NodeComponent implements Component {
         json.put("isTracker", isTracker);
         json.put("isMarker", isMarker);
 
-        Vector3 pos = ModelComponent.mapper.get(entity).getPosition();
+        Vector3 pos = ModelComponent.get(entity).getPosition();
         JSONObject posJson = new JSONObject();
         posJson.put("x", pos.x);
         posJson.put("y", pos.y);
         posJson.put("z", pos.z);
         json.put("position", posJson);
 
-        Quaternion rot = ModelComponent.mapper.get(entity).getRotation();
+        Quaternion rot = ModelComponent.get(entity).getRotation();
         JSONObject rotJson = new JSONObject();
         rotJson.put("x", rot.x);
         rotJson.put("y", rot.y);

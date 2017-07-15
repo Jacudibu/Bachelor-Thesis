@@ -59,7 +59,7 @@ public final class Entities {
         {
             entity.add(new ModelComponent(entity, Core.markerModel, position, rotation));
             entity.add(ColliderComponent.createMarkerCollider(entity));
-            NodeComponent.mapper.get(entity).setHex(hex);
+            NodeComponent.get(entity).setHex(hex);
         }
 
         entity.add(new GridLineComponent(entity));
@@ -80,12 +80,12 @@ public final class Entities {
     }
 
     public static void destroyEntity(Entity e) {
-        if (ColliderComponent.mapper.get(e) != null) {
-            ColliderComponent.mapper.get(e).dispose();
+        if (ColliderComponent.get(e) != null) {
+            ColliderComponent.get(e).dispose();
         }
 
-        if (ArrowComponent.mapper.get(e) != null) {
-            ArrowComponent.mapper.get(e).dispose();
+        if (ArrowComponent.get(e) != null) {
+            ArrowComponent.get(e).dispose();
         }
 
         Core.engine.removeEntity(e);

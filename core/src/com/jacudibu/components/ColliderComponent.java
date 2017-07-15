@@ -18,15 +18,19 @@ import com.jacudibu.Core;
  * Created by Stefan Wolf (Jacudibu) on 08.07.2017.
  */
 public class ColliderComponent implements Component, Disposable{
-    public static final ComponentMapper<ColliderComponent> mapper = ComponentMapper.getFor(ColliderComponent.class);
+    private static final ComponentMapper<ColliderComponent> mapper = ComponentMapper.getFor(ColliderComponent.class);
 
     public btCollisionObject collisionObject;
     private boolean isArrow;
 
+    public static ColliderComponent get(Entity e) {
+        return mapper.get(e);
+    }
+
     public static ColliderComponent createTrackerCollider(Entity entity) {
         ColliderComponent collider = new ColliderComponent(entity);
         collider.collisionObject.setCollisionShape(new btSphereShape(0.1f));
-        collider.collisionObject.setWorldTransform(ModelComponent.mapper.get(entity).getWorldTransform());
+        collider.collisionObject.setWorldTransform(ModelComponent.get(entity).getWorldTransform());
         Core.collisionWorld.addCollisionObject(collider.collisionObject);
 
         return collider;
@@ -35,7 +39,7 @@ public class ColliderComponent implements Component, Disposable{
     public static ColliderComponent createMarkerCollider(Entity entity) {
         ColliderComponent collider = new ColliderComponent(entity);
         collider.collisionObject.setCollisionShape(new btBoxShape(new Vector3(0.1f, 0.1f, 0.01f)));
-        collider.collisionObject.setWorldTransform(ModelComponent.mapper.get(entity).getWorldTransform());
+        collider.collisionObject.setWorldTransform(ModelComponent.get(entity).getWorldTransform());
         Core.collisionWorld.addCollisionObject(collider.collisionObject);
 
         return collider;
@@ -44,7 +48,7 @@ public class ColliderComponent implements Component, Disposable{
     public static ColliderComponent createArrowCollider(Entity entity) {
         ColliderComponent collider = new ColliderComponent(entity);
 
-        collider.updateArrowCollider(ArrowComponent.mapper.get(entity));
+        collider.updateArrowCollider(ArrowComponent.get(entity));
         Core.collisionWorld.addCollisionObject(collider.collisionObject);
 
         return collider;

@@ -22,7 +22,7 @@ public class AnimationSystem extends EntitySystem {
     public void update(float deltaTime) {
         for (int i = 0; i < animatedEntities.size(); i++) {
             Entity entity = animatedEntities.get(i);
-            AnimationComponent animation = AnimationComponent.mapper.get(entity);
+            AnimationComponent animation = AnimationComponent.get(entity);
             animation.update(deltaTime);
 
         }

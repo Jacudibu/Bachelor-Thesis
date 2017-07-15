@@ -59,13 +59,13 @@ public class InputManager implements InputProcessor {
 
         switch (currentAction) {
             case MERGE:
-                NodeComponent.mapper.get(first).merge(second);
+                NodeComponent.get(first).merge(second);
 
                 currentAction = SelectionAction.NONE;
                 return first;
 
             case CONNECT:
-                NodeComponent.mapper.get(first).addOutgoing(second);
+                NodeComponent.get(first).addOutgoing(second);
                 currentAction = SelectionAction.NONE;
                 return second;
 
@@ -214,7 +214,7 @@ public class InputManager implements InputProcessor {
     public boolean setMergeMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
 
-        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+        if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.MERGE;
             return true;
         }
@@ -225,7 +225,7 @@ public class InputManager implements InputProcessor {
     public boolean setConnectMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
 
-        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+        if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.CONNECT;
             return true;
         }
@@ -236,14 +236,14 @@ public class InputManager implements InputProcessor {
     public boolean setDeleteMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
 
-        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+        if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.NONE;
-            NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
+            NodeComponent.get(selectionSystem.currentlySelected).delete();
             return true;
         }
-        else if (ArrowComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+        else if (ArrowComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.NONE;
-            ArrowComponent.mapper.get(selectionSystem.currentlySelected).delete();
+            ArrowComponent.get(selectionSystem.currentlySelected).delete();
             return true;
         }
 

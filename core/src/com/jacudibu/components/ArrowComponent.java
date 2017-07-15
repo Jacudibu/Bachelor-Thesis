@@ -19,7 +19,7 @@ import com.jacudibu.Core;
  * Data Container used to visualized relations between Trackers and Markers.
  */
 public class ArrowComponent extends ModelComponent implements Disposable {
-    public static final ComponentMapper<ArrowComponent> mapper = ComponentMapper.getFor(ArrowComponent.class);
+    private static final ComponentMapper<ArrowComponent> mapper = ComponentMapper.getFor(ArrowComponent.class);
 
     private static Model head;
     public ModelInstance headInstance;
@@ -27,6 +27,10 @@ public class ArrowComponent extends ModelComponent implements Disposable {
     public Entity from;
     public Entity to;
     private Material material;
+
+    public static ArrowComponent get(Entity e) {
+        return mapper.get(e);
+    }
 
     public ArrowComponent(Entity arrowEntity, Entity from, Entity to) {
         this.from = from;
@@ -44,8 +48,8 @@ public class ArrowComponent extends ModelComponent implements Disposable {
             modelInstance = null;
         }
 
-        Vector3 fromPos = ModelComponent.mapper.get(from).modelInstance.transform.getTranslation(new Vector3());
-        Vector3 toPos = ModelComponent.mapper.get(to).modelInstance.transform.getTranslation(new Vector3());
+        Vector3 fromPos = ModelComponent.get(from).modelInstance.transform.getTranslation(new Vector3());
+        Vector3 toPos = ModelComponent.get(to).modelInstance.transform.getTranslation(new Vector3());
 
         // Adjust start & end positions so that we won't poke into objects.
         Vector3 cutoff = toPos.cpy().sub(fromPos).nor().scl(0.1f); // That was the point i've realized that libGDX can be ugly.
@@ -68,8 +72,8 @@ public class ArrowComponent extends ModelComponent implements Disposable {
 
         modelInstance = new ModelInstance(model);
 
-        if (ColliderComponent.mapper.get(entity) != null) {
-            ColliderComponent.mapper.get(entity).updateArrowCollider(this);
+        if (ColliderComponent.get(entity) != null) {
+            ColliderComponent.get(entity).updateArrowCollider(this);
         }
     }
 
@@ -79,6 +83,6 @@ public class ArrowComponent extends ModelComponent implements Disposable {
     }
 
     public void delete() {
-        NodeComponent.mapper.get(to).removeConnectionTo(from);
+        NodeComponent.get(to).removeConnectionTo(from);
     }
 }
