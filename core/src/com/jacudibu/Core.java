@@ -41,6 +41,10 @@ public class Core extends com.badlogic.gdx.Game {
 	public final static boolean DEBUG_DRAW = true;
 	private DebugDrawer debugDrawer;
 
+	float testTimer = 0f;
+	SimpleFacade facade;
+	PoseReceiver receiver;
+
 	@Override
 	public void create () {
 		windowWidth = Gdx.graphics.getWidth();
@@ -48,8 +52,7 @@ public class Core extends com.badlogic.gdx.Game {
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		SimpleFacade f = new SimpleFacade("C:\\Ubitrack\\bin\\ubitrack");
-
+		setupUbitrack();
 
 		Bullet.init();
 		collisionConfig = new btDefaultCollisionConfiguration();
@@ -79,7 +82,12 @@ public class Core extends com.badlogic.gdx.Game {
 	public void render () {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
-							| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+
+		if (facade.getLastError() != null) {
+			Gdx.app.log("Ubitrack", facade.getLastError());
+			return;
+		}
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		grid.render();
@@ -92,6 +100,10 @@ public class Core extends com.badlogic.gdx.Game {
 			debugDrawer.begin(MainCamera.instance.cam);
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
+		}
+
+		if (receiver.requestUpdate) {
+			receiver.update();
 		}
 	}
 
@@ -136,5 +148,19 @@ public class Core extends com.badlogic.gdx.Game {
 		engine.removeAllEntities();
 		JsonExporter.savePath = "";
 		NodeComponent.resetCounter();
+	}
+
+	private void setupUbitrack() {
+		// ubitrack.initLogging();
+		facade = new SimpleFacade("C:\\Ubitrack\\bin\\ubitrack");
+		Gdx.app.log("f", facade.getLastError());
+		facade.loadDataflow("C:\\Ubitrack\\wolfBA_DFG.dfg");
+		Gdx.app.log("f", facade.getLastError());
+		facade.startDataflow();
+		Gdx.app.log("f", facade.getLastError());
+
+		receiver = new PoseReceiver("5cc5");
+		facade.setPoseCallback("272pose", receiver);
+		Gdx.app.log("f", facade.getLastError());
 	}
 }
