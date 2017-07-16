@@ -61,19 +61,20 @@ public class UbiManager {
         facade.startDataflow();
 
         // TODO: parse dfg properly
-        receivePose("272pose", "5CC5");
+        //receivePose("272pose", "5CC5");
+
     }
 
     private static void receivePose(String id) {
         receivePose(id, "ffff");
     }
 
-    private static void receivePose(String id, String qr) {
+    protected static void receivePose(String id, String qr) {
         if (!isInit) {
             Gdx.app.log("Ubitrack", "receivePose called without being initialized!");
         }
 
-        PoseReceiver receiver = new PoseReceiver(qr);
+        PoseReceiver receiver = new PoseReceiver(id, qr);
         facade.setPoseCallback(id, receiver);
 
         receivers.add(receiver);

@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
+import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.ubiWrap.UbiManager;
 import com.jacudibu.utility.Grid3d;
 import com.jacudibu.components.NodeComponent;
@@ -86,7 +87,6 @@ public class Core extends com.badlogic.gdx.Game {
 			return;
 		}
 
-
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
 		grid.render();
 
@@ -136,6 +136,7 @@ public class Core extends com.badlogic.gdx.Game {
 
 		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
 		JsonImporter.importJson("test-qr");
+		DFGParser.parse(UbiManager.dfgPath);
 	}
 
 	public static void reset() {
