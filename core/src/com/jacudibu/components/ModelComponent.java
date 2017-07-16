@@ -52,19 +52,29 @@ public class ModelComponent implements Component {
     }
 
     public void animateTo(Vector3 position, Quaternion rotation) {
-        AnimationComponent anim = new AnimationComponent(entity);
+        AnimationComponent anim = AnimationComponent.get(entity);
+        boolean newAnim = false;
 
-        anim.fromPos = modelInstance.transform.getTranslation(new Vector3());
+        if (anim == null) {
+            anim = new AnimationComponent(entity);
+            newAnim = true;
+        }
+
+        anim.fromPos = getPosition();
         anim.toPos = position;
         anim.position = true;
 
-        anim.fromRot = modelInstance.transform.getRotation(new Quaternion());
+        anim.fromRot = getRotation();
         anim.toRot = rotation;
         anim.rotation = true;
 
         anim.speed = 4f;
 
-        entity.add(anim);
+        if (newAnim) {
+            entity.add(anim);
+        } else {
+            anim.resetProgress();
+        }
     }
 
     public void updateTransform(Vector3 position, Quaternion rotation) {

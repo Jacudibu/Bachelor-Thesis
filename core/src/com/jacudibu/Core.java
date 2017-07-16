@@ -39,7 +39,7 @@ public class Core extends com.badlogic.gdx.Game {
 	public static int windowWidth;
 	public static Grid3d grid;
 
-	public final static boolean DEBUG_DRAW = true;
+	public final static boolean DEBUG_DRAW = false;
 	private DebugDrawer debugDrawer;
 
 	float testTimer = 0f;

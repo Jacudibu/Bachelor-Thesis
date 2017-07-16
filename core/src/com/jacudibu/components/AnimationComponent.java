@@ -62,6 +62,10 @@ public class AnimationComponent implements Component {
         modelComponent = ModelComponent.get(entity);
     }
 
+    public void resetProgress() {
+        currentAnimationProgress = 0f;
+    }
+
     public void update(float deltaTime) {
         currentAnimationProgress = MathUtils.clamp(currentAnimationProgress + deltaTime * speed, 0, 1);
 

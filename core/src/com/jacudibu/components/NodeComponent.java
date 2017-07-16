@@ -5,11 +5,14 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBody;
 import com.badlogic.gdx.utils.Array;
+import com.jacudibu.ubiWrap.PoseReceiver;
 import com.jacudibu.utility.Entities;
 import com.jacudibu.utility.QRGenerator;
 import org.json.JSONObject;
 
+import javax.xml.soap.Node;
 import java.util.Stack;
 
 /**
@@ -31,6 +34,8 @@ public class NodeComponent implements Component {
     private Entity entity;
     private Array<Connection> outgoingConnections;
     private Array<Connection> incomingConnections;
+    private Array<NodeComponent> trackedNodes;
+    private PoseReceiver poseReceiver;
 
     public boolean isMarker;
     public boolean isTracker;
@@ -51,12 +56,23 @@ public class NodeComponent implements Component {
 
         outgoingConnections = new Array<Connection>();
         incomingConnections = new Array<Connection>();
+        trackedNodes = new Array<NodeComponent>();
 
         this.name = name;
         this.ID = ID;
         if (total <= ID) {
             total = ID + 1;
         }
+    }
+
+    public void setPoseReceiver(PoseReceiver poseReceiver) {
+        this.poseReceiver = poseReceiver;
+    }
+
+    public void addTracked(NodeComponent node) {
+        trackedNodes.add(node);
+        node.poseReceiver.setTracker(entity);
+        addOutgoing(node);
     }
 
     public void addOutgoing(Entity entity) {
@@ -214,7 +230,15 @@ public class NodeComponent implements Component {
 
         // Outgoing
         for (int i = 0; i < node.outgoingConnections.size; i++) {
-            addOutgoing(node.outgoingConnections.get(i).node);
+            // Make sure tracked nodes do not count as outgoing
+            if (!node.trackedNodes.contains(node.outgoingConnections.get(i).node, true)) {
+                addOutgoing(node.outgoingConnections.get(i).node);
+            }
+        }
+
+        // Tracked
+        for (int i = 0; i < node.trackedNodes.size; i++) {
+            addTracked(node.trackedNodes.get(i));
         }
 
         node.delete();

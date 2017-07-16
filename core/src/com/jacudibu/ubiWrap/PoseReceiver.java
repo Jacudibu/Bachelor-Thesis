@@ -15,7 +15,8 @@ import ubitrack.SimplePoseReceiver;
 public class PoseReceiver extends SimplePoseReceiver {
     public static final float scaleFactor = 0.01f;
 
-    private Entity node;
+    private Entity marker;
+    private Entity tracker;
     private String id;
     private String hex;
 
@@ -26,6 +27,10 @@ public class PoseReceiver extends SimplePoseReceiver {
     public PoseReceiver(String id, String qr) {
         this.id = id;
         hex = qr;
+    }
+
+    public void setTracker(Entity entity) {
+        tracker = entity;
     }
 
     public void receivePose(SimplePose pose) {
@@ -45,20 +50,30 @@ public class PoseReceiver extends SimplePoseReceiver {
     }
 
     public void update() {
-        if (node == null) {
+        if (marker == null) {
             createNode();
         }
         else {
-            ModelComponent.get(node).updateTransform(position, rotation);
+            // Add the position of the camera which is tracking our Marker as an offset.
+            if (tracker != null) {
+                position.add(ModelComponent.get(tracker).getPosition());
+            }
+
+            ModelComponent.get(marker).animateTo(position, rotation);
         }
 
         requestUpdate = false;
     }
 
     private void createNode() {
-        node = Entities.createNode(position, rotation, NodeComponent.total, id, false, true, hex);
-        NodeComponent.get(node).setHex(hex);
+        marker = Entities.createNode(position, rotation, NodeComponent.total, id, false, true, hex);
+        NodeComponent markerComponent = NodeComponent.get(marker);
+        markerComponent.setHex(hex);
+        markerComponent.setPoseReceiver(this);
 
+        tracker = Entities.createTracker(new Vector3(), new Quaternion());
+        NodeComponent trackerComponent = NodeComponent.get(tracker);
 
+        trackerComponent.addTracked(markerComponent);
     }
 }
