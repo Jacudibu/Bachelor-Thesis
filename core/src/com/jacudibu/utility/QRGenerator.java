@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class QRGenerator {
     private static final int size = 64;
-    private static final int borderSize = 2;
+    private static final int borderSize = 4;
     private static final int cellSize = (size - borderSize * 2) / 4;
     private static final Color markedColor = Color.BLACK;
     private static final Color freeColor = Color.WHITE;

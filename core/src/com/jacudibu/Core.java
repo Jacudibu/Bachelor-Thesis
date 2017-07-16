@@ -50,8 +50,6 @@ public class Core extends com.badlogic.gdx.Game {
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		UbiManager.init();
-
 		Bullet.init();
 		collisionConfig = new btDefaultCollisionConfiguration();
 		dispatcher = new btCollisionDispatcher(collisionConfig);

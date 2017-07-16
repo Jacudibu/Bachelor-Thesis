@@ -14,6 +14,8 @@ import ubitrack.SimplePoseReceiver;
  * Created by Stefan on 15.07.2017.
  */
 public class PoseReceiver extends SimplePoseReceiver {
+    public static final float scaleFactor = 0.01f;
+
     private Entity node;
     private String nodeID;
 
@@ -26,16 +28,18 @@ public class PoseReceiver extends SimplePoseReceiver {
     }
 
     public void receivePose(SimplePose pose) {
-        position.x = ((float) pose.getTx());
-        position.y = ((float) pose.getTy());
-        position.z = ((float) pose.getTz());
+        position.x = ((float) pose.getTx()) * scaleFactor;
+        position.y = ((float) pose.getTy()) * scaleFactor;
+        position.z = ((float) pose.getTz()) * scaleFactor;
 
         rotation.x = (float) pose.getRx();
         rotation.y = (float) pose.getRy();
         rotation.z = (float) pose.getRz();
         rotation.w = (float) pose.getRw();
 
-        Gdx.app.log("POSE", "Received " + position + " \t " + rotation);
+        //Gdx.app.log("POSE", "Received " + position + " \t " + rotation);
+
+        // Can't update here as this is most likely called by a non-GL thread
         requestUpdate = true;
     }
 
