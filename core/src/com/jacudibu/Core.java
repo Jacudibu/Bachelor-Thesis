@@ -48,6 +48,7 @@ public class Core extends com.badlogic.gdx.Game {
 	public void create () {
 		windowWidth = Gdx.graphics.getWidth();
 		windowHeight = Gdx.graphics.getHeight();
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		inputMultiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(inputMultiplexer);
 

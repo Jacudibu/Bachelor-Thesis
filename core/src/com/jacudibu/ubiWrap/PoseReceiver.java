@@ -33,6 +33,10 @@ public class PoseReceiver extends SimplePoseReceiver {
         tracker = entity;
     }
 
+    public Entity getTracker() {
+        return tracker;
+    }
+
     public void receivePose(SimplePose pose) {
         position.x = ((float) pose.getTx()) * scaleFactor;
         position.y = ((float) pose.getTy()) * scaleFactor;

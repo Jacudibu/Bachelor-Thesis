@@ -19,6 +19,8 @@ import com.jacudibu.MainCamera;
  * Created by Stefan Wolf (Jacudibu) on 15.06.2017.
  */
 public class Grid3d implements Disposable{
+    public static final Color lineColor = new Color(0f, 0f, 0f, 0.2f);
+
     private int size;
 
     private Model axesModel;
@@ -53,7 +55,7 @@ public class Grid3d implements Disposable{
         material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, Usage.Position | Usage.ColorUnpacked, material);
-        builder.setColor(new Color(1f,1f,1f,0.2f));
+        builder.setColor(lineColor);
 
         if (useCircles) {
             for (float i = 1; i <= size; i++) {
