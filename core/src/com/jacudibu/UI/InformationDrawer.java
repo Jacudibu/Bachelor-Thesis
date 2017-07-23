@@ -5,9 +5,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.components.ModelComponent;
@@ -45,6 +43,13 @@ public class InformationDrawer implements Disposable {
 
         informationParent = new Group();
         stage.addActor(informationParent);
+
+        informationParent.setWidth(215);
+        informationParent.setHeight(150);
+
+        Image image = new Image(skin.getDrawable("textfield"));
+        image.setFillParent(true);
+        informationParent.addActor(image);
 
         generateNameDrawers();
         generatePositionDrawer();
@@ -89,12 +94,12 @@ public class InformationDrawer implements Disposable {
     private void setHex(String newHex) {
         hex.setDisabled(false);
         hex.setText(newHex);
-        hex.setPosition(150f, -20, Align.topLeft);
+        hex.setVisible(true);
     }
 
     private void hideHex() {
         hex.setDisabled(true);
-        hex.setPosition(100050f, -20, Align.topLeft);
+        hex.setVisible(false);
     }
 
     private void setPositionValues(Vector3 pos) {
@@ -191,12 +196,12 @@ public class InformationDrawer implements Disposable {
         nameGroup = new Group();
         informationParent.addActor(nameGroup);
 
-        name = setupTextField(20, -20, Align.topLeft, nameGroup);
+        name = setupTextField(20, 0, Align.topLeft, nameGroup);
         name.setWidth(115);
         name.setTextFieldFilter(null);
         name.setAlignment(Align.center);
 
-        hex = setupTextField(150, -20, Align.topLeft, nameGroup);
+        hex = setupTextField(150, 0, Align.topLeft, nameGroup);
         hex.setTextFieldFilter(new HexFilter());
         hex.setAlignment(Align.center);
         hex.setMaxLength(4);
@@ -265,17 +270,19 @@ public class InformationDrawer implements Disposable {
 
     protected void updateUIPositions() {
         if (currentlySelected == null) {
-            informationParent.setPosition(-1000, - 1000);
+            informationParent.setVisible(false);
             return;
         } else {
-            informationParent.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 10);
+            informationParent.setVisible(true);
+            informationParent.setPosition(Gdx.graphics.getWidth() - informationParent.getWidth() - 10,
+                                          Gdx.graphics.getHeight() - informationParent.getHeight() - 10);
         }
 
         float x = 0;
-        float y = 0;
+        float y = informationParent.getHeight() - 10;
 
         nameGroup.setPosition(x, y, Align.topLeft);
-        y -= 50;
+        y -= 30;
         positionGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
         rotationGroup.setPosition(x, y, Align.topLeft);

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.utility.Grid3d;
 
 /**
  * Draws a line between this Entities position and the XZ Axis.
@@ -42,7 +43,7 @@ public class GridLineComponent implements Component {
         material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked, material);
-        builder.setColor(new Color(1f,1f,1f,0.2f));
+        builder.setColor(Grid3d.lineColor);
 
         Vector3 position = ModelComponent.get(entity).getPosition();
         Vector3 target = position.cpy();

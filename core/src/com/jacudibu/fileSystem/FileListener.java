@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.Utility.Entities;
+import com.jacudibu.utility.Entities;
 import com.jacudibu.components.NodeComponent;
 
 /**

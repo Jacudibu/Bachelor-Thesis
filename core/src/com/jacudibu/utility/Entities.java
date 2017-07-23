@@ -1,4 +1,4 @@
-package com.jacudibu.Utility;
+package com.jacudibu.utility;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Quaternion;
@@ -8,7 +8,7 @@ import com.jacudibu.components.*;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
- * Static class that creates predefined Entities when needed.
+ * Factory Class for simple Entity creation.
  */
 public final class Entities {
     private Entities() {}
