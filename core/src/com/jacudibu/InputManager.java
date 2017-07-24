@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.jacudibu.components.GridLineComponent;
+import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.fileSystem.JsonExporter;
@@ -57,13 +57,13 @@ public class InputManager implements InputProcessor {
 
         switch (currentAction) {
             case MERGE:
-                NodeComponent.mapper.get(first).merge(second);
+                NodeComponent.get(first).merge(second);
 
                 currentAction = SelectionAction.NONE;
                 return first;
 
             case CONNECT:
-                NodeComponent.mapper.get(first).addOutgoing(second);
+                NodeComponent.get(first).addOutgoing(second);
                 currentAction = SelectionAction.NONE;
                 return second;
 
@@ -75,7 +75,7 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+        if (isControlPressed())
         {
             return keyDownCTRL(keycode);
         }
@@ -94,7 +94,7 @@ public class InputManager implements InputProcessor {
     }
 
     private boolean keyDownCTRL(int keycode) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        if (isShiftPressed())
         {
             return keyDownCTRLSHIFT(keycode);
         }
@@ -143,6 +143,21 @@ public class InputManager implements InputProcessor {
         lastDragY = screenY;
 
         if (button == Input.Buttons.LEFT) {
+            if (isControlPressed() && isShiftPressed()) {
+                Core.engine.getSystem(SelectionSystem.class).selectTree(true);
+                return true;
+            }
+
+            if (isControlPressed()) {
+                Core.engine.getSystem(SelectionSystem.class).multiSelect();
+                return true;
+            }
+
+            if (isShiftPressed()) {
+                Core.engine.getSystem(SelectionSystem.class).selectTree(false);
+                return true;
+            }
+
             Core.engine.getSystem(SelectionSystem.class).select();
             return true;
         }
@@ -156,13 +171,15 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        float distanceX = screenX - lastDragX;
-        float distanceY = screenY - lastDragY;
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            float distanceX = screenX - lastDragX;
+            float distanceY = screenY - lastDragY;
 
-        lastDragX = screenX;
-        lastDragY = screenY;
+            lastDragX = screenX;
+            lastDragY = screenY;
 
-        MainCamera.instance.dragRotation(distanceX, distanceY);
+            MainCamera.instance.dragRotation(distanceX, distanceY);
+        }
         return true;
     }
 
@@ -212,7 +229,7 @@ public class InputManager implements InputProcessor {
     public boolean setMergeMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
 
-        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+        if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.MERGE;
             return true;
         }
@@ -223,7 +240,7 @@ public class InputManager implements InputProcessor {
     public boolean setConnectMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
 
-        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
+        if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.CONNECT;
             return true;
         }
@@ -232,14 +249,31 @@ public class InputManager implements InputProcessor {
     }
 
     public boolean setDeleteMode() {
-        SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+        boolean result = false;
 
-        if (NodeComponent.mapper.get(selectionSystem.currentlySelected) != null) {
-            currentAction = SelectionAction.NONE;
-            NodeComponent.mapper.get(selectionSystem.currentlySelected).delete();
-            return true;
+        for (int i = SelectionSystem.multiSelection.size - 1 ; i >= 0; i--) {
+            Entity entity = SelectionSystem.multiSelection.get(i);
+
+            if (NodeComponent.get(entity) != null) {
+                currentAction = SelectionAction.NONE;
+                NodeComponent.get(entity).delete();
+                result = true;
+            }
+            else if (ArrowComponent.get(entity) != null) {
+                currentAction = SelectionAction.NONE;
+                ArrowComponent.get(entity).delete();
+                result = true;
+            }
         }
 
-        return false;
+        return result;
+    }
+
+    public boolean isControlPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
+    }
+
+    public boolean isShiftPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
     }
 }

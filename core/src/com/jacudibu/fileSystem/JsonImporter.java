@@ -1,13 +1,12 @@
 package com.jacudibu.fileSystem;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Core;
-import com.jacudibu.Entities;
+import com.jacudibu.utility.Entities;
 import com.jacudibu.components.NodeComponent;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,11 +78,13 @@ public class JsonImporter {
 
         int id = json.getInt("id");
         String name = json.getString("name");
+        String hex = json.getString("hex");
         boolean isTracker = json.getBoolean("isTracker");
         boolean isMarker = json.getBoolean("isMarker");
 
-        Entity e = Entities.createNode(pos, rot, id, name, isTracker, isMarker);
-        return NodeComponent.mapper.get(e);
+        Entity e = Entities.createNode(pos, rot, id, name, isTracker, isMarker, hex);
+
+        return NodeComponent.get(e);
     }
 
     private static void createConnections(JSONArray connectionArray, Array<NodeComponent> nodes) {

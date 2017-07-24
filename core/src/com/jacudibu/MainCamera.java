@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.UI.InformationDrawer;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 11.05.2017.
@@ -17,6 +19,7 @@ public class MainCamera {
     public Vector3 camRightVector = new Vector3();
 
     private MainCamera() {
+        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
         reset();
     }
 
@@ -39,13 +42,14 @@ public class MainCamera {
     }
 
     public void update(float deltaTime) {
+        if (!InformationDrawer.isCurrentlyFocused()) {
+            Vector3 movement = processMovementInput(deltaTime);
 
-        Vector3 movement = processMovementInput(deltaTime);
-
-        Vector3 camRightVector = new Vector3().set(cam.direction).crs(cam.up).nor();
-        cam.position.add(camRightVector.x * movement.x, camRightVector.y * movement.x, camRightVector.z * movement.x);
-        cam.position.add(cam.up.x * movement.y, cam.up.y * movement.y, cam.up.z * movement.y);
-        zoom(movement.z);
+            Vector3 camRightVector = new Vector3().set(cam.direction).crs(cam.up).nor();
+            cam.position.add(camRightVector.x * movement.x, camRightVector.y * movement.x, camRightVector.z * movement.x);
+            cam.position.add(cam.up.x * movement.y, cam.up.y * movement.y, cam.up.z * movement.y);
+            zoom(movement.z);
+        }
 
         cam.update();
     }
@@ -107,11 +111,14 @@ public class MainCamera {
     }
 
     public void reset() {
-        // We need to reinitialize the camera as it's impossible to reset it's rotation.....
-        cam = new PerspectiveCamera(60, Core.windowWidth, Core.windowHeight);
         cam.position.set(0f,2f,5f);
         cam.near = 0.1f;
         cam.far = 300f;
+
+        cam.direction.set(0, 0, -1);
+        cam.up.set(0, 1, 0);
+        cam.update();
+
         cam.lookAt(new Vector3(0f, 0f, 0f));
     }
 }

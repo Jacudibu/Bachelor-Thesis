@@ -3,33 +3,36 @@ package com.jacudibu.entitySystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.utils.Array;
+import com.jacudibu.Core;
 import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
-import com.jacudibu.components.SelectableComponent;
+import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.ModelComponent;
+import com.jacudibu.components.NodeComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.05.2017.
  * System managing interaction with SelectableComponents.
  */
 public class SelectionSystem extends EntitySystem {
-    private ImmutableArray<Entity> entities;
     private Camera camera;
 
     public Entity currentlyHovered = null;
     public Entity currentlySelected = null;
+    public static Array<Entity> multiSelection = new Array<>();
 
-    private Vector3 currentlySelectedPosition;
+    private static Color unselectedColor = Color.WHITE;
+
+    private static final float MAX_RAY_DISTANCE = 100f;
 
     public SelectionSystem() {
         this(MainCamera.getCamera());
@@ -43,35 +46,29 @@ public class SelectionSystem extends EntitySystem {
     public void update(float deltaTime) {
         Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
-        float distance = Float.MAX_VALUE;
-        Entity closestEntity = null;
+        Vector3 rayFrom = ray.origin;
+        Vector3 rayTo = ray.direction.scl(MAX_RAY_DISTANCE).add(ray.origin);
 
-        for (int i = 0; i < entities.size(); i++) {
-            Entity currentlyCheckedEntity = entities.get(i);
+        ClosestRayResultCallback raycast = new ClosestRayResultCallback(rayFrom, rayTo);
 
-            SelectableComponent clickable = SelectableComponent.mapper.get(currentlyCheckedEntity);
-            ModelComponent model = ModelComponent.mapper.get(currentlyCheckedEntity);
+        Core.collisionWorld.rayTest(rayFrom, rayTo, raycast);
+        Entity hitEntity = null;
 
-            Vector3 position = model.modelInstance.transform.getTranslation(Vector3.Zero);
-            float currentDistance = ray.origin.dst2(position);
 
-            if (currentDistance > distance) {
-                continue;
-            }
-
-            if (Intersector.intersectRaySphere(ray, position, clickable.radius, null)) {
-                closestEntity = currentlyCheckedEntity;
-                distance = currentDistance;
-                currentlySelectedPosition = position;
-            }
+        if (raycast.hasHit()) {
+            final btCollisionObject hit = raycast.getCollisionObject();
+            hitEntity = (Entity) hit.userData;
+            //Gdx.app.log("Raycast", "hit: " + hitEntity.toString());
+        }
+        else {
+            //Gdx.app.log("Raycast", "nohit");
         }
 
-        hover(closestEntity);
+        hover(hitEntity);
     }
 
     @Override
     public void addedToEngine(Engine engine) {
-        entities = engine.getEntitiesFor((Family.all(ModelComponent.class, SelectableComponent.class).get()));
     }
 
 
@@ -83,13 +80,13 @@ public class SelectionSystem extends EntitySystem {
         }
 
         if (currentlyHovered != null) {
-            if (currentlyHovered != currentlySelected) {
+            if (!multiSelection.contains(currentlyHovered, true)) {
                 setEntityColor(currentlyHovered, Color.WHITE);
             }
         }
 
         if (entity == null) {
-            if (currentlyHovered != currentlySelected) {
+            if (!multiSelection.contains(currentlyHovered, true)) {
                 setEntityColor(currentlyHovered, Color.WHITE);
             }
             currentlyHovered = null;
@@ -98,7 +95,7 @@ public class SelectionSystem extends EntitySystem {
 
         currentlyHovered = entity;
 
-        if (entity != currentlySelected) {
+        if (!multiSelection.contains(currentlyHovered, true)) {
             setEntityColor(entity, Color.YELLOW);
         }
     }
@@ -108,38 +105,136 @@ public class SelectionSystem extends EntitySystem {
             return;
         }
 
-        Entity lastSelected = currentlySelected;
+        Entity lastSelected = this.currentlySelected;
         if (currentlySelected != null) {
-            unselect();
+            unselectAll();
         }
 
         if (currentlyHovered == null) {
+            unselectAll();
             return;
         }
 
         if (lastSelected != null) {
-            currentlySelected = InputManager.twoEntitiesSelected(lastSelected, currentlyHovered);
-
-            if (currentlySelected == null) {
-                return;
-            }
+            select(InputManager.twoEntitiesSelected(lastSelected, currentlyHovered));
         }
         else {
-            currentlySelected = currentlyHovered;
+            select(currentlyHovered);
         }
-
-        setEntityColor(currentlySelected, Color.BLUE);
-
-        InformationDrawer.setCurrentlySelectedObject(ModelComponent.mapper.get(currentlySelected));
     }
 
-    private void unselect() {
-        setEntityColor(currentlySelected, Color.WHITE);
+    public void multiSelect() {
+        if (currentlyHovered == null) {
+            return;
+        }
+
+        if (multiSelection.contains(currentlyHovered, true)) {
+            unselect(currentlyHovered);
+            return;
+        }
+
+        select(currentlyHovered);
+    }
+
+    public void selectTree(boolean append) {
+        if (currentlyHovered == null) {
+            return;
+        }
+
+        if (!append) {
+            multiSelection.clear();
+        }
+
+        Array<NodeComponent> tree = null;
+
+        if (NodeComponent.get(currentlyHovered) != null) {
+            tree = NodeComponent.get(currentlyHovered).getAllConnectedNodes();
+        }
+        else if (ArrowComponent.get(currentlyHovered) != null) {
+            tree = NodeComponent.get(ArrowComponent.get(currentlyHovered).from).getAllConnectedNodes();
+        }
+
+        if (tree == null) {
+            return;
+        }
+
+        for (int i = 0; i < tree.size; i++) {
+            Entity nodeEntity = tree.get(i).getEntity();
+            if (!multiSelection.contains(nodeEntity, true)) {
+                addToSelection(nodeEntity);
+            }
+
+            Array<NodeComponent.Connection> outgoing = tree.get(i).getOutgoingConnections();
+            if (outgoing == null) {
+                continue;
+            }
+
+            for (int j = 0; j < outgoing.size; j++) {
+                Entity arrowEntity = outgoing.get(j).arrow.getEntity();
+                if (!multiSelection.contains(arrowEntity, true)) {
+                    addToSelection(arrowEntity);
+                }
+            }
+        }
+
+        currentlySelected = currentlyHovered;
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+    }
+
+    private void select(Entity entity) {
+        if (entity == null) {
+            return;
+        }
+
+        currentlySelected = entity;
+        addToSelection(entity);
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+    }
+
+    // Adds an object to the current selection without highlighting it via the information drawer
+    private void addToSelection(Entity entity) {
+        if (entity == null) {
+            return;
+        }
+
+        multiSelection.add(entity);
+
+        setEntityColor(entity, Color.BLUE);
+    }
+
+    private void unselect(Entity entity) {
+        if (multiSelection.contains(entity, true)) {
+            multiSelection.removeValue(entity, true);
+            setEntityColor(entity, unselectedColor);
+        }
+
+        if (multiSelection.size > 0) {
+            currentlySelected = multiSelection.get(multiSelection.size - 1);
+            InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(currentlySelected));
+        }
+        else {
+            currentlySelected = null;
+            InformationDrawer.setCurrentlySelectedObject(null);
+        }
+    }
+
+    private void unselectAll() {
+        for (int i = 0; i < multiSelection.size; i++) {
+            setEntityColor(multiSelection.get(i), unselectedColor);
+        }
+
+        multiSelection.clear();
         currentlySelected = null;
         InformationDrawer.setCurrentlySelectedObject(null);
     }
 
     private void setEntityColor(Entity entity, Color color) {
-        ModelComponent.mapper.get(entity).modelInstance.materials.get(0).set(ColorAttribute.createDiffuse(color));
+        if (ModelComponent.get(entity) != null) {
+            ModelComponent.get(entity).setColorAttribute(color);
+        }
+        else if (ArrowComponent.get(entity) != null) {
+            ArrowComponent.get(entity).setColorAttribute(color);
+        }
+
     }
 }

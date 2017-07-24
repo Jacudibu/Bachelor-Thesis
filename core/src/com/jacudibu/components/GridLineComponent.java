@@ -13,18 +13,23 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.utility.Grid3d;
 
 /**
  * Draws a line between this Entities position and the XZ Axis.
  * Created by Stefan Wolf (Jacudibu) on 02.07.2017.
  */
 public class GridLineComponent implements Component {
-    public static final ComponentMapper<GridLineComponent> mapper = ComponentMapper.getFor(GridLineComponent.class);
+    private static final ComponentMapper<GridLineComponent> mapper = ComponentMapper.getFor(GridLineComponent.class);
     private static boolean drawIntersections = true;
 
     private Model model;
     private Entity entity;
     public ModelInstance modelInstance;
+
+    public static GridLineComponent get(Entity e) {
+        return mapper.get(e);
+    }
 
     public GridLineComponent(Entity entity) {
         this.entity = entity;
@@ -38,9 +43,9 @@ public class GridLineComponent implements Component {
         material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked, material);
-        builder.setColor(new Color(1f,1f,1f,0.2f));
+        builder.setColor(Grid3d.lineColor);
 
-        Vector3 position = ModelComponent.mapper.get(entity).getPosition();
+        Vector3 position = ModelComponent.get(entity).getPosition();
         Vector3 target = position.cpy();
         target.y = 0;
 

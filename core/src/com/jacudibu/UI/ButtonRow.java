@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.Core;
-import com.jacudibu.Entities;
+import com.jacudibu.utility.Entities;
 import com.jacudibu.InputManager;
 import com.jacudibu.fileSystem.JsonExporter;
 import com.jacudibu.fileSystem.JsonImporter;

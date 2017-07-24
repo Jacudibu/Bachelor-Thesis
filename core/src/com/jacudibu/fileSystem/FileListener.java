@@ -5,10 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.jacudibu.Entities;
+import com.jacudibu.utility.Entities;
 import com.jacudibu.components.NodeComponent;
-
-import javax.xml.soap.Node;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
@@ -85,7 +83,7 @@ public class FileListener {
         Entity newMarker = Entities.createMarker(position, rotation);
         Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
 
-        NodeComponent.mapper.get(newTracker).addOutgoing(newMarker);
+        NodeComponent.get(newTracker).addOutgoing(newMarker);
     }
 
 

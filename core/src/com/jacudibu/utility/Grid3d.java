@@ -1,4 +1,4 @@
-package com.jacudibu;
+package com.jacudibu.utility;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,15 +10,17 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.EllipseShapeBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.jacudibu.MainCamera;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 15.06.2017.
  */
 public class Grid3d implements Disposable{
+    public static final Color lineColor = new Color(0f, 0f, 0f, 0.2f);
+
     private int size;
 
     private Model axesModel;
@@ -53,7 +55,7 @@ public class Grid3d implements Disposable{
         material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
         MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, Usage.Position | Usage.ColorUnpacked, material);
-        builder.setColor(new Color(1f,1f,1f,0.1f));
+        builder.setColor(lineColor);
 
         if (useCircles) {
             for (float i = 1; i <= size; i++) {

@@ -5,21 +5,28 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBody;
 import com.badlogic.gdx.utils.Array;
-import com.jacudibu.Core;
-import com.jacudibu.Entities;
+import com.jacudibu.ubiWrap.PoseReceiver;
+import com.jacudibu.utility.Entities;
+import com.jacudibu.utility.QRGenerator;
 import org.json.JSONObject;
 
+import javax.xml.soap.Node;
 import java.util.Stack;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 26.06.2017.
  */
 public class NodeComponent implements Component {
-    public static final ComponentMapper<NodeComponent> mapper = ComponentMapper.getFor(NodeComponent.class);
+    private static final ComponentMapper<NodeComponent> mapper = ComponentMapper.getFor(NodeComponent.class);
     public static int total = 0;
 
-    private class Connection {
+    public static NodeComponent get(Entity e) {
+        return mapper.get(e);
+    }
+
+    public class Connection {
         public NodeComponent node;
         public ArrowComponent arrow;
     }
@@ -27,12 +34,15 @@ public class NodeComponent implements Component {
     private Entity entity;
     private Array<Connection> outgoingConnections;
     private Array<Connection> incomingConnections;
+    private Array<NodeComponent> trackedNodes;
+    private PoseReceiver poseReceiver;
 
     public boolean isMarker;
     public boolean isTracker;
 
     public String name = "";
     public int ID;
+    private String hex = "";
 
     public NodeComponent(Entity entity, boolean isMarker, boolean isTracker) {
         this(entity, isMarker, isTracker, total, "Node " + total);
@@ -46,12 +56,23 @@ public class NodeComponent implements Component {
 
         outgoingConnections = new Array<Connection>();
         incomingConnections = new Array<Connection>();
+        trackedNodes = new Array<NodeComponent>();
 
         this.name = name;
         this.ID = ID;
         if (total <= ID) {
             total = ID + 1;
         }
+    }
+
+    public void setPoseReceiver(PoseReceiver poseReceiver) {
+        this.poseReceiver = poseReceiver;
+    }
+
+    public void addTracked(NodeComponent node) {
+        trackedNodes.add(node);
+        node.poseReceiver.setTracker(entity);
+        addOutgoing(node);
     }
 
     public void addOutgoing(Entity entity) {
@@ -63,7 +84,7 @@ public class NodeComponent implements Component {
         connection.node = node;
 
         Entity arrow = Entities.createArrow(node.getEntity(), entity);
-        connection.arrow = ArrowComponent.mapper.get(arrow);
+        connection.arrow = ArrowComponent.get(arrow);
 
         outgoingConnections.add(connection);
         node.addIncoming(this, connection.arrow);
@@ -96,8 +117,25 @@ public class NodeComponent implements Component {
         }
 
         if (connection != null) {
-            Core.engine.removeEntity(connection.arrow.getEntity());
+            Entities.destroyEntity(connection.arrow.getEntity());
             outgoingConnections.removeValue(connection, true);
+            connection.node.removeIncomingConnection(this);
+        }
+    }
+
+    // Only called by removeConnectionTo. So if you want to remove connections by yourself, only call removeConnectionTo!
+    private void removeIncomingConnection(NodeComponent node) {
+        Connection connection = null;
+
+        for (int i = 0; i < incomingConnections.size; i++) {
+            if (incomingConnections.get(i).node == node) {
+                connection = incomingConnections.get(i);
+                break;
+            }
+        }
+
+        if (connection != null) {
+            incomingConnections.removeValue(connection, true);
         }
     }
 
@@ -116,6 +154,10 @@ public class NodeComponent implements Component {
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public Array<Connection> getOutgoingConnections() {
+        return outgoingConnections;
     }
 
     public Array<NodeComponent> getAllConnectedNodes() {
@@ -170,8 +212,8 @@ public class NodeComponent implements Component {
         }
 
         // Move Subtree
-        Vector3 start = ModelComponent.mapper.get(this.entity).getPosition();
-        Vector3 end = ModelComponent.mapper.get(node.entity).getPosition();
+        Vector3 start = ModelComponent.get(this.entity).getPosition();
+        Vector3 end = ModelComponent.get(node.entity).getPosition();
         Vector3 movement = start.cpy().sub(end);
         for (int i = 0; i < subtree.size; i++) {
             subtree.get(i).entity.add(AnimationComponent.lerpMovement(subtree.get(i).entity, movement));
@@ -192,7 +234,15 @@ public class NodeComponent implements Component {
 
         // Outgoing
         for (int i = 0; i < node.outgoingConnections.size; i++) {
-            addOutgoing(node.outgoingConnections.get(i).node);
+            // Make sure tracked nodes do not count as outgoing
+            if (!node.trackedNodes.contains(node.outgoingConnections.get(i).node, true)) {
+                addOutgoing(node.outgoingConnections.get(i).node);
+            }
+        }
+
+        // Tracked
+        for (int i = 0; i < node.trackedNodes.size; i++) {
+            addTracked(node.trackedNodes.get(i));
         }
 
         node.delete();
@@ -213,7 +263,26 @@ public class NodeComponent implements Component {
             removeConnectionTo(outgoingConnections.get(i).node);
         }
 
-        Core.engine.removeEntity(entity);
+        Entities.destroyEntity(entity);
+    }
+
+    public String getHex() {
+        return hex;
+    }
+
+    public void setHex(String hex) {
+        if (this.hex == hex) {
+            return;
+        }
+
+        this.hex = hex;
+        if (isMarker && QRGenerator.isValidCode(hex)) {
+            ModelComponent.get(entity).setTextureAttribute(QRGenerator.generate(hex));
+        }
+    }
+
+    public static void resetCounter() {
+        total = 0;
     }
 
     //----------
@@ -225,17 +294,18 @@ public class NodeComponent implements Component {
 
         json.put("id", ID);
         json.put("name", name);
+        json.put("hex", hex);
         json.put("isTracker", isTracker);
         json.put("isMarker", isMarker);
 
-        Vector3 pos = ModelComponent.mapper.get(entity).getPosition();
+        Vector3 pos = ModelComponent.get(entity).getPosition();
         JSONObject posJson = new JSONObject();
         posJson.put("x", pos.x);
         posJson.put("y", pos.y);
         posJson.put("z", pos.z);
         json.put("position", posJson);
 
-        Quaternion rot = ModelComponent.mapper.get(entity).getRotation();
+        Quaternion rot = ModelComponent.get(entity).getRotation();
         JSONObject rotJson = new JSONObject();
         rotJson.put("x", rot.x);
         rotJson.put("y", rot.y);

@@ -1,18 +1,18 @@
 package com.jacudibu.UI;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.jacudibu.InputManager;
+import com.jacudibu.Core;
 import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
+import com.jacudibu.entitySystem.SelectionSystem;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
@@ -29,6 +29,7 @@ public class InformationDrawer implements Disposable {
     private TextField.TextFieldListener textFieldListener;
 
     private TextField name;
+    private TextField hex;
     private TextField xPos, yPos, zPos;
     private TextField xRot, yRot, zRot;
     private FloatFilter floatFilter = new FloatFilter();
@@ -46,7 +47,14 @@ public class InformationDrawer implements Disposable {
         informationParent = new Group();
         stage.addActor(informationParent);
 
-        generateNameDrawer();
+        informationParent.setWidth(215);
+        informationParent.setHeight(150);
+
+        Image image = new Image(skin.getDrawable("textfield"));
+        image.setFillParent(true);
+        informationParent.addActor(image);
+
+        generateNameDrawers();
         generatePositionDrawer();
         generateRotationDrawer();
 
@@ -57,7 +65,16 @@ public class InformationDrawer implements Disposable {
         instance.currentlySelected = selectedObject;
 
         if (selectedObject != null) {
-            instance.setName(NodeComponent.mapper.get(selectedObject.getEntity()).name);
+            NodeComponent node = NodeComponent.get(selectedObject.getEntity());
+
+            instance.setName(node.name);
+            if (node.isMarker) {
+                instance.setHex(node.getHex());
+            }
+            else {
+                instance.hideHex();
+            }
+
             instance.setPositionValues(selectedObject.modelInstance.transform.getTranslation(new Vector3()));
             instance.setRotationValues(selectedObject.modelInstance.transform.getRotation(new Quaternion()));
         }
@@ -68,9 +85,24 @@ public class InformationDrawer implements Disposable {
         instance.updateUIPositions();
     }
 
+    public static boolean isCurrentlyFocused() {
+        return instance.stage.getKeyboardFocus() != null;
+    }
+
     private void setName(String newName) {
         name.setDisabled(false);
         name.setText(newName);
+    }
+
+    private void setHex(String newHex) {
+        hex.setDisabled(false);
+        hex.setText(newHex);
+        hex.setVisible(true);
+    }
+
+    private void hideHex() {
+        hex.setDisabled(true);
+        hex.setVisible(false);
     }
 
     private void setPositionValues(Vector3 pos) {
@@ -96,6 +128,9 @@ public class InformationDrawer implements Disposable {
     private void disableInput() {
         name.setText("");
         name.setDisabled(true);
+
+        hex.setText("");
+        hex.setDisabled(true);
 
         xPos.setText("");
         yPos.setText("");
@@ -126,20 +161,38 @@ public class InformationDrawer implements Disposable {
     }
 
     private void applyValues() {
-        Vector3 pos = new Vector3();
-        pos.x = parseFloat(xPos.getText());
-        pos.y = parseFloat(yPos.getText());
-        pos.z = parseFloat(zPos.getText());
+        Vector3 posOffset = new Vector3();
+        posOffset.x = parseFloat(xPos.getText()) - currentlySelected.getPosition().x;
+        posOffset.y = parseFloat(yPos.getText()) - currentlySelected.getPosition().y;
+        posOffset.z = parseFloat(zPos.getText()) - currentlySelected.getPosition().z;
 
-        float pitch, roll, yaw;
-        pitch = parseFloat(yRot.getText());
-        roll  = parseFloat(zRot.getText());
-        yaw   = parseFloat(xRot.getText());
+        Vector3 rotOffset = new Vector3();
+        rotOffset.x = parseFloat(xRot.getText()) - currentlySelected.getRotation().getYaw();
+        rotOffset.y = parseFloat(yRot.getText()) - currentlySelected.getRotation().getPitch();
+        rotOffset.z = parseFloat(zRot.getText()) - currentlySelected.getRotation().getRoll();
 
-        Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
+        NodeComponent node = NodeComponent.get(currentlySelected.getEntity());
 
-        NodeComponent.mapper.get(currentlySelected.getEntity()).name = name.getText();
-        currentlySelected.animateTo(pos, rot);
+        node.name = name.getText();
+        node.setHex(hex.getText());
+
+        for (int i = 0; i < SelectionSystem.multiSelection.size; i++) {
+            if (NodeComponent.get(SelectionSystem.multiSelection.get(i)) == null) {
+                continue;
+            }
+
+            ModelComponent current = ModelComponent.get(SelectionSystem.multiSelection.get(i));
+            Vector3 targetPos = posOffset.cpy().add(current.getPosition());
+            Vector3 targetRot = rotOffset.cpy();
+            targetRot.x += current.getRotation().getYaw();
+            targetRot.y += current.getRotation().getPitch();
+            targetRot.z += current.getRotation().getRoll();
+
+            Quaternion quaternion = new Quaternion().setEulerAngles(targetRot.x, targetRot.y, targetRot.z);
+
+            current.animateTo(targetPos, quaternion);
+        }
+
         stage.setKeyboardFocus(null);
     }
 
@@ -159,14 +212,19 @@ public class InformationDrawer implements Disposable {
         }
     }
 
-    private void generateNameDrawer() {
+    private void generateNameDrawers() {
         nameGroup = new Group();
         informationParent.addActor(nameGroup);
 
-        name = setupTextField(20, -20, Align.topLeft, nameGroup);
-        name.setWidth(180);
+        name = setupTextField(20, 0, Align.topLeft, nameGroup);
+        name.setWidth(115);
         name.setTextFieldFilter(null);
         name.setAlignment(Align.center);
+
+        hex = setupTextField(150, 0, Align.topLeft, nameGroup);
+        hex.setTextFieldFilter(new HexFilter());
+        hex.setAlignment(Align.center);
+        hex.setMaxLength(4);
     }
 
     private void generatePositionDrawer() {
@@ -232,25 +290,22 @@ public class InformationDrawer implements Disposable {
 
     protected void updateUIPositions() {
         if (currentlySelected == null) {
-            informationParent.setPosition(-1000, - 1000);
+            informationParent.setVisible(false);
             return;
         } else {
-            informationParent.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 10);
+            informationParent.setVisible(true);
+            informationParent.setPosition(Gdx.graphics.getWidth() - informationParent.getWidth() - 10,
+                                          Gdx.graphics.getHeight() - informationParent.getHeight() - 10);
         }
 
         float x = 0;
-        float y = 0;
+        float y = informationParent.getHeight() - 10;
 
         nameGroup.setPosition(x, y, Align.topLeft);
-        y -= 50;
+        y -= 30;
         positionGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
         rotationGroup.setPosition(x, y, Align.topLeft);
-
-        if (currentlySelected.isMarker()) {
-            // TODO: Show Marker ID in a Text field
-        }
-
     }
 
     @Override
