@@ -43,6 +43,7 @@ public class ArrowComponent extends ModelComponent implements Disposable {
 
     public void updateModel() {
         if (model != null) {
+            material = modelInstance.materials.get(0).copy();
             model.dispose();
             model = null;
             modelInstance = null;
