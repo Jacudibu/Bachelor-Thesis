@@ -238,19 +238,24 @@ public class InputManager implements InputProcessor {
 
     public boolean setDeleteMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+        boolean result = false;
 
-        if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
-            currentAction = SelectionAction.NONE;
-            NodeComponent.get(selectionSystem.currentlySelected).delete();
-            return true;
+        for (int i = selectionSystem.multiSelection.size - 1 ; i >= 0; i--) {
+            Entity entity = selectionSystem.multiSelection.get(i);
+
+            if (NodeComponent.get(entity) != null) {
+                currentAction = SelectionAction.NONE;
+                NodeComponent.get(entity).delete();
+                result = true;
+            }
+            else if (ArrowComponent.get(entity) != null) {
+                currentAction = SelectionAction.NONE;
+                ArrowComponent.get(entity).delete();
+                result = true;
+            }
+
         }
-        else if (ArrowComponent.get(selectionSystem.currentlySelected) != null) {
-            currentAction = SelectionAction.NONE;
-            ArrowComponent.get(selectionSystem.currentlySelected).delete();
-            return true;
-        }
 
-
-        return false;
+        return result;
     }
 }
