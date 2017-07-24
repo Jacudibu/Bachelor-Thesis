@@ -17,6 +17,7 @@ import com.jacudibu.MainCamera;
 import com.jacudibu.UI.InformationDrawer;
 import com.jacudibu.components.ArrowComponent;
 import com.jacudibu.components.ModelComponent;
+import com.jacudibu.components.NodeComponent;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.05.2017.
@@ -128,11 +129,56 @@ public class SelectionSystem extends EntitySystem {
         }
 
         if (multiSelection.contains(currentlyHovered, true)) {
-            multiSelection.removeValue(currentlyHovered, true);
+            unselect(currentlyHovered);
             return;
         }
 
         select(currentlyHovered);
+    }
+
+    public void selectTree(boolean append) {
+        if (currentlyHovered == null) {
+            return;
+        }
+
+        if (!append) {
+            multiSelection.clear();
+        }
+
+        Array<NodeComponent> tree = null;
+
+        if (NodeComponent.get(currentlyHovered) != null) {
+            tree = NodeComponent.get(currentlyHovered).getAllConnectedNodes();
+        }
+        else if (ArrowComponent.get(currentlyHovered) != null) {
+            tree = NodeComponent.get(ArrowComponent.get(currentlyHovered).from).getAllConnectedNodes();
+        }
+
+        if (tree == null) {
+            return;
+        }
+
+        for (int i = 0; i < tree.size; i++) {
+            Entity nodeEntity = tree.get(i).getEntity();
+            if (!multiSelection.contains(nodeEntity, true)) {
+                addToSelection(nodeEntity);
+            }
+
+            Array<NodeComponent.Connection> outgoing = tree.get(i).getOutgoingConnections();
+            if (outgoing == null) {
+                continue;
+            }
+
+            for (int j = 0; j < outgoing.size; j++) {
+                Entity arrowEntity = outgoing.get(j).arrow.getEntity();
+                if (!multiSelection.contains(arrowEntity, true)) {
+                    addToSelection(arrowEntity);
+                }
+            }
+        }
+
+        currentlySelected = currentlyHovered;
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
     }
 
     private void select(Entity entity) {
@@ -141,10 +187,19 @@ public class SelectionSystem extends EntitySystem {
         }
 
         currentlySelected = entity;
+        addToSelection(entity);
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+    }
+
+    // Adds an object to the current selection without highlighting it via the information drawer
+    private void addToSelection(Entity entity) {
+        if (entity == null) {
+            return;
+        }
+
         multiSelection.add(entity);
 
-        setEntityColor(this.currentlySelected, Color.BLUE);
-        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+        setEntityColor(entity, Color.BLUE);
     }
 
     private void unselect(Entity entity) {

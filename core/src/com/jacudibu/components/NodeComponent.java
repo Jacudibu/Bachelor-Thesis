@@ -26,7 +26,7 @@ public class NodeComponent implements Component {
         return mapper.get(e);
     }
 
-    private class Connection {
+    public class Connection {
         public NodeComponent node;
         public ArrowComponent arrow;
     }
@@ -154,6 +154,10 @@ public class NodeComponent implements Component {
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public Array<Connection> getOutgoingConnections() {
+        return outgoingConnections;
     }
 
     public Array<NodeComponent> getAllConnectedNodes() {

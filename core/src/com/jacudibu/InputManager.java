@@ -75,7 +75,7 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+        if (isControlPressed())
         {
             return keyDownCTRL(keycode);
         }
@@ -94,7 +94,7 @@ public class InputManager implements InputProcessor {
     }
 
     private boolean keyDownCTRL(int keycode) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        if (isShiftPressed())
         {
             return keyDownCTRLSHIFT(keycode);
         }
@@ -143,12 +143,22 @@ public class InputManager implements InputProcessor {
         lastDragY = screenY;
 
         if (button == Input.Buttons.LEFT) {
-            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+            if (isControlPressed() && isShiftPressed()) {
+                Core.engine.getSystem(SelectionSystem.class).selectTree(true);
+                return true;
+            }
+
+            if (isControlPressed()) {
                 Core.engine.getSystem(SelectionSystem.class).multiSelect();
+                return true;
             }
-            else {
-                Core.engine.getSystem(SelectionSystem.class).select();
+
+            if (isShiftPressed()) {
+                Core.engine.getSystem(SelectionSystem.class).selectTree(false);
+                return true;
             }
+
+            Core.engine.getSystem(SelectionSystem.class).select();
             return true;
         }
         return false;
@@ -257,5 +267,13 @@ public class InputManager implements InputProcessor {
         }
 
         return result;
+    }
+
+    public boolean isControlPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
+    }
+
+    public boolean isShiftPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
     }
 }
