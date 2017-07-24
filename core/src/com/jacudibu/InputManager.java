@@ -171,13 +171,15 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        float distanceX = screenX - lastDragX;
-        float distanceY = screenY - lastDragY;
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            float distanceX = screenX - lastDragX;
+            float distanceY = screenY - lastDragY;
 
-        lastDragX = screenX;
-        lastDragY = screenY;
+            lastDragX = screenX;
+            lastDragY = screenY;
 
-        MainCamera.instance.dragRotation(distanceX, distanceY);
+            MainCamera.instance.dragRotation(distanceX, distanceY);
+        }
         return true;
     }
 
@@ -263,7 +265,6 @@ public class InputManager implements InputProcessor {
                 ArrowComponent.get(entity).delete();
                 result = true;
             }
-
         }
 
         return result;
