@@ -28,7 +28,7 @@ public class SelectionSystem extends EntitySystem {
 
     public Entity currentlyHovered = null;
     public Entity currentlySelected = null;
-    public Array<Entity> multiSelection = new Array<>();
+    public static Array<Entity> multiSelection = new Array<>();
 
     private static Color unselectedColor = Color.WHITE;
 

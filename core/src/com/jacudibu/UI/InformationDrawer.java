@@ -1,6 +1,7 @@
 package com.jacudibu.UI;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -8,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.jacudibu.Core;
 import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
+import com.jacudibu.entitySystem.SelectionSystem;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
@@ -158,21 +161,38 @@ public class InformationDrawer implements Disposable {
     }
 
     private void applyValues() {
-        Vector3 pos = new Vector3();
-        pos.x = parseFloat(xPos.getText());
-        pos.y = parseFloat(yPos.getText());
-        pos.z = parseFloat(zPos.getText());
+        Vector3 posOffset = new Vector3();
+        posOffset.x = parseFloat(xPos.getText()) - currentlySelected.getPosition().x;
+        posOffset.y = parseFloat(yPos.getText()) - currentlySelected.getPosition().y;
+        posOffset.z = parseFloat(zPos.getText()) - currentlySelected.getPosition().z;
 
-        float pitch, roll, yaw;
-        pitch = parseFloat(yRot.getText());
-        roll  = parseFloat(zRot.getText());
-        yaw   = parseFloat(xRot.getText());
+        Vector3 rotOffset = new Vector3();
+        rotOffset.x = parseFloat(xRot.getText()) - currentlySelected.getRotation().getYaw();
+        rotOffset.y = parseFloat(yRot.getText()) - currentlySelected.getRotation().getPitch();
+        rotOffset.z = parseFloat(zRot.getText()) - currentlySelected.getRotation().getRoll();
 
-        Quaternion rot =  new Quaternion().setEulerAngles(yaw, pitch, roll);
+        NodeComponent node = NodeComponent.get(currentlySelected.getEntity());
 
-        NodeComponent.get(currentlySelected.getEntity()).name = name.getText();
-        NodeComponent.get(currentlySelected.getEntity()).setHex(hex.getText());
-        currentlySelected.animateTo(pos, rot);
+        node.name = name.getText();
+        node.setHex(hex.getText());
+
+        for (int i = 0; i < SelectionSystem.multiSelection.size; i++) {
+            if (NodeComponent.get(SelectionSystem.multiSelection.get(i)) == null) {
+                continue;
+            }
+
+            ModelComponent current = ModelComponent.get(SelectionSystem.multiSelection.get(i));
+            Vector3 targetPos = posOffset.cpy().add(current.getPosition());
+            Vector3 targetRot = rotOffset.cpy();
+            targetRot.x += current.getRotation().getYaw();
+            targetRot.y += current.getRotation().getPitch();
+            targetRot.z += current.getRotation().getRoll();
+
+            Quaternion quaternion = new Quaternion().setEulerAngles(targetRot.x, targetRot.y, targetRot.z);
+
+            current.animateTo(targetPos, quaternion);
+        }
+
         stage.setKeyboardFocus(null);
     }
 

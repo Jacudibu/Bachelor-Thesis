@@ -249,11 +249,10 @@ public class InputManager implements InputProcessor {
     }
 
     public boolean setDeleteMode() {
-        SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
         boolean result = false;
 
-        for (int i = selectionSystem.multiSelection.size - 1 ; i >= 0; i--) {
-            Entity entity = selectionSystem.multiSelection.get(i);
+        for (int i = SelectionSystem.multiSelection.size - 1 ; i >= 0; i--) {
+            Entity entity = SelectionSystem.multiSelection.get(i);
 
             if (NodeComponent.get(entity) != null) {
                 currentAction = SelectionAction.NONE;
