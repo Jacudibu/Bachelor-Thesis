@@ -143,7 +143,12 @@ public class InputManager implements InputProcessor {
         lastDragY = screenY;
 
         if (button == Input.Buttons.LEFT) {
-            Core.engine.getSystem(SelectionSystem.class).select();
+            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                Core.engine.getSystem(SelectionSystem.class).multiSelect();
+            }
+            else {
+                Core.engine.getSystem(SelectionSystem.class).select();
+            }
             return true;
         }
         return false;

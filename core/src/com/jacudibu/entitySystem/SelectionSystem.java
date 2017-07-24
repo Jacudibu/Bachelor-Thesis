@@ -6,11 +6,11 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Core;
 import com.jacudibu.InputManager;
 import com.jacudibu.MainCamera;
@@ -27,6 +27,9 @@ public class SelectionSystem extends EntitySystem {
 
     public Entity currentlyHovered = null;
     public Entity currentlySelected = null;
+    public Array<Entity> multiSelection = new Array<>();
+
+    private static Color unselectedColor = Color.WHITE;
 
     private static final float MAX_RAY_DISTANCE = 100f;
 
@@ -76,13 +79,13 @@ public class SelectionSystem extends EntitySystem {
         }
 
         if (currentlyHovered != null) {
-            if (currentlyHovered != currentlySelected) {
+            if (!multiSelection.contains(currentlyHovered, true)) {
                 setEntityColor(currentlyHovered, Color.WHITE);
             }
         }
 
         if (entity == null) {
-            if (currentlyHovered != currentlySelected) {
+            if (!multiSelection.contains(currentlyHovered, true)) {
                 setEntityColor(currentlyHovered, Color.WHITE);
             }
             currentlyHovered = null;
@@ -91,7 +94,7 @@ public class SelectionSystem extends EntitySystem {
 
         currentlyHovered = entity;
 
-        if (entity != currentlySelected) {
+        if (!multiSelection.contains(currentlyHovered, true)) {
             setEntityColor(entity, Color.YELLOW);
         }
     }
@@ -101,33 +104,71 @@ public class SelectionSystem extends EntitySystem {
             return;
         }
 
-        Entity lastSelected = currentlySelected;
+        Entity lastSelected = this.currentlySelected;
         if (currentlySelected != null) {
-            unselect();
+            unselectAll();
         }
 
         if (currentlyHovered == null) {
+            unselectAll();
             return;
         }
 
         if (lastSelected != null) {
-            currentlySelected = InputManager.twoEntitiesSelected(lastSelected, currentlyHovered);
-
-            if (currentlySelected == null) {
-                return;
-            }
+            select(InputManager.twoEntitiesSelected(lastSelected, currentlyHovered));
         }
         else {
-            currentlySelected = currentlyHovered;
+            select(currentlyHovered);
         }
-
-        setEntityColor(currentlySelected, Color.BLUE);
-
-        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(currentlySelected));
     }
 
-    private void unselect() {
-        setEntityColor(currentlySelected, Color.WHITE);
+    public void multiSelect() {
+        if (currentlyHovered == null) {
+            return;
+        }
+
+        if (multiSelection.contains(currentlyHovered, true)) {
+            multiSelection.removeValue(currentlyHovered, true);
+            return;
+        }
+
+        select(currentlyHovered);
+    }
+
+    private void select(Entity entity) {
+        if (entity == null) {
+            return;
+        }
+
+        currentlySelected = entity;
+        multiSelection.add(entity);
+
+        setEntityColor(this.currentlySelected, Color.BLUE);
+        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+    }
+
+    private void unselect(Entity entity) {
+        if (multiSelection.contains(entity, true)) {
+            multiSelection.removeValue(entity, true);
+            setEntityColor(entity, unselectedColor);
+        }
+
+        if (multiSelection.size > 0) {
+            currentlySelected = multiSelection.get(multiSelection.size - 1);
+            InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(currentlySelected));
+        }
+        else {
+            currentlySelected = null;
+            InformationDrawer.setCurrentlySelectedObject(null);
+        }
+    }
+
+    private void unselectAll() {
+        for (int i = 0; i < multiSelection.size; i++) {
+            setEntityColor(multiSelection.get(i), unselectedColor);
+        }
+
+        multiSelection.clear();
         currentlySelected = null;
         InformationDrawer.setCurrentlySelectedObject(null);
     }

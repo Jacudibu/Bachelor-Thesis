@@ -136,7 +136,7 @@ public class Core extends com.badlogic.gdx.Game {
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
 		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
-		JsonImporter.importJson("test-qr");
+		JsonImporter.importJson("test-nodes");
 		DFGParser.parse(UbiManager.dfgPath);
 	}
 
