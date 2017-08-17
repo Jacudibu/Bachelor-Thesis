@@ -1,0 +1,25 @@
+22                          0   -
+serialization::archive      1   -
+13                          2   Version
+0                           3   -
+0                           4   -
+1491386281818332512         5   Timestamp
+0                           6   -
+0                           7   -
+7.32327446871264330e+003    8   Focal-Length X-Axis
+0.00000000000000000e+000    9   Skew
+-1.22665056217665460e+003   10  Principal-Point X-Axis
+0.00000000000000000e+000    11  -
+7.62140100714406800e+003    12  Focal-Length Y-Axis
+-1.00747070813077800e+003   13  Principal-Point Y-Axis
+0.00000000000000000e+000    14  -
+0.00000000000000000e+000    15  -
+-1.00000000000000000e+000   16  -
+2448                        17  Cam Resolution X
+2048                        18  Cam Resolution Y
+2                           19  Amount of Radial Distortion Parameters
+-7.40126990167795910e-003   20? Radial Distortion-Parameter 1
+-1.86352231772053560e+000   21? Radial Distortion-Parameter 2
+2                           22  Amount of Tangential Distortion-Parameters
+1.84830802053623550e-002    23? Tangential Distortion Parameter 1
+-2.73637458361457970e-004   24? Tangential Distortion Parameter 2
