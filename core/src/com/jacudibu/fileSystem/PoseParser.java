@@ -15,14 +15,14 @@ import com.jacudibu.components.NodeComponent;
 public class PoseParser {
     public static final int TIMESTAMP = 5;
 
-    public static final int QUATERNION_W = 10;
-    public static final int QUATERNION_X = 11;
-    public static final int QUATERNION_Y = 12;
-    public static final int QUATERNION_Z = 13;
+    private static final int QUATERNION_W = 10;
+    private static final int QUATERNION_X = 11;
+    private static final int QUATERNION_Y = 12;
+    private static final int QUATERNION_Z = 13;
 
-    public static final int POSITION_X = 16;
-    public static final int POSITION_Y = 17;
-    public static final int POSITION_Z = 18;
+    private static final int POSITION_X = 16;
+    private static final int POSITION_Y = 17;
+    private static final int POSITION_Z = 18;
 
 
     public static void parseFile(String path) {
