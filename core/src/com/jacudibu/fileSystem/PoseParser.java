@@ -12,7 +12,7 @@ import com.jacudibu.components.NodeComponent;
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
  * Reads Files and creates Entites depending on their contents.
  */
-public class FileListener {
+public class PoseParser {
     public static final int TIMESTAMP = 5;
 
     public static final int QUATERNION_W = 10;
@@ -30,7 +30,7 @@ public class FileListener {
     }
 
     public static void parseFile(String path, PathType pathType) {
-        FileHandle file = getFileHandle(path, pathType);
+        FileHandle file = FileSystem.getFileHandle(path, pathType);
 
         if (!file.exists()) {
             Gdx.app.error("ERROR", "Unable to parse file from " + path);
@@ -44,21 +44,6 @@ public class FileListener {
         Quaternion rotation = getQuaternion(dataPieces);
 
         createPair(position, rotation);
-    }
-
-    protected static FileHandle getFileHandle(String path, PathType pathType) {
-        switch (pathType) {
-            case INTERNAL:
-                return Gdx.files.internal(path);
-            case EXTERNAL:
-                return Gdx.files.external(path);
-            case ABSOLUTE:
-                return Gdx.files.absolute(path);
-            case CLASSPATH:
-                return Gdx.files.classpath(path);
-            default:
-                return null;
-        }
     }
 
     private static Vector3 getVector3(String[] dataPieces) {

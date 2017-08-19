@@ -135,7 +135,7 @@ public class Core extends com.badlogic.gdx.Game {
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
-		// FileListener.parseFile("samples/samplePose.txt", FileListener.PathType.INTERNAL);
+		// PoseParser.parseFile("samples/samplePose.txt", PoseParser.PathType.INTERNAL);
 		JsonImporter.importJson("test-nodes");
 		DFGParser.parse(UbiManager.dfgPath);
 	}

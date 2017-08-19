@@ -44,7 +44,7 @@ public class JsonImporter {
         Core.reset();
 
         JsonExporter.savePath = path;
-        FileHandle file = FileListener.getFileHandle(path, type);
+        FileHandle file = FileSystem.getFileHandle(path, type);
         JSONObject json = new JSONObject(file.readString());
 
         Array<NodeComponent> nodes = createNodes((JSONArray)json.get("nodes"));

@@ -3,7 +3,6 @@ package com.jacudibu.fileSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.jacudibu.Core;
 import com.jacudibu.components.NodeComponent;
@@ -49,7 +48,7 @@ public class JsonExporter {
 
     public static void export(String path, PathType pathType) {
         savePath = path;
-        FileHandle file = FileListener.getFileHandle(path, pathType);
+        FileHandle file = FileSystem.getFileHandle(path, pathType);
         file.writeString(createJson().toString(), false);
     }
 

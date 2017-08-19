@@ -2,6 +2,7 @@ package com.jacudibu.ubiWrap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.jacudibu.ubiWrap.UbiManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
