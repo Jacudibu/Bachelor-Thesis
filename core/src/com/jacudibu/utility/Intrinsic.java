@@ -1,6 +1,7 @@
 package com.jacudibu.utility;
 
 import com.badlogic.gdx.math.Matrix4;
+import org.json.JSONObject;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 20.08.2017.
@@ -15,10 +16,11 @@ public class Intrinsic{
 
     public int resolutionX;
     public int resolutionY;
+    public int nodeID;
 
     public Matrix4 toProjectionMatrix() {
-        float far  = 100f;
-        float near = 0.1f;
+        float far  = 10f;
+        float near = 0.5f;
 
         Matrix4 projectionMatrix = new Matrix4(new float[]
                 {
@@ -29,5 +31,20 @@ public class Intrinsic{
                 });
 
         return projectionMatrix;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("node", nodeID);
+        json.put("focalX", focalX);
+        json.put("focalY", focalY);
+        json.put("principalX", principalX);
+        json.put("principalY", principalY);
+        json.put("skew", skew);
+        json.put("resolutionX", resolutionX);
+        json.put("resolutionY", resolutionY);
+
+        return json;
     }
 }

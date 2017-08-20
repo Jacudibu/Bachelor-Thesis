@@ -46,6 +46,6 @@ public class IntrinsicParser {
         intrinsic.resolutionX = Integer.parseInt(dataPieces[CAM_RESOLUTION_X]);
         intrinsic.resolutionY = Integer.parseInt(dataPieces[CAM_RESOLUTION_Y]);
 
-        assignedEntity.add(FrustumComponent.fromIntrinsic(intrinsic));
+        assignedEntity.add(new FrustumComponent(intrinsic));
     }
 }

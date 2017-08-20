@@ -28,33 +28,20 @@ public class FrustumComponent implements Component {
 
     private static Color lineColor = Color.BLACK;
     private Model model;
+    private Intrinsic intrinsic;
 
     public static FrustumComponent get(Entity e) {
         return mapper.get(e);
     }
 
-    private FrustumComponent(Vector3[] planePoints) {
-        this.planePoints = planePoints;
-
-        createFrustumModel();
-    }
-
-    public static FrustumComponent fromIntrinsic(Intrinsic intrinsic) {
-        return fromProjectionMatrix(intrinsic.toProjectionMatrix());
-    }
-
-    public static FrustumComponent fromProjectionMatrix(Matrix4 projection) {
-        projection = projection.inv();
+    public FrustumComponent(Intrinsic intrinsic) {
+        this.intrinsic = intrinsic;
 
         Frustum frustum = new Frustum();
-        frustum.update(projection.inv());
+        frustum.update(intrinsic.toProjectionMatrix().inv());
+        this.planePoints = frustum.planePoints;
 
-        //Vector3 a = new Vector3(-1, -1, 1).mul(projection);
-        //Vector3 b = new Vector3(-1, 1, 1).mul(projection);
-        //Vector3 c = new Vector3(1, 1, 1).mul(projection);
-        //Vector3 d = new Vector3(1, -1, 1).mul(projection);
-
-        return new FrustumComponent(frustum.planePoints);
+        createFrustumModel();
     }
 
     private void createFrustumModel() {
@@ -81,12 +68,16 @@ public class FrustumComponent implements Component {
         builder.line(planePoints[7], planePoints[4]);
 
         // Connections between near & far plane
-        builder.line(planePoints[0], planePoints[6]);
-        builder.line(planePoints[1], planePoints[7]);
-        builder.line(planePoints[2], planePoints[4]);
-        builder.line(planePoints[3], planePoints[5]);
+        builder.line(planePoints[0], planePoints[4]);
+        builder.line(planePoints[1], planePoints[5]);
+        builder.line(planePoints[2], planePoints[6]);
+        builder.line(planePoints[3], planePoints[7]);
 
         model = modelBuilder.end();
         modelInstance = new ModelInstance(model);
+    }
+
+    public Intrinsic getIntrinsic() {
+        return intrinsic;
     }
 }
