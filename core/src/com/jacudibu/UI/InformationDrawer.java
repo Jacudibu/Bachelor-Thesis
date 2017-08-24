@@ -350,6 +350,7 @@ public class InformationDrawer implements Disposable {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 IntrinsicParser.openLoadDialogue(currentlySelected.getEntity());
+                setIntrinsicValues(FrustumComponent.get(currentlySelected.getEntity()));
             }
         });
     }

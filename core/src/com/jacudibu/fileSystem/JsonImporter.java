@@ -128,7 +128,7 @@ public class JsonImporter {
             intrinsic.resolutionY = currentIntrinsic.getInt("resolutionY");
 
             Entity entity = getNodeWithID(intrinsic.nodeID, nodes).getEntity();
-            entity.add(new FrustumComponent(intrinsic));
+            entity.add(new FrustumComponent(intrinsic, entity));
         }
     }
 

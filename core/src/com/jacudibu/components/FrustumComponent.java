@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.jacudibu.utility.Intrinsic;
+import sun.management.snmp.jvmmib.EnumJvmThreadCpuTimeMonitoring;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 19.08.2017.
@@ -34,10 +35,12 @@ public class FrustumComponent implements Component {
         return mapper.get(e);
     }
 
-    public FrustumComponent(Intrinsic intrinsic) {
+    public FrustumComponent(Intrinsic intrinsic, Entity entity) {
         this.intrinsic = intrinsic;
 
         updateFrustum();
+
+        modelInstance.transform.set(ModelComponent.get(entity).modelInstance.transform);
     }
 
     public void updateTransform(Matrix4 transform) {

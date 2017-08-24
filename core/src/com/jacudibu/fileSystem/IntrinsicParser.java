@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.jacudibu.components.FrustumComponent;
+import com.jacudibu.components.ModelComponent;
 import com.jacudibu.utility.Intrinsic;
 
 import javax.swing.*;
@@ -62,6 +63,6 @@ public class IntrinsicParser {
         intrinsic.resolutionX = Integer.parseInt(dataPieces[CAM_RESOLUTION_X]);
         intrinsic.resolutionY = Integer.parseInt(dataPieces[CAM_RESOLUTION_Y]);
 
-        assignedEntity.add(new FrustumComponent(intrinsic));
+        assignedEntity.add(new FrustumComponent(intrinsic, assignedEntity));
     }
 }
