@@ -6,8 +6,10 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jacudibu.Core;
+import com.jacudibu.components.FrustumComponent;
 import com.jacudibu.utility.Entities;
 import com.jacudibu.components.NodeComponent;
+import com.jacudibu.utility.Intrinsic;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,7 +50,14 @@ public class JsonImporter {
         JSONObject json = new JSONObject(file.readString());
 
         Array<NodeComponent> nodes = createNodes((JSONArray)json.get("nodes"));
-        createConnections((JSONArray)json.get("connections"), nodes);
+
+        if (json.has("connections")) {
+            createConnections((JSONArray)json.get("connections"), nodes);
+        }
+
+        if (json.has("intrinsics")) {
+            createIntrinsics((JSONArray) json.get("intrinsics"), nodes);
+        }
     }
 
 
@@ -98,6 +107,26 @@ public class JsonImporter {
             for (int j = 0; j < nodeConnections.length(); j++) {
                 node.addOutgoing(getNodeWithID(nodeConnections.getInt(j), nodes));
             }
+        }
+    }
+
+    private static void createIntrinsics(JSONArray intrinsicArray, Array<NodeComponent> nodes) {
+        for (int i = 0; i < intrinsicArray.length(); i++) {
+            JSONObject currentIntrinsic = intrinsicArray.getJSONObject(i);
+
+
+            Intrinsic intrinsic = new Intrinsic();
+            intrinsic.nodeID = currentIntrinsic.getInt("node");
+            intrinsic.focalX = (float) currentIntrinsic.getDouble("focalX");
+            intrinsic.focalY = (float) currentIntrinsic.getDouble("focalY");
+            intrinsic.principalX = (float) currentIntrinsic.getDouble("principalX");
+            intrinsic.principalY = (float) currentIntrinsic.getDouble("principalY");
+            intrinsic.skew = (float) currentIntrinsic.getDouble("skew");
+            intrinsic.resolutionX = currentIntrinsic.getInt("resolutionX");
+            intrinsic.resolutionY = currentIntrinsic.getInt("resolutionY");
+
+            Entity entity = getNodeWithID(intrinsic.nodeID, nodes).getEntity();
+            entity.add(new FrustumComponent(intrinsic));
         }
     }
 

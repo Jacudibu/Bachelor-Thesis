@@ -1,6 +1,8 @@
 package com.jacudibu.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -10,24 +12,34 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.utility.Intrinsic;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 19.08.2017.
  */
 public class FrustumComponent implements Component {
-    public Vector3 a, b, c, d;
+    private static final ComponentMapper<FrustumComponent> mapper = ComponentMapper.getFor(FrustumComponent.class);
+
+    public Vector3[] planePoints;
     public ModelInstance modelInstance;
 
     private static Color lineColor = Color.BLACK;
     private Model model;
+    private Intrinsic intrinsic;
 
-    public FrustumComponent(Vector3 a, Vector3 b, Vector3 c, Vector3 d) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
+    public static FrustumComponent get(Entity e) {
+        return mapper.get(e);
+    }
+
+    public FrustumComponent(Intrinsic intrinsic) {
+        this.intrinsic = intrinsic;
+
+        Frustum frustum = new Frustum();
+        frustum.update(intrinsic.toProjectionMatrix().inv());
+        this.planePoints = frustum.planePoints;
 
         createFrustumModel();
     }
@@ -47,17 +59,29 @@ public class FrustumComponent implements Component {
 
         Vector3 position = new Vector3();
 
-        builder.line(position, a);
-        builder.line(position, b);
-        builder.line(position, c);
-        builder.line(position, d);
+        // Near Plane
+        builder.line(planePoints[0], planePoints[1]);
+        builder.line(planePoints[1], planePoints[2]);
+        builder.line(planePoints[2], planePoints[3]);
+        builder.line(planePoints[3], planePoints[0]);
 
-        builder.line(a, b);
-        builder.line(b, c);
-        builder.line(c, d);
-        builder.line(d, a);
+        // Far Plane
+        builder.line(planePoints[4], planePoints[5]);
+        builder.line(planePoints[5], planePoints[6]);
+        builder.line(planePoints[6], planePoints[7]);
+        builder.line(planePoints[7], planePoints[4]);
+
+        // Connections between near & far plane
+        builder.line(planePoints[0], planePoints[4]);
+        builder.line(planePoints[1], planePoints[5]);
+        builder.line(planePoints[2], planePoints[6]);
+        builder.line(planePoints[3], planePoints[7]);
 
         model = modelBuilder.end();
         modelInstance = new ModelInstance(model);
+    }
+
+    public Intrinsic getIntrinsic() {
+        return intrinsic;
     }
 }

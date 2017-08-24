@@ -12,6 +12,9 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
+import com.jacudibu.components.FrustumComponent;
+import com.jacudibu.fileSystem.IntrinsicParser;
+import com.jacudibu.fileSystem.PathType;
 import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.ubiWrap.UbiManager;
 import com.jacudibu.utility.Grid3d;
@@ -100,6 +103,8 @@ public class Core extends com.badlogic.gdx.Game {
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
 		}
+
+
 	}
 
 	@Override
@@ -138,6 +143,8 @@ public class Core extends com.badlogic.gdx.Game {
 		// PoseParser.parseFile("samples/samplePose.txt", PoseParser.PathType.INTERNAL);
 		JsonImporter.importJson("test-nodes");
 		DFGParser.parse(UbiManager.dfgPath);
+
+		//IntrinsicParser.parse("samples/sampleIntrinsic.txt", engine.getEntities().first());
 	}
 
 	public static void reset() {
