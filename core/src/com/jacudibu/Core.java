@@ -12,9 +12,6 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
-import com.jacudibu.components.FrustumComponent;
-import com.jacudibu.fileSystem.IntrinsicParser;
-import com.jacudibu.fileSystem.PathType;
 import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.ubiWrap.UbiManager;
 import com.jacudibu.utility.Grid3d;
@@ -43,11 +40,15 @@ public class Core extends com.badlogic.gdx.Game {
 	public static Grid3d grid;
 
 	public static boolean usingUbitrack = false;
-
-	public final static boolean DEBUG_DRAW = false;
+	public static boolean debugDraw = false;
 	private DebugDrawer debugDrawer;
 
 	float testTimer = 0f;
+
+	public Core(boolean debug) {
+		super();
+		debugDraw = debug;
+	}
 
 	@Override
 	public void create () {
@@ -63,7 +64,7 @@ public class Core extends com.badlogic.gdx.Game {
 		broadphase = new btDbvtBroadphase();
 		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
 
-		if (DEBUG_DRAW) {
+		if (debugDraw) {
 			debugDrawer = new DebugDrawer();
 			debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
 			collisionWorld.setDebugDrawer(debugDrawer);
@@ -102,7 +103,7 @@ public class Core extends com.badlogic.gdx.Game {
 		engine.update(Gdx.graphics.getDeltaTime());
 		screen.render(Gdx.graphics.getDeltaTime());
 
-		if (DEBUG_DRAW) {
+		if (debugDraw) {
 			debugDrawer.begin(MainCamera.instance.cam);
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
@@ -148,7 +149,7 @@ public class Core extends com.badlogic.gdx.Game {
 		JsonImporter.importJson("test-nodes");
 
 		if (usingUbitrack) {
-			DFGParser.parse(UbiManager.dfgPath);
+			DFGParser.parse(UbiManager.debugDFGPath);
 		}
 		//IntrinsicParser.parse("samples/sampleIntrinsic.txt", engine.getEntities().first());
 	}

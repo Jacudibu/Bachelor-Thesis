@@ -11,18 +11,20 @@ import ubitrack.*;
 public class UbiManager {
     private static boolean isInit;
     public static final boolean enableLogging = false;
-    public static final String ubitrackPath = "C:\\Ubitrack\\bin\\ubitrack";
-    public static final String dfgPath = "C:\\Ubitrack\\wolfBA_DFG.dfg";
+
+    private static String ubitrackPath;
+    public static final String debugDFGPath = "C:\\Ubitrack\\wolfBA_DFG.dfg";
 
     private static SimpleFacade facade;
     private static Array<PoseReceiver> receivers = new Array<PoseReceiver>();
 
-    public static void init() {
+    public static void init(String ubiPath) {
         if (isInit) {
             Gdx.app.log("Ubitrack", "init called twice!");
             return;
         }
 
+        ubitrackPath = ubiPath;
         System.loadLibrary("ubitrack_java");
         isInit = true;
         Core.usingUbitrack = true;
@@ -32,14 +34,13 @@ public class UbiManager {
         }
 
         facade = new SimpleFacade(ubitrackPath);
-
     }
 
-    public static void initDebug() {
-        init();
+    public static void initDebug(String ubiPath) {
+        init(ubiPath);
 
         if (!hasError()) {
-            loadDataflow(dfgPath);
+            loadDataflow(debugDFGPath);
         }
     }
 

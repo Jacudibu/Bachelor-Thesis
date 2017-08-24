@@ -6,55 +6,93 @@ import com.jacudibu.Core;
 import com.jacudibu.ubiWrap.UbiManager;
 
 public class DesktopLauncher {
-	private static boolean initUbitrack = true;
 	private static boolean debugMode = false;
 
-	public static void main (String[] arg) {
-		parseArguments(arg);
+	private static boolean useUbitrack = true;
+	private static String ubiPath = "";
 
-		if (initUbitrack) {
+	private static String[] arguments;
+
+	public static void main (String[] args) {
+		arguments = args;
+
+		searchUbitrackPathVariable();
+		parseArguments();
+
+		if (ubiPath.length() > 0 && useUbitrack) {
 			if (debugMode) {
-				UbiManager.initDebug();
+				UbiManager.initDebug(ubiPath);
 			} else {
-				UbiManager.init();
+				UbiManager.init(ubiPath);
 			}
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.samples = 3; // Anti Aliasing
 
-		new LwjglApplication(new Core(), config);
+		new LwjglApplication(new Core(debugMode), config);
 	}
 
-	private static void parseArguments(String[] args) {
-		for (int i = 0; i < args.length; i++) {
-			String current = args[i].toLowerCase();
+	private static void parseArguments() {
+		int i = 0;
+		while (i < arguments.length) {
+			String currentArgument = arguments[i].toLowerCase();
 
-			if (current.startsWith("-")) {
-				current = current.substring(1);
+			if (currentArgument.startsWith("-")) {
+				currentArgument = currentArgument.substring(1);
 			}
 
-			parseArgument(current);
+			i += parseArgument(currentArgument, i);
 		}
 
 	}
 
-	private static void parseArgument(String arg) {
-		if (arg.equals("help") || arg.equals("teachmesenpai")) {
+	private static void searchUbitrackPathVariable() {
+		ubiPath = System.getenv("UBITRACK_COMPONENTS_PATH");
+	}
+
+	private static int parseArgument(String currentArgument, int index) {
+		if (currentArgument.equals("help") || currentArgument.equals("teachmesenpai") || currentArgument.equals("?")) {
 			printHelp();
+			return 1;
 		}
 
-		if (arg.equals("noubitrack")) {
-			initUbitrack = false;
+		if (currentArgument.equals("ubipath")) {
+			ubiPath = arguments[index + 1];
+			return 2;
 		}
 
-		if (arg.equals("debug")) {
+		if (currentArgument.equals("noubitrack")) {
+			useUbitrack = false;
+			return 1;
+		}
+
+		if (currentArgument.equals("debug")) {
 			debugMode = true;
+			return 1;
 		}
 
+		if (currentArgument.equals("upupdowndownleftrightleftrightba")){
+			System.out.println("You are awesome!");
+			return 1;
+		}
+
+		System.out.println("Unknown Argument: " + currentArgument + "\n" +
+				"Enter help or ? for an overview of available arguments.");
+
+		return 1;
 	}
 
 	private static void printHelp() {
-		// STUB
+		System.out.println("Fear not, young one: senpai noticed you! Available Commands:");
+
+		System.out.println("-ubipath PATH \n" +
+				"\tInitializes Ubitrack tracking. PATH needs to point to your ubitrack installation \n" +
+				"\tTry this if you system's PATH variable is not found for some reason.");
+
+		System.out.println("-noubitrack \n" +
+				"\tStops Ubitrack from being initialized, even if a path variable is found. \n" +
+				"\tUse this if your Ubitrack installation doesn't want to work no matter what you try.");
+
 	}
 }
