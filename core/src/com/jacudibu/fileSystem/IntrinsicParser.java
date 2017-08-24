@@ -31,6 +31,8 @@ public class IntrinsicParser {
 
     public static void openLoadDialogue(Entity entity) {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load Intrisic...");
+        fileChooser.setApproveButtonText("Load");
 
         JFrame frame = new JFrame();
         frame.setVisible(true);

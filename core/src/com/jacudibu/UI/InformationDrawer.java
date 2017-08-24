@@ -16,12 +16,10 @@ import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.fileSystem.IntrinsicParser;
-import com.jacudibu.fileSystem.JsonImporter;
-import com.jacudibu.utility.Intrinsic;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
- * Draws various information regarding the currently selected Object, can also be manipulated by the user.
+ * Draws various information regarding the currently selected Object which can also be manipulated by the user.
  */
 public class InformationDrawer implements Disposable {
     private Stage stage;
@@ -340,7 +338,7 @@ public class InformationDrawer implements Disposable {
         loadIntrinsicGroup = new Group();
         informationParent.addActor(loadIntrinsicGroup);
 
-        setupLabel("Intrinsic", backgroundBaseWidth * 0.5f, 0, Align.top, loadIntrinsicGroup);
+        // setupLabel("Intrinsic", backgroundBaseWidth * 0.5f, 0, Align.top, loadIntrinsicGroup);
 
         loadIntrinsicButton = new TextButton("Load Intrinsic", skin);
         loadIntrinsicGroup.addActor(loadIntrinsicButton);

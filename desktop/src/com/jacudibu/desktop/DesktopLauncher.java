@@ -7,12 +7,17 @@ import com.jacudibu.ubiWrap.UbiManager;
 
 public class DesktopLauncher {
 	private static boolean initUbitrack = true;
+	private static boolean debugMode = false;
 
 	public static void main (String[] arg) {
 		parseArguments(arg);
 
 		if (initUbitrack) {
-			UbiManager.init();
+			if (debugMode) {
+				UbiManager.initDebug();
+			} else {
+				UbiManager.init();
+			}
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -41,6 +46,10 @@ public class DesktopLauncher {
 
 		if (arg.equals("noubitrack")) {
 			initUbitrack = false;
+		}
+
+		if (arg.equals("debug")) {
+			debugMode = true;
 		}
 
 	}

@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.Core;
+import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.utility.Entities;
 import com.jacudibu.InputManager;
 import com.jacudibu.fileSystem.JsonExporter;
@@ -39,16 +40,25 @@ public class ButtonRow implements Disposable {
         this.stage = stage;
         this.skin = skin;
 
-        createSaveButton(0, 0);
-        createLoadButton(64, 0);
+        int column1 = 0;
+        int column2 = 64;
+        int y = 0;
+        int yStep = 69;
 
-        createMarkerButton(0, -64 - 5);
-        createTrackerButton(64, -64 - 5);
+        createSaveButton(column1, 0);
+        createLoadButton(column2, 0);
+        y -= yStep;
 
-        createConnectButton(0, -64*2 - 10);
-        createMergeButton(64, -64*2 - 10);
+        createMarkerButton(column1, y);
+        createTrackerButton(column2, y);
+        y -= yStep;
 
-        createToggleGridButton(0, -64 * 3 - 15);
+        createConnectButton(column1, y);
+        createMergeButton(column2, y);
+        y -= yStep;
+
+        createToggleGridButton(column1, y);
+        createLoadDFGButton(column2, y);
 
         updateUIPositions();
     }
@@ -135,6 +145,20 @@ public class ButtonRow implements Disposable {
                     public void tap(InputEvent event, float x, float y, int count, int button) {
                         super.tap(event, x, y, count, button);
                         Core.grid.toggle();
+                    }
+                });
+    }
+
+    private void createLoadDFGButton(int x, int y) {
+        if (!Core.usingUbitrack) {
+            return;
+        }
+
+        createButton(x, y, "buttons/loadDFG.png", "buttons/loadDFGPressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        DFGParser.openLoadDialogue();
                     }
                 });
     }

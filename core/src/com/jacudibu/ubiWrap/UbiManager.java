@@ -33,6 +33,11 @@ public class UbiManager {
 
         facade = new SimpleFacade(ubitrackPath);
 
+    }
+
+    public static void initDebug() {
+        init();
+
         if (!hasError()) {
             loadDataflow(dfgPath);
         }
