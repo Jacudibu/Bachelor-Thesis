@@ -6,6 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.jacudibu.components.FrustumComponent;
 import com.jacudibu.utility.Intrinsic;
 
+import javax.swing.*;
+
 /**
  * Created by Stefan Wolf (Jacudibu) on 19.08.2017.
  */
@@ -24,6 +26,20 @@ public class IntrinsicParser {
 
     public static void parse(String path, Entity assignedEntity) {
         parse(path, PathType.INTERNAL, assignedEntity);
+    }
+
+    public static void openLoadDialogue(Entity entity) {
+        JFileChooser fileChooser = new JFileChooser();
+
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.setVisible(false);
+        int result = fileChooser.showOpenDialog(frame);
+        frame.dispose();
+        if (result == JFileChooser.APPROVE_OPTION) {
+            parse(fileChooser.getSelectedFile().getAbsolutePath(), PathType.ABSOLUTE, entity);
+        }
     }
 
     public static void parse(String path, PathType pathType, Entity assignedEntity) {

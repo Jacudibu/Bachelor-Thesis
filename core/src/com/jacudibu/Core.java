@@ -42,6 +42,8 @@ public class Core extends com.badlogic.gdx.Game {
 	public static int windowWidth;
 	public static Grid3d grid;
 
+	public static boolean usingUbitrack = false;
+
 	public final static boolean DEBUG_DRAW = false;
 	private DebugDrawer debugDrawer;
 
@@ -85,10 +87,12 @@ public class Core extends com.badlogic.gdx.Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
 				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		try {
+		if (usingUbitrack) {
+			try {
 			UbiManager.update();
-		} catch (Exception e) {
-			return;
+			} catch (Exception e) {
+				return;
+			}
 		}
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
@@ -142,8 +146,10 @@ public class Core extends com.badlogic.gdx.Game {
 
 		// PoseParser.parseFile("samples/samplePose.txt", PoseParser.PathType.INTERNAL);
 		JsonImporter.importJson("test-nodes");
-		DFGParser.parse(UbiManager.dfgPath);
 
+		if (usingUbitrack) {
+			DFGParser.parse(UbiManager.dfgPath);
+		}
 		//IntrinsicParser.parse("samples/sampleIntrinsic.txt", engine.getEntities().first());
 	}
 

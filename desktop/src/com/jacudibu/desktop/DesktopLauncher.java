@@ -35,11 +35,11 @@ public class DesktopLauncher {
 	}
 
 	private static void parseArgument(String arg) {
-		if (arg == "help" || arg == "teachmesenpai") {
+		if (arg.equals("help") || arg.equals("teachmesenpai")) {
 			printHelp();
 		}
 
-		if (arg == "noubitrack") {
+		if (arg.equals("noubitrack")) {
 			initUbitrack = false;
 		}
 

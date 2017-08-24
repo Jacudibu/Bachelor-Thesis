@@ -2,6 +2,7 @@ package com.jacudibu.ubiWrap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.jacudibu.Core;
 import ubitrack.*;
 
 /**
@@ -24,6 +25,7 @@ public class UbiManager {
 
         System.loadLibrary("ubitrack_java");
         isInit = true;
+        Core.usingUbitrack = true;
 
         if (enableLogging) {
             ubitrack.initLogging();
@@ -55,6 +57,7 @@ public class UbiManager {
     public static void loadDataflow(String path) {
         if (!isInit) {
             Gdx.app.log("Ubitrack", "load Dataflow called without being initialized!");
+            return;
         }
 
         facade.loadDataflow(path);
@@ -68,6 +71,7 @@ public class UbiManager {
     protected static void receivePose(String id, String qr) {
         if (!isInit) {
             Gdx.app.log("Ubitrack", "receivePose called without being initialized!");
+            return;
         }
 
         PoseReceiver receiver = new PoseReceiver(id, qr);

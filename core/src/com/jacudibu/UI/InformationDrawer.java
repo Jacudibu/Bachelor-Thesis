@@ -1,22 +1,27 @@
 package com.jacudibu.UI;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.components.FrustumComponent;
 import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
+import com.jacudibu.fileSystem.IntrinsicParser;
+import com.jacudibu.fileSystem.JsonImporter;
+import com.jacudibu.utility.Intrinsic;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
- * Draws various information to the currently selected Object, can also be manipulated by the user.
+ * Draws various information regarding the currently selected Object, can also be manipulated by the user.
  */
 public class InformationDrawer implements Disposable {
     private Stage stage;
@@ -26,7 +31,8 @@ public class InformationDrawer implements Disposable {
     private Group nameGroup;
     private Group positionGroup;
     private Group rotationGroup;
-    private Group intrinsicGroup;
+    private Group manipulateIntrinsicGroup;
+    private Group loadIntrinsicGroup;
     private TextField.TextFieldListener textFieldListener;
 
     private TextField name;
@@ -36,10 +42,13 @@ public class InformationDrawer implements Disposable {
     private TextField near, far;
     private FloatFilter floatFilter = new FloatFilter();
 
+    private TextButton loadIntrinsicButton;
+
     private static InformationDrawer instance;
     private ModelComponent currentlySelected;
 
     private final float backgroundBaseHeight = 200f;
+    private final float backgroundBaseWidth = 215f;
 
     protected InformationDrawer (Stage stage, Skin skin) {
         instance = this;
@@ -51,7 +60,7 @@ public class InformationDrawer implements Disposable {
         informationParent = new Group();
         stage.addActor(informationParent);
 
-        informationParent.setWidth(215);
+        informationParent.setWidth(backgroundBaseWidth);
         informationParent.setHeight(backgroundBaseHeight);
 
         Image image = new Image(skin.getDrawable("textfield"));
@@ -61,7 +70,8 @@ public class InformationDrawer implements Disposable {
         generateNameDrawers();
         generatePositionDrawer();
         generateRotationDrawer();
-        generateIntrinsicDrawer();
+        generateIntrinsicManipulationDrawer();
+        generateIntrinsicLoaderDrawer();
 
         updateUIPositions();
     }
@@ -83,7 +93,6 @@ public class InformationDrawer implements Disposable {
             instance.setPositionValues(selectedObject.getPosition());
             instance.setRotationValues(selectedObject.getRotation());
             instance.setIntrinsicValues(FrustumComponent.get(selectedObject.getEntity()));
-
         }
         else {
             instance.disableInput();
@@ -172,6 +181,8 @@ public class InformationDrawer implements Disposable {
 
         near.setDisabled(true);
         far.setDisabled(true);
+
+        loadIntrinsicButton.setDisabled(true);
 
         stage.setKeyboardFocus(null);
     }
@@ -275,7 +286,7 @@ public class InformationDrawer implements Disposable {
         positionGroup = new Group();
         informationParent.addActor(positionGroup);
 
-        setupLabel("Position", 100, 0, Align.top, positionGroup);
+        setupLabel("Position", backgroundBaseWidth * 0.5f, 0, Align.top, positionGroup);
 
         // X
         xPos = setupTextField(20, -20, Align.topLeft, positionGroup);
@@ -294,7 +305,7 @@ public class InformationDrawer implements Disposable {
         rotationGroup = new Group();
         informationParent.addActor(rotationGroup);
 
-        setupLabel("Rotation", 100, 0, Align.top, rotationGroup);
+        setupLabel("Rotation", backgroundBaseWidth * 0.5f, 0, Align.top, rotationGroup);
 
         // X
         xRot = setupTextField(20, -20, Align.topLeft, rotationGroup);
@@ -310,19 +321,37 @@ public class InformationDrawer implements Disposable {
 
     }
 
-    private void generateIntrinsicDrawer() {
-        intrinsicGroup = new Group();
-        informationParent.addActor(intrinsicGroup);
+    private void generateIntrinsicManipulationDrawer() {
+        manipulateIntrinsicGroup = new Group();
+        informationParent.addActor(manipulateIntrinsicGroup);
 
-        setupLabel("Intrinsic", 100, 0, Align.top, intrinsicGroup);
+        setupLabel("Intrinsic", backgroundBaseWidth * 0.5f, 0, Align.top, manipulateIntrinsicGroup);
 
         // Near
-        near = setupTextField(45, -20, Align.topLeft, intrinsicGroup);
-        setupLabel("near", 45, -20, Align.topRight, intrinsicGroup);
+        near = setupTextField(40, -20, Align.topLeft, manipulateIntrinsicGroup);
+        setupLabel("near", 40, -20, Align.topRight, manipulateIntrinsicGroup);
 
         // Far
-        far = setupTextField(125, -20, Align.topLeft, intrinsicGroup);
-        setupLabel("far", 125, -20, Align.topRight, intrinsicGroup);
+        far = setupTextField(120, -20, Align.topLeft, manipulateIntrinsicGroup);
+        setupLabel("far", 120, -20, Align.topRight, manipulateIntrinsicGroup);
+    }
+
+    private void generateIntrinsicLoaderDrawer() {
+        loadIntrinsicGroup = new Group();
+        informationParent.addActor(loadIntrinsicGroup);
+
+        setupLabel("Intrinsic", backgroundBaseWidth * 0.5f, 0, Align.top, loadIntrinsicGroup);
+
+        loadIntrinsicButton = new TextButton("Load Intrinsic", skin);
+        loadIntrinsicGroup.addActor(loadIntrinsicButton);
+        loadIntrinsicButton.setPosition(backgroundBaseWidth * 0.5f, -20, Align.top);
+
+        loadIntrinsicButton.addListener(new ActorGestureListener() {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                IntrinsicParser.openLoadDialogue(currentlySelected.getEntity());
+            }
+        });
     }
 
     private TextField setupTextField(float x, float y, int align, Group group) {
@@ -367,15 +396,24 @@ public class InformationDrawer implements Disposable {
         rotationGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
 
-        if (FrustumComponent.get(currentlySelected.getEntity()) != null) {
-            intrinsicGroup.setVisible(true);
-            intrinsicGroup.setPosition(x, y, Align.topLeft);
-        } else {
-            intrinsicGroup.setVisible(false);
+        updateFrustum(currentlySelected.getEntity(), x, y);
+    }
 
-            if (NodeComponent.get(currentlySelected.getEntity()) != null) {
-                if (NodeComponent.get(currentlySelected.getEntity()).isTracker) {
-                    // TODO: Draw Load Intrinsic button
+    protected void updateFrustum(Entity entity, float x, float y) {
+        if (FrustumComponent.get(entity) != null) {
+            manipulateIntrinsicGroup.setVisible(true);
+            loadIntrinsicGroup.setVisible(false);
+
+            manipulateIntrinsicGroup.setPosition(x, y, Align.topLeft);
+        } else {
+            manipulateIntrinsicGroup.setVisible(false);
+
+            if (NodeComponent.get(entity) != null) {
+                if (NodeComponent.get(entity).isTracker) {
+                    loadIntrinsicGroup.setVisible(true);
+                    loadIntrinsicGroup.setPosition(x, y, Align.topLeft);
+                } else {
+                    loadIntrinsicGroup.setVisible(false);
                 }
             }
         }

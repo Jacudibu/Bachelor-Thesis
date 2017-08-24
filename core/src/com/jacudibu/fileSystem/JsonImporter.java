@@ -22,6 +22,8 @@ public class JsonImporter {
 
     public static void openLoadDialogue() {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load Intrisic...");
+        fileChooser.setApproveButtonText("Load");
 
         JFrame frame = new JFrame();
         frame.setVisible(true);
