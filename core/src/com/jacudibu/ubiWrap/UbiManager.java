@@ -52,17 +52,13 @@ public class UbiManager {
         }
     }
 
-    private static void loadDataflow(String path) {
+    public static void loadDataflow(String path) {
         if (!isInit) {
             Gdx.app.log("Ubitrack", "load Dataflow called without being initialized!");
         }
 
         facade.loadDataflow(path);
         facade.startDataflow();
-
-        // TODO: parse dfg properly
-        //receivePose("272pose", "5CC5");
-
     }
 
     private static void receivePose(String id) {

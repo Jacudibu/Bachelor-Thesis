@@ -91,6 +91,10 @@ public class ModelComponent implements Component {
         if (ColliderComponent.get(entity) != null) {
             ColliderComponent.get(entity).updateTransform(modelInstance.transform);
         }
+
+        if (FrustumComponent.get(entity) != null) {
+            FrustumComponent.get(entity).updateTransform(modelInstance.transform);
+        }
     }
 
     public Entity getEntity() {
