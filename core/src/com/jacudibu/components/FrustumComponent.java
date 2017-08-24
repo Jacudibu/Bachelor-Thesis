@@ -37,15 +37,26 @@ public class FrustumComponent implements Component {
     public FrustumComponent(Intrinsic intrinsic) {
         this.intrinsic = intrinsic;
 
+        updateFrustum();
+    }
+
+    public void updateTransform(Matrix4 transform) {
+        modelInstance.transform = transform;
+    }
+
+    public void updateNearFar(float near, float far) {
+        intrinsic.near = near;
+        intrinsic.far = far;
+
+        updateFrustum();
+    }
+
+    private void updateFrustum() {
         Frustum frustum = new Frustum();
         frustum.update(intrinsic.toProjectionMatrix().inv());
         this.planePoints = frustum.planePoints;
 
         createFrustumModel();
-    }
-
-    public void updateTransform(Matrix4 transform) {
-        modelInstance.transform = transform;
     }
 
     private void createFrustumModel() {

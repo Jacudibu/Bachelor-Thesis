@@ -14,14 +14,14 @@ public class Intrinsic{
     public float principalY;
     public float skew;
 
+    public float far = 10f;
+    public float near = 0.5f;
+
     public int resolutionX;
     public int resolutionY;
     public int nodeID;
 
     public Matrix4 toProjectionMatrix() {
-        float far  = 10f;
-        float near = 0.5f;
-
         Matrix4 projectionMatrix = new Matrix4(new float[]
                 {
                         focalX / principalX, 0                  , 0,                             0,
