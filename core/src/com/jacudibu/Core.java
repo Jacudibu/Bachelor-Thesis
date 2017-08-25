@@ -147,10 +147,6 @@ public class Core extends com.badlogic.gdx.Game {
 
 		// PoseParser.parseFile("samples/samplePose.txt", PoseParser.PathType.INTERNAL);
 		JsonImporter.importJson("test-nodes");
-
-		if (usingUbitrack) {
-			DFGParser.parse(UbiManager.debugDFGPath);
-		}
 		//IntrinsicParser.parse("samples/sampleIntrinsic.txt", engine.getEntities().first());
 	}
 

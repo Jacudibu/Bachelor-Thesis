@@ -7,6 +7,7 @@ import com.jacudibu.ubiWrap.UbiManager;
 
 public class DesktopLauncher {
 	private static boolean debugMode = false;
+	private static boolean testMode = false;
 
 	private static boolean useUbitrack = true;
 	private static String ubiPath = "";
@@ -19,9 +20,12 @@ public class DesktopLauncher {
 		searchUbitrackPathVariable();
 		parseArguments();
 
+		ubiPath = "C:\\Ubitrack\\" + ubiPath;
+//		ubiPath = "C:\\Ubitrack\\bin\\ubitrack"; // How it should look like
+
 		if (ubiPath.length() > 0 && useUbitrack) {
-			if (debugMode) {
-				UbiManager.initDebug(ubiPath);
+			if (testMode) {
+				UbiManager.initTesting(ubiPath);
 			} else {
 				UbiManager.init(ubiPath);
 			}
@@ -72,6 +76,11 @@ public class DesktopLauncher {
 			return 1;
 		}
 
+		if (currentArgument.equals("test")) {
+			testMode = true;
+			return 1;
+		}
+
 		if (currentArgument.equals("upupdowndownleftrightleftrightba")){
 			System.out.println("You are awesome!");
 			return 1;
@@ -94,5 +103,7 @@ public class DesktopLauncher {
 				"\tStops Ubitrack from being initialized, even if a path variable is found. \n" +
 				"\tUse this if your Ubitrack installation doesn't want to work no matter what you try.");
 
+		System.out.println("-debug \n" +
+				"\tDraws some funny colliders and other stuff. I don't know why you'd need that though.");
 	}
 }

@@ -18,7 +18,7 @@ public class UbiManager {
     private static SimpleFacade facade;
     private static Array<PoseReceiver> receivers = new Array<PoseReceiver>();
 
-    public static void init(String ubiPath) {
+    public static void init(final String ubiPath) {
         if (isInit) {
             Gdx.app.log("Ubitrack", "init called twice!");
             return;
@@ -36,7 +36,7 @@ public class UbiManager {
         facade = new SimpleFacade(ubitrackPath);
     }
 
-    public static void initDebug(String ubiPath) {
+    public static void initTesting(String ubiPath) {
         init(ubiPath);
 
         if (!hasError()) {
