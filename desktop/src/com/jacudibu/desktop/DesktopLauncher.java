@@ -74,7 +74,11 @@ public class DesktopLauncher {
 
 		if (currentArgument.equals("dfg")) {
 			dfgPath = arguments[index + 1];
-			System.out.println(dfgPath);
+			return 2;
+		}
+
+		if (currentArgument.equals("load")) {
+			Core.startSRGPath = arguments[index + 1];
 			return 2;
 		}
 
@@ -108,6 +112,9 @@ public class DesktopLauncher {
 		System.out.println("-dfg PATH \n" +
 				"\tLoad a DFG File at PATH as soon as the app launches.\n" +
 				"\tThis is basically just a shortcut if you want to skip the in-app filebrowser.");
+
+		System.out.println("-load PATH \n " +
+				"\tLoads the Spatial Relationship Graph at the given destination when the app launches.");
 
 		System.out.println("-debug \n" +
 				"\tDraws some funny colliders and other stuff. I don't know why you'd need that though.");

@@ -12,7 +12,6 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
-import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.ubiWrap.UbiManager;
 import com.jacudibu.utility.Grid3d;
 import com.jacudibu.components.NodeComponent;
@@ -41,9 +40,8 @@ public class Core extends com.badlogic.gdx.Game {
 
 	public static boolean usingUbitrack = false;
 	public static boolean debugDraw = false;
+	public static String startSRGPath;
 	private DebugDrawer debugDrawer;
-
-	float testTimer = 0f;
 
 	public Core(boolean debug) {
 		super();
@@ -80,6 +78,10 @@ public class Core extends com.badlogic.gdx.Game {
 		InputManager.initalize();
 
 		initDebugStuff();
+
+		if (startSRGPath.length() > 1) {
+			JsonImporter.importJson(startSRGPath);
+		}
 	}
 
 	@Override
@@ -146,7 +148,7 @@ public class Core extends com.badlogic.gdx.Game {
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
 		// PoseParser.parseFile("samples/samplePose.txt", PoseParser.PathType.INTERNAL);
-		JsonImporter.importJson("test-nodes");
+		//JsonImporter.importJson("test-nodes");
 		//IntrinsicParser.parse("samples/sampleIntrinsic.txt", engine.getEntities().first());
 	}
 

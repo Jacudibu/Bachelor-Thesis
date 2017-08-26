@@ -15,7 +15,7 @@ public class QRGenerator {
     private static final Color freeColor = Color.WHITE;
 
     public static boolean isValidCode(String code) {
-        if (code.isEmpty() || code.length() > 4) {
+        if (code.isEmpty() || code.length() != 4) {
             return false;
         }
 
