@@ -64,8 +64,10 @@ public class ColliderComponent implements Component, Disposable{
     }
 
     public void updateArrowCollider(ArrowComponent arrowComponent) {
-        collisionObject.setCollisionShape(Bullet.obtainStaticNodeShape(arrowComponent.model.nodes));
-        collisionObject.setWorldTransform(arrowComponent.getWorldTransform());
+        if (arrowComponent.model != null) {
+            collisionObject.setCollisionShape(Bullet.obtainStaticNodeShape(arrowComponent.model.nodes));
+            collisionObject.setWorldTransform(arrowComponent.getWorldTransform());
+        }
     }
 
     @Override
