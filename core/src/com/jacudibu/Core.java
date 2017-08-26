@@ -77,7 +77,7 @@ public class Core extends com.badlogic.gdx.Game {
 		grid = new Grid3d(20, true);
 		InputManager.initalize();
 
-		initDebugStuff();
+		initializeModels();
 
 		if (startSRGPath.length() > 1) {
 			JsonImporter.importJson(startSRGPath);
@@ -110,8 +110,6 @@ public class Core extends com.badlogic.gdx.Game {
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
 		}
-
-
 	}
 
 	@Override
@@ -137,7 +135,7 @@ public class Core extends com.badlogic.gdx.Game {
 		windowHeight = height;
 	}
 
-	private void initDebugStuff() {
+	private void initializeModels() {
 		modelBuilder = new ModelBuilder();
 		markerModel = modelBuilder.createBox(0.2f, 0.2f, 0.000001f,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
@@ -146,10 +144,6 @@ public class Core extends com.badlogic.gdx.Game {
 		trackerModel = modelBuilder.createSphere(0.2f, 0.2f, 0.2f,50, 50,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
-
-		// PoseParser.parseFile("samples/samplePose.txt", PoseParser.PathType.INTERNAL);
-		//JsonImporter.importJson("test-nodes");
-		//IntrinsicParser.parse("samples/sampleIntrinsic.txt", engine.getEntities().first());
 	}
 
 	public static void reset() {
