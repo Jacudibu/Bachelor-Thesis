@@ -3,14 +3,15 @@ package com.jacudibu.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.jacudibu.Core;
+import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.ubiWrap.UbiManager;
 
 public class DesktopLauncher {
 	private static boolean debugMode = false;
-	private static boolean testMode = false;
 
 	private static boolean useUbitrack = true;
 	private static String ubiPath = "";
+	private static String dfgPath = "";
 
 	private static String[] arguments;
 
@@ -23,18 +24,18 @@ public class DesktopLauncher {
 		ubiPath = "C:\\Ubitrack\\" + ubiPath;
 //		ubiPath = "C:\\Ubitrack\\bin\\ubitrack"; // How it should look like
 
-		if (ubiPath.length() > 0 && useUbitrack) {
-			if (testMode) {
-				UbiManager.initTesting(ubiPath);
-			} else {
-				UbiManager.init(ubiPath);
-			}
+		if (useUbitrack) {
+			UbiManager.init(ubiPath);
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.samples = 3; // Anti Aliasing
 
 		new LwjglApplication(new Core(debugMode), config);
+
+		if (useUbitrack && dfgPath.length() > 0) {
+			DFGParser.parse(dfgPath);
+		}
 	}
 
 	private static void parseArguments() {
@@ -71,13 +72,14 @@ public class DesktopLauncher {
 			return 1;
 		}
 
-		if (currentArgument.equals("debug")) {
-			debugMode = true;
-			return 1;
+		if (currentArgument.equals("dfg")) {
+			dfgPath = arguments[index + 1];
+			System.out.println(dfgPath);
+			return 2;
 		}
 
-		if (currentArgument.equals("test")) {
-			testMode = true;
+		if (currentArgument.equals("debug")) {
+			debugMode = true;
 			return 1;
 		}
 
@@ -102,6 +104,10 @@ public class DesktopLauncher {
 		System.out.println("-noubitrack \n" +
 				"\tStops Ubitrack from being initialized, even if a path variable is found. \n" +
 				"\tUse this if your Ubitrack installation doesn't want to work no matter what you try.");
+
+		System.out.println("-dfg PATH \n" +
+				"\tLoad a DFG File at PATH as soon as the app launches.\n" +
+				"\tThis is basically just a shortcut if you want to skip the in-app filebrowser.");
 
 		System.out.println("-debug \n" +
 				"\tDraws some funny colliders and other stuff. I don't know why you'd need that though.");

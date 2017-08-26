@@ -36,14 +36,6 @@ public class UbiManager {
         facade = new SimpleFacade(ubitrackPath);
     }
 
-    public static void initTesting(String ubiPath) {
-        init(ubiPath);
-
-        if (!hasError()) {
-            loadDataflow(debugDFGPath);
-        }
-    }
-
     public static void update() throws Exception {
         if (!isInit) {
             return;

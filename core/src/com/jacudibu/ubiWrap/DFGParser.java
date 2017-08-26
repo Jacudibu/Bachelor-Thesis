@@ -33,6 +33,7 @@ public class DFGParser {
     public static void parse(String path) {
         FileHandle file = Gdx.files.absolute(path);
         JSONObject json = XML.toJSONObject(file.readString());
+        UbiManager.loadDataflow(path);
         parseJson(json);
     }
 
