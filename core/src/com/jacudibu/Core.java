@@ -79,7 +79,7 @@ public class Core extends com.badlogic.gdx.Game {
 
 		initializeModels();
 
-		if (startSRGPath.length() > 1) {
+		if (startSRGPath != null && startSRGPath.length() > 1) {
 			JsonImporter.importJson(startSRGPath);
 		}
 	}
