@@ -24,7 +24,6 @@ public class AnimationSystem extends EntitySystem {
             Entity entity = animatedEntities.get(i);
             AnimationComponent animation = AnimationComponent.get(entity);
             animation.update(deltaTime);
-
         }
     }
 }

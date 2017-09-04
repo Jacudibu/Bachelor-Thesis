@@ -17,6 +17,8 @@ import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.fileSystem.IntrinsicParser;
 
+import javax.xml.soap.Node;
+
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
  * Draws various information regarding the currently selected Object which can also be manipulated by the user.
@@ -79,18 +81,7 @@ public class InformationDrawer implements Disposable {
 
         if (selectedObject != null) {
             NodeComponent node = NodeComponent.get(selectedObject.getEntity());
-
-            instance.setName(node.name);
-            if (node.isMarker) {
-                instance.setHex(node.getHex());
-            }
-            else {
-                instance.hideHex();
-            }
-
-            instance.setPositionValues(selectedObject.getPosition());
-            instance.setRotationValues(selectedObject.getRotation());
-            instance.setIntrinsicValues(FrustumComponent.get(selectedObject.getEntity()));
+            instance.updateTextFields(selectedObject, node);
         }
         else {
             instance.disableInput();
@@ -101,6 +92,20 @@ public class InformationDrawer implements Disposable {
 
     public static boolean isCurrentlyFocused() {
         return instance.stage.getKeyboardFocus() != null;
+    }
+
+    private void updateTextFields(ModelComponent selectedObject, NodeComponent node) {
+        setName(node.name);
+        if (node.isMarker) {
+            setHex(node.getHex());
+        }
+        else {
+            hideHex();
+        }
+
+        setPositionValues(selectedObject.getPosition());
+        setRotationValues(selectedObject.getRotation());
+        setIntrinsicValues(FrustumComponent.get(selectedObject.getEntity()));
     }
 
     private void setName(String newName) {
@@ -195,7 +200,6 @@ public class InformationDrawer implements Disposable {
     }
 
     private void applyValues() {
-
         applyNameChanges(NodeComponent.get(currentlySelected.getEntity()));
         applyTransformChanges();
         applyIntrinsicChanges(FrustumComponent.get(currentlySelected.getEntity()));

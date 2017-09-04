@@ -72,12 +72,12 @@ public class DesktopLauncher {
 			return 1;
 		}
 
-		if (currentArgument.equals("dfg")) {
+		if (currentArgument.equals("loaddfg")) {
 			dfgPath = arguments[index + 1];
 			return 2;
 		}
 
-		if (currentArgument.equals("load")) {
+		if (currentArgument.equals("loadsrg")) {
 			Core.startSRGPath = arguments[index + 1];
 			return 2;
 		}
