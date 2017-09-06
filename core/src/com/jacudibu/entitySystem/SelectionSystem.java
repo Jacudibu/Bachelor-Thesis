@@ -26,8 +26,8 @@ import com.jacudibu.components.NodeComponent;
 public class SelectionSystem extends EntitySystem {
     private Camera camera;
 
-    public Entity currentlyHovered = null;
-    public Entity currentlySelected = null;
+    public static Entity currentlyHovered = null;
+    public static Entity currentlySelected = null;
     public static Array<Entity> multiSelection = new Array<>();
 
     private static Color unselectedColor = Color.WHITE;
@@ -42,6 +42,7 @@ public class SelectionSystem extends EntitySystem {
         this.camera = camera;
     }
 
+    // Raycasts the user's current mouse position against the scene
     @Override
     public void update(float deltaTime) {
         Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
@@ -71,9 +72,6 @@ public class SelectionSystem extends EntitySystem {
     public void addedToEngine(Engine engine) {
     }
 
-
-    // Interaction Stuff
-    // TODO: Refactor
     private void hover (Entity entity) {
         if (currentlyHovered == entity) {
             return;
@@ -136,6 +134,7 @@ public class SelectionSystem extends EntitySystem {
         select(currentlyHovered);
     }
 
+    // Selects everything connected to the node.
     public void selectTree(boolean append) {
         if (currentlyHovered == null) {
             return;

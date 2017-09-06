@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.jacudibu.Core;
+import com.jacudibu.fileSystem.PoseParser;
 import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.utility.Entities;
 import com.jacudibu.InputManager;
@@ -41,7 +42,7 @@ public class ButtonRow implements Disposable {
         this.skin = skin;
 
         int column1 = 0;
-        int column2 = 64;
+        int column2 = 69;
         int y = 0;
         int yStep = 69;
 
@@ -58,6 +59,9 @@ public class ButtonRow implements Disposable {
         y -= yStep;
 
         createToggleGridButton(column1, y);
+
+        y -= yStep;
+        createLoadPoseButton(column1, y);
         createLoadDFGButton(column2, y);
 
         updateUIPositions();
@@ -159,6 +163,16 @@ public class ButtonRow implements Disposable {
                     public void tap(InputEvent event, float x, float y, int count, int button) {
                         super.tap(event, x, y, count, button);
                         DFGParser.openLoadDialogue();
+                    }
+                });
+    }
+
+    private void createLoadPoseButton(int x, int y) {
+        createButton(x, y, "buttons/loadPose.png", "buttons/loadPosePressed.png",
+                new ActorGestureListener() {
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        super.tap(event, x, y, count, button);
+                        PoseParser.openLoadDialogue();
                     }
                 });
     }
