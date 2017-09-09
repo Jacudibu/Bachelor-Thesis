@@ -20,6 +20,7 @@ import sun.management.snmp.jvmmib.EnumJvmThreadCpuTimeMonitoring;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 19.08.2017.
+ * Component used to store frustum data.
  */
 public class FrustumComponent implements Component {
     private static final ComponentMapper<FrustumComponent> mapper = ComponentMapper.getFor(FrustumComponent.class);

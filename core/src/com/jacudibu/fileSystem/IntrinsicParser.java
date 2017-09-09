@@ -11,6 +11,7 @@ import javax.swing.*;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 19.08.2017.
+ * Parses Intrinsic Files and attaches a FrustumComponent to the assigned Node.
  */
 public class IntrinsicParser {
 

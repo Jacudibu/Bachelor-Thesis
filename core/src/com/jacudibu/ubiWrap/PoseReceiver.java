@@ -11,6 +11,7 @@ import ubitrack.SimplePoseReceiver;
 
 /**
  * Created by Stefan on 15.07.2017.
+ * Used to receive Pose updates from Ubitrack.
  */
 public class PoseReceiver extends SimplePoseReceiver {
     public static final float scaleFactor = 0.01f;

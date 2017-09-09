@@ -14,6 +14,7 @@ import javax.swing.*;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 02.07.2017.
+ * Exports everything within the current SRG to a file.
  */
 public class JsonExporter {
     public static String savePath;

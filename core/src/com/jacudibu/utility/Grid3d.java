@@ -17,6 +17,7 @@ import com.jacudibu.MainCamera;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 15.06.2017.
+ * Draws a Circular Grid on the World Origin along the XZ-Plane.
  */
 public class Grid3d implements Disposable{
     public static final Color lineColor = new Color(0f, 0f, 0f, 0.2f);
@@ -72,6 +73,7 @@ public class Grid3d implements Disposable{
         axesInstance = new ModelInstance(axesModel);
     }
 
+    // Creates a single Circle on the XZ Plane.
     private void createCircle(float radius, int divisions, MeshPartBuilder builder) {
         float step = (MathUtils.degreesToRadians * 360) / divisions;
         float angle = step;

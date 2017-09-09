@@ -41,6 +41,7 @@ public class ArrowComponent extends ModelComponent implements Disposable {
         updateModel();
     }
 
+    // Generates a new arrow Model.
     public void updateModel() {
         if (model != null) {
             material = modelInstance.materials.get(0).copy();

@@ -7,6 +7,7 @@ import ubitrack.*;
 
 /**
  * Created by Stefan on 15.07.2017.
+ * Managar Class for everything related to Ubitrack.
  */
 public class UbiManager {
     private static boolean isInit;

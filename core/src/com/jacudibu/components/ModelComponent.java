@@ -51,6 +51,7 @@ public class ModelComponent implements Component {
         this.model = model;
     }
 
+    // Creates an AnimationComponent to LERP to the target Position / Rotation
     public void animateTo(Vector3 position, Quaternion rotation) {
         AnimationComponent anim = AnimationComponent.get(entity);
         boolean newAnim = false;
