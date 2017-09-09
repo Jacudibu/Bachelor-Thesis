@@ -5,12 +5,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.jacudibu.components.ModelComponent;
+import com.jacudibu.entitySystem.SelectionSystem;
 import com.jacudibu.utility.Entities;
 import com.jacudibu.components.NodeComponent;
 
+import javax.swing.*;
+
 /**
  * Created by Stefan Wolf (Jacudibu) on 10.05.2017.
- * Reads Files and creates Entites depending on their contents.
+ * Reads Pose Files and creates Entites depending on their contents.
  */
 public class PoseParser {
     public static final int TIMESTAMP = 5;
@@ -46,6 +50,22 @@ public class PoseParser {
         createPair(position, rotation);
     }
 
+    public static void openLoadDialogue() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load Pose...");
+        fileChooser.setApproveButtonText("Load");
+
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.setVisible(false);
+        int result = fileChooser.showOpenDialog(frame);
+        frame.dispose();
+        if (result == JFileChooser.APPROVE_OPTION) {
+            parseFile(fileChooser.getSelectedFile().getAbsolutePath());
+        }
+    }
+
     private static Vector3 getVector3(String[] dataPieces) {
         Vector3 position = new Vector3();
         position.x = Float.parseFloat(dataPieces[POSITION_X]);
@@ -63,14 +83,23 @@ public class PoseParser {
         return rotation;
     }
 
-
     private static void createPair(Vector3 position, Quaternion rotation) {
-        Entity newMarker = Entities.createMarker(position, rotation);
-        Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
-
-        NodeComponent.get(newTracker).addOutgoing(newMarker);
+        if (SelectionSystem.currentlySelected == null) {
+            Entity newTracker = Entities.createTracker(new Vector3(), new Quaternion());
+            spawnNewMarkerForEntity(newTracker, position, rotation);
+        }
+        else {
+            spawnNewMarkerForEntity(SelectionSystem.currentlySelected, position, rotation);
+        }
     }
 
+    // Spawns a new marker with relative position to it's parent entity
+    private static void spawnNewMarkerForEntity(Entity entity, Vector3 position, Quaternion rotation) {
+        position.add(ModelComponent.get(entity).getPosition());
 
+        Entity newMarker = Entities.createMarker(position, rotation);
+
+        NodeComponent.get(entity).addOutgoing(newMarker);
+    }
 
 }
