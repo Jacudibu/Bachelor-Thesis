@@ -177,7 +177,7 @@ public class SelectionSystem extends EntitySystem {
         }
 
         currentlySelected = currentlyHovered;
-        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+        InformationDrawer.updateTextFields(this.currentlySelected);
     }
 
     private void select(Entity entity) {
@@ -187,7 +187,7 @@ public class SelectionSystem extends EntitySystem {
 
         currentlySelected = entity;
         addToSelection(entity);
-        InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(this.currentlySelected));
+        InformationDrawer.updateTextFields(this.currentlySelected);
     }
 
     // Adds an object to the current selection without highlighting it via the information drawer
@@ -209,11 +209,11 @@ public class SelectionSystem extends EntitySystem {
 
         if (multiSelection.size > 0) {
             currentlySelected = multiSelection.get(multiSelection.size - 1);
-            InformationDrawer.setCurrentlySelectedObject(ModelComponent.get(currentlySelected));
+            InformationDrawer.updateTextFields(currentlySelected);
         }
         else {
             currentlySelected = null;
-            InformationDrawer.setCurrentlySelectedObject(null);
+            InformationDrawer.updateTextFields(null);
         }
     }
 
@@ -224,7 +224,7 @@ public class SelectionSystem extends EntitySystem {
 
         multiSelection.clear();
         currentlySelected = null;
-        InformationDrawer.setCurrentlySelectedObject(null);
+        InformationDrawer.updateTextFields(null);
     }
 
     private void setEntityColor(Entity entity, Color color) {
