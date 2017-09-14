@@ -2,38 +2,39 @@ package com.jacudibu.ubiWrap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.jacudibu.Core;
 import ubitrack.*;
 
 /**
  * Created by Stefan on 15.07.2017.
+ * Managar Class for everything related to Ubitrack.
  */
 public class UbiManager {
     private static boolean isInit;
     public static final boolean enableLogging = false;
-    public static final String ubitrackPath = "C:\\Ubitrack\\bin\\ubitrack";
-    public static final String dfgPath = "C:\\Ubitrack\\wolfBA_DFG.dfg";
+
+    private static String ubitrackPath;
+    public static final String debugDFGPath = "C:\\Ubitrack\\wolfBA_DFG.dfg";
 
     private static SimpleFacade facade;
     private static Array<PoseReceiver> receivers = new Array<PoseReceiver>();
 
-    public static void init() {
+    public static void init(final String ubiPath) {
         if (isInit) {
             Gdx.app.log("Ubitrack", "init called twice!");
             return;
         }
 
+        ubitrackPath = ubiPath;
         System.loadLibrary("ubitrack_java");
         isInit = true;
+        Core.usingUbitrack = true;
 
         if (enableLogging) {
             ubitrack.initLogging();
         }
 
         facade = new SimpleFacade(ubitrackPath);
-
-        if (!hasError()) {
-            loadDataflow(dfgPath);
-        }
     }
 
     public static void update() throws Exception {
@@ -52,17 +53,14 @@ public class UbiManager {
         }
     }
 
-    private static void loadDataflow(String path) {
+    public static void loadDataflow(String path) {
         if (!isInit) {
             Gdx.app.log("Ubitrack", "load Dataflow called without being initialized!");
+            return;
         }
 
         facade.loadDataflow(path);
         facade.startDataflow();
-
-        // TODO: parse dfg properly
-        //receivePose("272pose", "5CC5");
-
     }
 
     private static void receivePose(String id) {
@@ -72,6 +70,7 @@ public class UbiManager {
     protected static void receivePose(String id, String qr) {
         if (!isInit) {
             Gdx.app.log("Ubitrack", "receivePose called without being initialized!");
+            return;
         }
 
         PoseReceiver receiver = new PoseReceiver(id, qr);

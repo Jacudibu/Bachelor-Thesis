@@ -6,15 +6,34 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 
+import javax.swing.*;
+
 /**
  * Created by Stefan on 16.07.2017.
  * Parses .dfg files and creates PoseReceivers.
  */
 public class DFGParser {
 
+    public static void openLoadDialogue() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load DFG...");
+        fileChooser.setApproveButtonText("Load");
+
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.setVisible(false);
+        int result = fileChooser.showOpenDialog(frame);
+        frame.dispose();
+        if (result == JFileChooser.APPROVE_OPTION) {
+            parse(fileChooser.getSelectedFile().getAbsolutePath());
+        }
+    }
+
     public static void parse(String path) {
         FileHandle file = Gdx.files.absolute(path);
         JSONObject json = XML.toJSONObject(file.readString());
+        UbiManager.loadDataflow(path);
         parseJson(json);
     }
 

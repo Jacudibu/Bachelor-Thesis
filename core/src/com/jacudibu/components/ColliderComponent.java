@@ -16,6 +16,7 @@ import com.jacudibu.Core;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.07.2017.
+ * Component that should be added to each Entity requiring collision detection in any way.
  */
 public class ColliderComponent implements Component, Disposable{
     private static final ComponentMapper<ColliderComponent> mapper = ComponentMapper.getFor(ColliderComponent.class);
@@ -59,13 +60,16 @@ public class ColliderComponent implements Component, Disposable{
         this.collisionObject.userData = entity;
     }
 
+    // Applies the given Matrix4 as worldTransform.
     public void updateTransform(Matrix4 transform) {
         collisionObject.setWorldTransform(transform);
     }
 
     public void updateArrowCollider(ArrowComponent arrowComponent) {
-        collisionObject.setCollisionShape(Bullet.obtainStaticNodeShape(arrowComponent.model.nodes));
-        collisionObject.setWorldTransform(arrowComponent.getWorldTransform());
+        if (arrowComponent.model != null) {
+            collisionObject.setCollisionShape(Bullet.obtainStaticNodeShape(arrowComponent.model.nodes));
+            collisionObject.setWorldTransform(arrowComponent.getWorldTransform());
+        }
     }
 
     @Override

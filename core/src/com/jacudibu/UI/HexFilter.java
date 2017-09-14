@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.07.2017.
+ *  A simple Input filter to allow characters relevant for Hexadecimal number input.
  */
 public class HexFilter implements TextField.TextFieldFilter {
     private char[] accepted = new char [] {'0', '1', '2', '3' , '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};

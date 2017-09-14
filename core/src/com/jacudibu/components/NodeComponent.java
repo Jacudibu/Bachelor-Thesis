@@ -160,6 +160,7 @@ public class NodeComponent implements Component {
         return outgoingConnections;
     }
 
+    // Uses a simple search algorithm to find every connected node.
     public Array<NodeComponent> getAllConnectedNodes() {
         Stack<NodeComponent> frontier = new Stack<NodeComponent>();
         Stack<NodeComponent> visited = new Stack<NodeComponent>();
@@ -270,6 +271,7 @@ public class NodeComponent implements Component {
         return hex;
     }
 
+    // Updates the Hex Value and also Generates a new Texture for the Model.
     public void setHex(String hex) {
         if (this.hex == hex) {
             return;

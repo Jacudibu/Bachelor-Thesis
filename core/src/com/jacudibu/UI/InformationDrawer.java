@@ -1,22 +1,26 @@
 package com.jacudibu.UI;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.jacudibu.Core;
+import com.jacudibu.components.ArrowComponent;
+import com.jacudibu.components.FrustumComponent;
 import com.jacudibu.components.ModelComponent;
 import com.jacudibu.components.NodeComponent;
 import com.jacudibu.entitySystem.SelectionSystem;
+import com.jacudibu.fileSystem.IntrinsicParser;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 14.05.2017.
- * Draws various information to the currently selected Object, can also be manipulated by the user.
+ * Draws various information regarding the currently selected Object which can also be manipulated by the user.
  */
 public class InformationDrawer implements Disposable {
     private Stage stage;
@@ -26,16 +30,28 @@ public class InformationDrawer implements Disposable {
     private Group nameGroup;
     private Group positionGroup;
     private Group rotationGroup;
+    private Group manipulateIntrinsicGroup;
+    private Group loadIntrinsicGroup;
     private TextField.TextFieldListener textFieldListener;
+
+    private Label positionLabel;
 
     private TextField name;
     private TextField hex;
     private TextField xPos, yPos, zPos;
     private TextField xRot, yRot, zRot;
+    private TextField near, far;
     private FloatFilter floatFilter = new FloatFilter();
 
+    private TextButton loadIntrinsicButton;
+
     private static InformationDrawer instance;
-    private ModelComponent currentlySelected;
+    private Entity currentlySelectedEntity;
+    private ModelComponent currentlySelectedModel;
+    private ArrowComponent currentlySelectedArrow;
+
+    private final float backgroundBaseHeight = 200f;
+    private final float backgroundBaseWidth = 215f;
 
     protected InformationDrawer (Stage stage, Skin skin) {
         instance = this;
@@ -47,8 +63,8 @@ public class InformationDrawer implements Disposable {
         informationParent = new Group();
         stage.addActor(informationParent);
 
-        informationParent.setWidth(215);
-        informationParent.setHeight(150);
+        informationParent.setWidth(backgroundBaseWidth);
+        informationParent.setHeight(backgroundBaseHeight);
 
         Image image = new Image(skin.getDrawable("textfield"));
         image.setFillParent(true);
@@ -57,31 +73,27 @@ public class InformationDrawer implements Disposable {
         generateNameDrawers();
         generatePositionDrawer();
         generateRotationDrawer();
+        generateIntrinsicManipulationDrawer();
+        generateIntrinsicLoaderDrawer();
 
         updateUIPositions();
     }
 
-    public static void setCurrentlySelectedObject(ModelComponent selectedObject) {
-        instance.currentlySelected = selectedObject;
+    public static void updateTextFields(Entity entity) {
+        instance.currentlySelectedEntity = entity;
+        instance.currentlySelectedModel = null;
+        instance.currentlySelectedArrow = null;
 
-        if (selectedObject != null) {
-            NodeComponent node = NodeComponent.get(selectedObject.getEntity());
-
-            instance.setName(node.name);
-            if (node.isMarker) {
-                instance.setHex(node.getHex());
-            }
-            else {
-                instance.hideHex();
-            }
-
-            instance.setPositionValues(selectedObject.modelInstance.transform.getTranslation(new Vector3()));
-            instance.setRotationValues(selectedObject.modelInstance.transform.getRotation(new Quaternion()));
-        }
-        else {
+        if (entity == null) {
             instance.disableInput();
         }
-
+        else if (NodeComponent.get(entity) != null) {
+                instance.currentlySelectedModel = ModelComponent.get(entity);
+                instance.drawNodeInformation(ModelComponent.get(entity), NodeComponent.get(entity));
+        } else if (ArrowComponent.get(entity) != null) {
+                instance.currentlySelectedArrow = ArrowComponent.get(entity);
+                instance.drawPoseInformation(ArrowComponent.get(entity));
+        }
         instance.updateUIPositions();
     }
 
@@ -89,8 +101,43 @@ public class InformationDrawer implements Disposable {
         return instance.stage.getKeyboardFocus() != null;
     }
 
-    private void setName(String newName) {
-        name.setDisabled(false);
+    private void drawNodeInformation(ModelComponent selectedObject, NodeComponent node) {
+        setupFieldsForNodeDisplay();
+
+        setName(node.name, false);
+        if (node.isMarker) {
+            setHex(node.getHex());
+        }
+        else {
+            hideHex();
+        }
+
+        setPositionValues(selectedObject.getPosition(), false);
+        setRotationValues(selectedObject.getRotation(), false);
+        setIntrinsicValues(FrustumComponent.get(currentlySelectedEntity));
+    }
+
+    private void drawPoseInformation(ArrowComponent arrow) {
+        setupFieldsForPoseDisplay();
+
+        NodeComponent from = NodeComponent.get(arrow.from);
+        NodeComponent to = NodeComponent.get(arrow.to);
+
+        ModelComponent fromModel = ModelComponent.get(arrow.from);
+        ModelComponent toModel = ModelComponent.get(arrow.to);
+
+        setName(from.name + " -> " + to.name, true);
+
+        setPositionValues(fromModel.getPosition().sub(toModel.getPosition()), true);
+
+        Vector3 fromRot = getRotationAsVector(fromModel.getRotation());
+        Vector3 toRot = getRotationAsVector(toModel.getRotation());
+
+        setRotationValues(fromRot.add(toRot), true);
+    }
+
+    private void setName(String newName, boolean disabled) {
+        name.setDisabled(disabled);
         name.setText(newName);
     }
 
@@ -105,24 +152,49 @@ public class InformationDrawer implements Disposable {
         hex.setVisible(false);
     }
 
-    private void setPositionValues(Vector3 pos) {
-        xPos.setDisabled(false);
-        yPos.setDisabled(false);
-        zPos.setDisabled(false);
+    private void setPositionValues(Vector3 pos, boolean disabled) {
+        xPos.setDisabled(disabled);
+        yPos.setDisabled(disabled);
+        zPos.setDisabled(disabled);
 
         xPos.setText(Float.toString(pos.x));
         yPos.setText(Float.toString(pos.y));
         zPos.setText(Float.toString(pos.z));
     }
 
-    private void setRotationValues(Quaternion rot) {
-        xRot.setDisabled(false);
-        yRot.setDisabled(false);
-        zRot.setDisabled(false);
+    private Vector3 getRotationAsVector(Quaternion rot) {
+        Vector3 rotationVector = new Vector3();
+        rotationVector.x = rot.getYaw();
+        rotationVector.y = rot.getPitch();
+        rotationVector.z = rot.getRoll();
 
-        xRot.setText(Float.toString(rot.getYaw()));
-        yRot.setText(Float.toString(rot.getPitch()));
-        zRot.setText(Float.toString(rot.getRoll()));
+        return rotationVector;
+    }
+
+    private void setRotationValues(Quaternion rot, boolean disabled) {
+        setRotationValues(getRotationAsVector(rot), disabled);
+    }
+
+    private void setRotationValues(Vector3 rotationVector, boolean disabled) {
+        xRot.setDisabled(disabled);
+        yRot.setDisabled(disabled);
+        zRot.setDisabled(disabled);
+
+        xRot.setText(Float.toString(rotationVector.x));
+        yRot.setText(Float.toString(rotationVector.y));
+        zRot.setText(Float.toString(rotationVector.z));
+    }
+
+    private void setIntrinsicValues(FrustumComponent frustum) {
+        if (frustum == null) {
+            return;
+        }
+
+        near.setDisabled(false);
+        far.setDisabled(false);
+
+        near.setText(Float.toString(frustum.getIntrinsic().near));
+        far.setText(Float.toString(frustum.getIntrinsic().far));
     }
 
     private void disableInput() {
@@ -148,6 +220,14 @@ public class InformationDrawer implements Disposable {
         yRot.setDisabled(true);
         zRot.setDisabled(true);
 
+        near.setText("");
+        far.setText("");
+
+        near.setDisabled(true);
+        far.setDisabled(true);
+
+        loadIntrinsicButton.setDisabled(true);
+
         stage.setKeyboardFocus(null);
     }
 
@@ -161,20 +241,29 @@ public class InformationDrawer implements Disposable {
     }
 
     private void applyValues() {
-        Vector3 posOffset = new Vector3();
-        posOffset.x = parseFloat(xPos.getText()) - currentlySelected.getPosition().x;
-        posOffset.y = parseFloat(yPos.getText()) - currentlySelected.getPosition().y;
-        posOffset.z = parseFloat(zPos.getText()) - currentlySelected.getPosition().z;
+        applyNameChanges(NodeComponent.get(currentlySelectedEntity));
+        applyTransformChanges();
+        applyIntrinsicChanges(FrustumComponent.get(currentlySelectedEntity));
 
-        Vector3 rotOffset = new Vector3();
-        rotOffset.x = parseFloat(xRot.getText()) - currentlySelected.getRotation().getYaw();
-        rotOffset.y = parseFloat(yRot.getText()) - currentlySelected.getRotation().getPitch();
-        rotOffset.z = parseFloat(zRot.getText()) - currentlySelected.getRotation().getRoll();
+        stage.setKeyboardFocus(null);
+    }
 
-        NodeComponent node = NodeComponent.get(currentlySelected.getEntity());
-
+    private void applyNameChanges(NodeComponent node) {
         node.name = name.getText();
         node.setHex(hex.getText());
+    }
+
+    private void applyTransformChanges() {
+        Vector3 posOffset = new Vector3();
+        posOffset.x = parseFloat(xPos.getText()) - currentlySelectedModel.getPosition().x;
+        posOffset.y = parseFloat(yPos.getText()) - currentlySelectedModel.getPosition().y;
+        posOffset.z = parseFloat(zPos.getText()) - currentlySelectedModel.getPosition().z;
+
+        Vector3 rotOffset = new Vector3();
+        rotOffset.x = parseFloat(xRot.getText()) - currentlySelectedModel.getRotation().getYaw();
+        rotOffset.y = parseFloat(yRot.getText()) - currentlySelectedModel.getRotation().getPitch();
+        rotOffset.z = parseFloat(zRot.getText()) - currentlySelectedModel.getRotation().getRoll();
+
 
         for (int i = 0; i < SelectionSystem.multiSelection.size; i++) {
             if (NodeComponent.get(SelectionSystem.multiSelection.get(i)) == null) {
@@ -192,8 +281,17 @@ public class InformationDrawer implements Disposable {
 
             current.animateTo(targetPos, quaternion);
         }
+    }
 
-        stage.setKeyboardFocus(null);
+    private void applyIntrinsicChanges(FrustumComponent frustum) {
+        if (frustum == null) {
+            return;
+        }
+
+        float nearValue = parseFloat(near.getText());
+        float farValue = parseFloat(far.getText());
+
+        frustum.updateNearFar(nearValue, farValue);
     }
 
     private float parseFloat(String string) {
@@ -231,7 +329,7 @@ public class InformationDrawer implements Disposable {
         positionGroup = new Group();
         informationParent.addActor(positionGroup);
 
-        setupLabel("Position", 100, 0, Align.top, positionGroup);
+        positionLabel = setupLabel("Position", backgroundBaseWidth * 0.5f, 0, Align.top, positionGroup);
 
         // X
         xPos = setupTextField(20, -20, Align.topLeft, positionGroup);
@@ -250,7 +348,7 @@ public class InformationDrawer implements Disposable {
         rotationGroup = new Group();
         informationParent.addActor(rotationGroup);
 
-        setupLabel("Rotation", 100, 0, Align.top, rotationGroup);
+        setupLabel("Rotation", backgroundBaseWidth * 0.5f, 0, Align.top, rotationGroup);
 
         // X
         xRot = setupTextField(20, -20, Align.topLeft, rotationGroup);
@@ -264,6 +362,40 @@ public class InformationDrawer implements Disposable {
         zRot = setupTextField(150, -20,  Align.topLeft, rotationGroup);
         setupLabel("z ", 150,-20, Align.topRight, rotationGroup);
 
+    }
+
+    private void generateIntrinsicManipulationDrawer() {
+        manipulateIntrinsicGroup = new Group();
+        informationParent.addActor(manipulateIntrinsicGroup);
+
+        setupLabel("Intrinsic", backgroundBaseWidth * 0.5f, 0, Align.top, manipulateIntrinsicGroup);
+
+        // Near
+        near = setupTextField(40, -20, Align.topLeft, manipulateIntrinsicGroup);
+        setupLabel("near", 40, -20, Align.topRight, manipulateIntrinsicGroup);
+
+        // Far
+        far = setupTextField(120, -20, Align.topLeft, manipulateIntrinsicGroup);
+        setupLabel("far", 120, -20, Align.topRight, manipulateIntrinsicGroup);
+    }
+
+    private void generateIntrinsicLoaderDrawer() {
+        loadIntrinsicGroup = new Group();
+        informationParent.addActor(loadIntrinsicGroup);
+
+        // setupLabel("Intrinsic", backgroundBaseWidth * 0.5f, 0, Align.top, loadIntrinsicGroup);
+
+        loadIntrinsicButton = new TextButton("Load Intrinsic", skin);
+        loadIntrinsicGroup.addActor(loadIntrinsicButton);
+        loadIntrinsicButton.setPosition(backgroundBaseWidth * 0.5f, -20, Align.top);
+
+        loadIntrinsicButton.addListener(new ActorGestureListener() {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                IntrinsicParser.openLoadDialogue(currentlySelectedEntity);
+                setIntrinsicValues(FrustumComponent.get(currentlySelectedEntity));
+            }
+        });
     }
 
     private TextField setupTextField(float x, float y, int align, Group group) {
@@ -288,15 +420,28 @@ public class InformationDrawer implements Disposable {
         return label;
     }
 
+    private void setupFieldsForNodeDisplay() {
+        name.setWidth(115);
+        positionLabel.setText("Position");
+    }
+
+    private void setupFieldsForPoseDisplay() {
+        hideHex();
+        setIntrinsicValues(null);
+
+        name.setWidth(180f);
+        positionLabel.setText("Direction");
+    }
+
     protected void updateUIPositions() {
-        if (currentlySelected == null) {
+        if (currentlySelectedModel == null && currentlySelectedArrow == null) {
             informationParent.setVisible(false);
             return;
-        } else {
-            informationParent.setVisible(true);
-            informationParent.setPosition(Gdx.graphics.getWidth() - informationParent.getWidth() - 10,
-                                          Gdx.graphics.getHeight() - informationParent.getHeight() - 10);
         }
+
+        informationParent.setVisible(true);
+        informationParent.setPosition(Gdx.graphics.getWidth() - informationParent.getWidth() - 10,
+                                      Gdx.graphics.getHeight() - informationParent.getHeight() - 10);
 
         float x = 0;
         float y = informationParent.getHeight() - 10;
@@ -306,6 +451,29 @@ public class InformationDrawer implements Disposable {
         positionGroup.setPosition(x, y, Align.topLeft);
         y -= 50;
         rotationGroup.setPosition(x, y, Align.topLeft);
+        y -= 50;
+
+        updateFrustum(currentlySelectedEntity, x, y);
+    }
+
+    protected void updateFrustum(Entity entity, float x, float y) {
+        if (FrustumComponent.get(entity) != null) {
+            manipulateIntrinsicGroup.setVisible(true);
+            loadIntrinsicGroup.setVisible(false);
+
+            manipulateIntrinsicGroup.setPosition(x, y, Align.topLeft);
+        } else {
+            manipulateIntrinsicGroup.setVisible(false);
+
+            if (NodeComponent.get(entity) != null) {
+                if (NodeComponent.get(entity).isTracker) {
+                    loadIntrinsicGroup.setVisible(true);
+                    loadIntrinsicGroup.setPosition(x, y, Align.topLeft);
+                } else {
+                    loadIntrinsicGroup.setVisible(false);
+                }
+            }
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 08.07.2017.
+ * Class for QR Texture Generation.
  */
 public class QRGenerator {
     private static final int size = 64;
@@ -15,7 +16,7 @@ public class QRGenerator {
     private static final Color freeColor = Color.WHITE;
 
     public static boolean isValidCode(String code) {
-        if (code.isEmpty() || code.length() > 4) {
+        if (code.isEmpty() || code.length() != 4) {
             return false;
         }
 

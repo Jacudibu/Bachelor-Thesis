@@ -3,9 +3,9 @@ package com.jacudibu.fileSystem;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.jacudibu.Core;
+import com.jacudibu.components.FrustumComponent;
 import com.jacudibu.components.NodeComponent;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +14,7 @@ import javax.swing.*;
 
 /**
  * Created by Stefan Wolf (Jacudibu) on 02.07.2017.
+ * Exports everything within the current SRG to a file.
  */
 public class JsonExporter {
     public static String savePath;
@@ -49,13 +50,14 @@ public class JsonExporter {
 
     public static void export(String path, PathType pathType) {
         savePath = path;
-        FileHandle file = FileListener.getFileHandle(path, pathType);
+        FileHandle file = FileSystem.getFileHandle(path, pathType);
         file.writeString(createJson().toString(), false);
     }
 
     private static JSONObject createJson() {
         JSONArray nodeArray = new JSONArray();
         JSONArray connectionArray = new JSONArray();
+        JSONArray intrinsicArray = new JSONArray();
 
         ImmutableArray<Entity> nodeEntities = Core.engine.getEntitiesFor((Family.all(NodeComponent.class).get()));
         for (int i = 0; i < nodeEntities.size(); i++) {
@@ -65,11 +67,17 @@ public class JsonExporter {
             if (node.getOutgoingCount() > 0) {
                 connectionArray.put(node.getOutgoingConnectionJson());
             }
+
+            FrustumComponent frustum = FrustumComponent.get(node.getEntity());
+            if (frustum != null) {
+                intrinsicArray.put(frustum.getIntrinsic().toJson());
+            }
         }
 
         JSONObject result = new JSONObject();
         result.put("nodes", nodeArray);
         result.put("connections", connectionArray);
+        result.put("intrinsics", intrinsicArray);
         return result;
     }
 }

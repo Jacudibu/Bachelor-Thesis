@@ -12,7 +12,6 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.jacudibu.UI.UIOverlay;
-import com.jacudibu.ubiWrap.DFGParser;
 import com.jacudibu.ubiWrap.UbiManager;
 import com.jacudibu.utility.Grid3d;
 import com.jacudibu.components.NodeComponent;
@@ -39,10 +38,15 @@ public class Core extends com.badlogic.gdx.Game {
 	public static int windowWidth;
 	public static Grid3d grid;
 
-	public final static boolean DEBUG_DRAW = false;
+	public static boolean usingUbitrack = false;
+	public static boolean debugDraw = false;
+	public static String startSRGPath;
 	private DebugDrawer debugDrawer;
 
-	float testTimer = 0f;
+	public Core(boolean debug) {
+		super();
+		debugDraw = debug;
+	}
 
 	@Override
 	public void create () {
@@ -58,7 +62,7 @@ public class Core extends com.badlogic.gdx.Game {
 		broadphase = new btDbvtBroadphase();
 		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
 
-		if (DEBUG_DRAW) {
+		if (debugDraw) {
 			debugDrawer = new DebugDrawer();
 			debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
 			collisionWorld.setDebugDrawer(debugDrawer);
@@ -73,7 +77,11 @@ public class Core extends com.badlogic.gdx.Game {
 		grid = new Grid3d(20, true);
 		InputManager.initalize();
 
-		initDebugStuff();
+		initializeModels();
+
+		if (startSRGPath != null && startSRGPath.length() > 1) {
+			JsonImporter.importJson(startSRGPath);
+		}
 	}
 
 	@Override
@@ -82,10 +90,12 @@ public class Core extends com.badlogic.gdx.Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
 				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		try {
+		if (usingUbitrack) {
+			try {
 			UbiManager.update();
-		} catch (Exception e) {
-			return;
+			} catch (Exception e) {
+				return;
+			}
 		}
 
 		MainCamera.instance.update(Gdx.graphics.getDeltaTime());
@@ -95,7 +105,7 @@ public class Core extends com.badlogic.gdx.Game {
 		engine.update(Gdx.graphics.getDeltaTime());
 		screen.render(Gdx.graphics.getDeltaTime());
 
-		if (DEBUG_DRAW) {
+		if (debugDraw) {
 			debugDrawer.begin(MainCamera.instance.cam);
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
@@ -125,7 +135,7 @@ public class Core extends com.badlogic.gdx.Game {
 		windowHeight = height;
 	}
 
-	private void initDebugStuff() {
+	private void initializeModels() {
 		modelBuilder = new ModelBuilder();
 		markerModel = modelBuilder.createBox(0.2f, 0.2f, 0.000001f,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
@@ -134,10 +144,6 @@ public class Core extends com.badlogic.gdx.Game {
 		trackerModel = modelBuilder.createSphere(0.2f, 0.2f, 0.2f,50, 50,
 				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
-
-		// FileListener.parseFile("HMDCam2IDS.txt", FileListener.PathType.INTERNAL);
-		JsonImporter.importJson("test-nodes");
-		DFGParser.parse(UbiManager.dfgPath);
 	}
 
 	public static void reset() {

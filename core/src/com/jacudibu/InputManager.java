@@ -229,6 +229,10 @@ public class InputManager implements InputProcessor {
     public boolean setMergeMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
 
+        if (selectionSystem.currentlySelected == null) {
+            return false;
+        }
+
         if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.MERGE;
             return true;
@@ -239,6 +243,10 @@ public class InputManager implements InputProcessor {
 
     public boolean setConnectMode() {
         SelectionSystem selectionSystem = Core.engine.getSystem(SelectionSystem.class);
+
+        if (selectionSystem.currentlySelected == null) {
+            return false;
+        }
 
         if (NodeComponent.get(selectionSystem.currentlySelected) != null) {
             currentAction = SelectionAction.CONNECT;
